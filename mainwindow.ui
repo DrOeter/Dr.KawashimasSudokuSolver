@@ -1,0 +1,2159 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>564</width>
+    <height>590</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: rgb(50, 50, 50);
+color: rgb(255, 255, 255);</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QLineEdit" name="a1">
+    <property name="geometry">
+     <rect>
+      <x>60</x>
+      <y>40</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true"/>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="a2">
+    <property name="geometry">
+     <rect>
+      <x>100</x>
+      <y>40</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="a3">
+    <property name="geometry">
+     <rect>
+      <x>140</x>
+      <y>40</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="a4">
+    <property name="geometry">
+     <rect>
+      <x>190</x>
+      <y>40</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="a5">
+    <property name="geometry">
+     <rect>
+      <x>230</x>
+      <y>40</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="a6">
+    <property name="geometry">
+     <rect>
+      <x>270</x>
+      <y>40</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="a7">
+    <property name="geometry">
+     <rect>
+      <x>320</x>
+      <y>40</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="a8">
+    <property name="geometry">
+     <rect>
+      <x>360</x>
+      <y>40</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="a9">
+    <property name="geometry">
+     <rect>
+      <x>400</x>
+      <y>40</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="b1">
+    <property name="geometry">
+     <rect>
+      <x>60</x>
+      <y>80</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="b2">
+    <property name="geometry">
+     <rect>
+      <x>100</x>
+      <y>80</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="b3">
+    <property name="geometry">
+     <rect>
+      <x>140</x>
+      <y>80</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="b4">
+    <property name="geometry">
+     <rect>
+      <x>190</x>
+      <y>80</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="b5">
+    <property name="geometry">
+     <rect>
+      <x>230</x>
+      <y>80</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="b6">
+    <property name="geometry">
+     <rect>
+      <x>270</x>
+      <y>80</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="b7">
+    <property name="geometry">
+     <rect>
+      <x>320</x>
+      <y>80</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="b8">
+    <property name="geometry">
+     <rect>
+      <x>360</x>
+      <y>80</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="b9">
+    <property name="geometry">
+     <rect>
+      <x>400</x>
+      <y>80</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="c1">
+    <property name="geometry">
+     <rect>
+      <x>60</x>
+      <y>120</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="c4">
+    <property name="geometry">
+     <rect>
+      <x>190</x>
+      <y>120</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="c2">
+    <property name="geometry">
+     <rect>
+      <x>100</x>
+      <y>120</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="c5">
+    <property name="geometry">
+     <rect>
+      <x>230</x>
+      <y>120</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="c3">
+    <property name="geometry">
+     <rect>
+      <x>140</x>
+      <y>120</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="c7">
+    <property name="geometry">
+     <rect>
+      <x>320</x>
+      <y>120</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="c8">
+    <property name="geometry">
+     <rect>
+      <x>360</x>
+      <y>120</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="c9">
+    <property name="geometry">
+     <rect>
+      <x>400</x>
+      <y>120</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true"/>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="c6">
+    <property name="geometry">
+     <rect>
+      <x>270</x>
+      <y>120</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="d1">
+    <property name="geometry">
+     <rect>
+      <x>60</x>
+      <y>170</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="d4">
+    <property name="geometry">
+     <rect>
+      <x>190</x>
+      <y>170</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="d2">
+    <property name="geometry">
+     <rect>
+      <x>100</x>
+      <y>170</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="d5">
+    <property name="geometry">
+     <rect>
+      <x>230</x>
+      <y>170</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="d3">
+    <property name="geometry">
+     <rect>
+      <x>140</x>
+      <y>170</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="d7">
+    <property name="geometry">
+     <rect>
+      <x>320</x>
+      <y>170</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">color: rgb(255, 255, 255);</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="d8">
+    <property name="geometry">
+     <rect>
+      <x>360</x>
+      <y>170</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="d9">
+    <property name="geometry">
+     <rect>
+      <x>400</x>
+      <y>170</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="d6">
+    <property name="geometry">
+     <rect>
+      <x>270</x>
+      <y>170</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="e1">
+    <property name="geometry">
+     <rect>
+      <x>60</x>
+      <y>210</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="e4">
+    <property name="geometry">
+     <rect>
+      <x>190</x>
+      <y>210</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="e2">
+    <property name="geometry">
+     <rect>
+      <x>100</x>
+      <y>210</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="e5">
+    <property name="geometry">
+     <rect>
+      <x>230</x>
+      <y>210</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="e3">
+    <property name="geometry">
+     <rect>
+      <x>140</x>
+      <y>210</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="e7">
+    <property name="geometry">
+     <rect>
+      <x>320</x>
+      <y>210</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="e8">
+    <property name="geometry">
+     <rect>
+      <x>360</x>
+      <y>210</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="e9">
+    <property name="geometry">
+     <rect>
+      <x>400</x>
+      <y>210</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="e6">
+    <property name="geometry">
+     <rect>
+      <x>270</x>
+      <y>210</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="f1">
+    <property name="geometry">
+     <rect>
+      <x>60</x>
+      <y>250</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="f4">
+    <property name="geometry">
+     <rect>
+      <x>190</x>
+      <y>250</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="f2">
+    <property name="geometry">
+     <rect>
+      <x>100</x>
+      <y>250</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="f5">
+    <property name="geometry">
+     <rect>
+      <x>230</x>
+      <y>250</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="f3">
+    <property name="geometry">
+     <rect>
+      <x>140</x>
+      <y>250</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="f7">
+    <property name="geometry">
+     <rect>
+      <x>320</x>
+      <y>250</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="f8">
+    <property name="geometry">
+     <rect>
+      <x>360</x>
+      <y>250</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="f9">
+    <property name="geometry">
+     <rect>
+      <x>400</x>
+      <y>250</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="f6">
+    <property name="geometry">
+     <rect>
+      <x>270</x>
+      <y>250</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="g1">
+    <property name="geometry">
+     <rect>
+      <x>60</x>
+      <y>300</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="g4">
+    <property name="geometry">
+     <rect>
+      <x>190</x>
+      <y>300</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="g2">
+    <property name="geometry">
+     <rect>
+      <x>100</x>
+      <y>300</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="g5">
+    <property name="geometry">
+     <rect>
+      <x>230</x>
+      <y>300</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="g3">
+    <property name="geometry">
+     <rect>
+      <x>140</x>
+      <y>300</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="g7">
+    <property name="geometry">
+     <rect>
+      <x>320</x>
+      <y>300</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="g8">
+    <property name="geometry">
+     <rect>
+      <x>360</x>
+      <y>300</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="g9">
+    <property name="geometry">
+     <rect>
+      <x>400</x>
+      <y>300</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="g6">
+    <property name="geometry">
+     <rect>
+      <x>270</x>
+      <y>300</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="h1">
+    <property name="geometry">
+     <rect>
+      <x>60</x>
+      <y>340</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="h4">
+    <property name="geometry">
+     <rect>
+      <x>190</x>
+      <y>340</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="h2">
+    <property name="geometry">
+     <rect>
+      <x>100</x>
+      <y>340</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="h5">
+    <property name="geometry">
+     <rect>
+      <x>230</x>
+      <y>340</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="h3">
+    <property name="geometry">
+     <rect>
+      <x>140</x>
+      <y>340</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="h7">
+    <property name="geometry">
+     <rect>
+      <x>320</x>
+      <y>340</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="h8">
+    <property name="geometry">
+     <rect>
+      <x>360</x>
+      <y>340</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="h9">
+    <property name="geometry">
+     <rect>
+      <x>400</x>
+      <y>340</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="h6">
+    <property name="geometry">
+     <rect>
+      <x>270</x>
+      <y>340</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="i1">
+    <property name="geometry">
+     <rect>
+      <x>60</x>
+      <y>380</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="i4">
+    <property name="geometry">
+     <rect>
+      <x>190</x>
+      <y>380</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="i2">
+    <property name="geometry">
+     <rect>
+      <x>100</x>
+      <y>380</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="i5">
+    <property name="geometry">
+     <rect>
+      <x>230</x>
+      <y>380</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="i3">
+    <property name="geometry">
+     <rect>
+      <x>140</x>
+      <y>380</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="i7">
+    <property name="geometry">
+     <rect>
+      <x>320</x>
+      <y>380</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="i8">
+    <property name="geometry">
+     <rect>
+      <x>360</x>
+      <y>380</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="i9">
+    <property name="geometry">
+     <rect>
+      <x>400</x>
+      <y>380</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="i6">
+    <property name="geometry">
+     <rect>
+      <x>270</x>
+      <y>380</y>
+      <width>41</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>24</pointsize>
+     </font>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="button">
+    <property name="geometry">
+     <rect>
+      <x>60</x>
+      <y>510</y>
+      <width>75</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(200, 200, 200);</string>
+    </property>
+    <property name="text">
+     <string>Start</string>
+    </property>
+   </widget>
+   <widget class="Line" name="line">
+    <property name="geometry">
+     <rect>
+      <x>60</x>
+      <y>290</y>
+      <width>381</width>
+      <height>10</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(200, 200, 200);</string>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
+    </property>
+   </widget>
+   <widget class="Line" name="line_2">
+    <property name="geometry">
+     <rect>
+      <x>60</x>
+      <y>160</y>
+      <width>381</width>
+      <height>10</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(200, 200, 200);</string>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Horizontal</enum>
+    </property>
+   </widget>
+   <widget class="Line" name="line_3">
+    <property name="geometry">
+     <rect>
+      <x>180</x>
+      <y>40</y>
+      <width>10</width>
+      <height>381</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(200, 200, 200);</string>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Vertical</enum>
+    </property>
+   </widget>
+   <widget class="Line" name="line_4">
+    <property name="geometry">
+     <rect>
+      <x>310</x>
+      <y>40</y>
+      <width>10</width>
+      <height>381</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background-color: rgb(200, 200, 200);</string>
+    </property>
+    <property name="orientation">
+     <enum>Qt::Vertical</enum>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A1">
+    <property name="geometry">
+     <rect>
+      <x>60</x>
+      <y>40</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true"/>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A2">
+    <property name="geometry">
+     <rect>
+      <x>100</x>
+      <y>40</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A3">
+    <property name="geometry">
+     <rect>
+      <x>140</x>
+      <y>40</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A4">
+    <property name="geometry">
+     <rect>
+      <x>190</x>
+      <y>40</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A5">
+    <property name="geometry">
+     <rect>
+      <x>230</x>
+      <y>40</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A6">
+    <property name="geometry">
+     <rect>
+      <x>270</x>
+      <y>40</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A7">
+    <property name="geometry">
+     <rect>
+      <x>320</x>
+      <y>40</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A8">
+    <property name="geometry">
+     <rect>
+      <x>360</x>
+      <y>40</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A9">
+    <property name="geometry">
+     <rect>
+      <x>400</x>
+      <y>40</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A4_2">
+    <property name="geometry">
+     <rect>
+      <x>190</x>
+      <y>80</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A3_2">
+    <property name="geometry">
+     <rect>
+      <x>140</x>
+      <y>80</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A5_2">
+    <property name="geometry">
+     <rect>
+      <x>230</x>
+      <y>80</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A7_2">
+    <property name="geometry">
+     <rect>
+      <x>320</x>
+      <y>80</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A1_2">
+    <property name="geometry">
+     <rect>
+      <x>60</x>
+      <y>80</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A2_2">
+    <property name="geometry">
+     <rect>
+      <x>100</x>
+      <y>80</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A8_2">
+    <property name="geometry">
+     <rect>
+      <x>360</x>
+      <y>80</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A9_2">
+    <property name="geometry">
+     <rect>
+      <x>400</x>
+      <y>80</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A6_2">
+    <property name="geometry">
+     <rect>
+      <x>270</x>
+      <y>80</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A4_3">
+    <property name="geometry">
+     <rect>
+      <x>190</x>
+      <y>120</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A3_3">
+    <property name="geometry">
+     <rect>
+      <x>140</x>
+      <y>120</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A5_3">
+    <property name="geometry">
+     <rect>
+      <x>230</x>
+      <y>120</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A7_3">
+    <property name="geometry">
+     <rect>
+      <x>320</x>
+      <y>120</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A1_3">
+    <property name="geometry">
+     <rect>
+      <x>60</x>
+      <y>120</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A2_3">
+    <property name="geometry">
+     <rect>
+      <x>100</x>
+      <y>120</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A8_3">
+    <property name="geometry">
+     <rect>
+      <x>360</x>
+      <y>120</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A9_3">
+    <property name="geometry">
+     <rect>
+      <x>400</x>
+      <y>120</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A6_3">
+    <property name="geometry">
+     <rect>
+      <x>270</x>
+      <y>120</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A4_4">
+    <property name="geometry">
+     <rect>
+      <x>190</x>
+      <y>170</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A3_4">
+    <property name="geometry">
+     <rect>
+      <x>140</x>
+      <y>170</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true"/>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A5_4">
+    <property name="geometry">
+     <rect>
+      <x>230</x>
+      <y>170</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A7_4">
+    <property name="geometry">
+     <rect>
+      <x>320</x>
+      <y>170</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A1_4">
+    <property name="geometry">
+     <rect>
+      <x>60</x>
+      <y>170</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A2_4">
+    <property name="geometry">
+     <rect>
+      <x>100</x>
+      <y>170</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A8_4">
+    <property name="geometry">
+     <rect>
+      <x>360</x>
+      <y>170</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A9_4">
+    <property name="geometry">
+     <rect>
+      <x>400</x>
+      <y>170</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A6_4">
+    <property name="geometry">
+     <rect>
+      <x>270</x>
+      <y>170</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A4_5">
+    <property name="geometry">
+     <rect>
+      <x>190</x>
+      <y>210</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A3_5">
+    <property name="geometry">
+     <rect>
+      <x>140</x>
+      <y>210</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A5_5">
+    <property name="geometry">
+     <rect>
+      <x>230</x>
+      <y>210</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true"/>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A7_5">
+    <property name="geometry">
+     <rect>
+      <x>320</x>
+      <y>210</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A1_5">
+    <property name="geometry">
+     <rect>
+      <x>60</x>
+      <y>210</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A2_5">
+    <property name="geometry">
+     <rect>
+      <x>100</x>
+      <y>210</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A8_5">
+    <property name="geometry">
+     <rect>
+      <x>360</x>
+      <y>210</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A9_5">
+    <property name="geometry">
+     <rect>
+      <x>400</x>
+      <y>210</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A6_5">
+    <property name="geometry">
+     <rect>
+      <x>270</x>
+      <y>210</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A4_6">
+    <property name="geometry">
+     <rect>
+      <x>190</x>
+      <y>250</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A3_6">
+    <property name="geometry">
+     <rect>
+      <x>140</x>
+      <y>250</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A5_6">
+    <property name="geometry">
+     <rect>
+      <x>230</x>
+      <y>250</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A7_6">
+    <property name="geometry">
+     <rect>
+      <x>320</x>
+      <y>250</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A1_6">
+    <property name="geometry">
+     <rect>
+      <x>60</x>
+      <y>250</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A2_6">
+    <property name="geometry">
+     <rect>
+      <x>100</x>
+      <y>250</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A8_6">
+    <property name="geometry">
+     <rect>
+      <x>360</x>
+      <y>250</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A9_6">
+    <property name="geometry">
+     <rect>
+      <x>400</x>
+      <y>250</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A6_6">
+    <property name="geometry">
+     <rect>
+      <x>270</x>
+      <y>250</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A4_7">
+    <property name="geometry">
+     <rect>
+      <x>190</x>
+      <y>300</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A3_7">
+    <property name="geometry">
+     <rect>
+      <x>140</x>
+      <y>300</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A5_7">
+    <property name="geometry">
+     <rect>
+      <x>230</x>
+      <y>300</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A7_7">
+    <property name="geometry">
+     <rect>
+      <x>320</x>
+      <y>300</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A1_7">
+    <property name="geometry">
+     <rect>
+      <x>60</x>
+      <y>300</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A2_7">
+    <property name="geometry">
+     <rect>
+      <x>100</x>
+      <y>300</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A8_7">
+    <property name="geometry">
+     <rect>
+      <x>360</x>
+      <y>300</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A9_7">
+    <property name="geometry">
+     <rect>
+      <x>400</x>
+      <y>300</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A6_7">
+    <property name="geometry">
+     <rect>
+      <x>270</x>
+      <y>300</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A4_8">
+    <property name="geometry">
+     <rect>
+      <x>190</x>
+      <y>340</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A3_8">
+    <property name="geometry">
+     <rect>
+      <x>140</x>
+      <y>340</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A5_8">
+    <property name="geometry">
+     <rect>
+      <x>230</x>
+      <y>340</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A7_8">
+    <property name="geometry">
+     <rect>
+      <x>320</x>
+      <y>340</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A1_8">
+    <property name="geometry">
+     <rect>
+      <x>60</x>
+      <y>340</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A2_8">
+    <property name="geometry">
+     <rect>
+      <x>100</x>
+      <y>340</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A8_8">
+    <property name="geometry">
+     <rect>
+      <x>360</x>
+      <y>340</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A9_8">
+    <property name="geometry">
+     <rect>
+      <x>400</x>
+      <y>340</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A6_8">
+    <property name="geometry">
+     <rect>
+      <x>270</x>
+      <y>340</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A4_9">
+    <property name="geometry">
+     <rect>
+      <x>190</x>
+      <y>380</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A3_9">
+    <property name="geometry">
+     <rect>
+      <x>140</x>
+      <y>380</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A5_9">
+    <property name="geometry">
+     <rect>
+      <x>230</x>
+      <y>380</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A7_9">
+    <property name="geometry">
+     <rect>
+      <x>320</x>
+      <y>380</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A1_9">
+    <property name="geometry">
+     <rect>
+      <x>60</x>
+      <y>380</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A2_9">
+    <property name="geometry">
+     <rect>
+      <x>100</x>
+      <y>380</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A8_9">
+    <property name="geometry">
+     <rect>
+      <x>360</x>
+      <y>380</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A9_9">
+    <property name="geometry">
+     <rect>
+      <x>400</x>
+      <y>380</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="A6_9">
+    <property name="geometry">
+     <rect>
+      <x>270</x>
+      <y>380</y>
+      <width>41</width>
+      <height>16</height>
+     </rect>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>564</width>
+     <height>21</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
