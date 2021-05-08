@@ -80,7 +80,6 @@ void MainWindow::untilFind_8(){
 
         std::cout<<"hallo123"<<std::endl;
     }
-    fills = negative( fills );
 }
 
 void MainWindow::untilOverFly(){
@@ -149,6 +148,7 @@ void MainWindow::pUsv(usv vector){
 
 ussv MainWindow::find_8(){
     fills.clear();
+    fillss.clear();
 
     for(int i=0; i < 9;i++){
         for(int ii=0; ii < 9;ii++){
@@ -193,13 +193,26 @@ ussv MainWindow::find_8(){
                 //std::cout<<fill.size()<<" penis2 "<<f<<"  "<<field[i][ii]<<std::endl;
             }
 
-            if(orig[i][ii] == 0) fills.push_back( fill );
-
+            if(field[i][ii] == 0) fills.push_back( fill );
             else fills.push_back( usv() = {0} );
         }
     }
+    fills = negative( fills );
+    uint16_t ii = 0;
+    for (uint16_t c=0; c < 9;c++ ) {
+        ussv line(9);
+        for (auto &i: line ) {
+            i = fills[ii];
+            ii++;
+        }
+        /*pUssv(fills);
+        std::cout<<"\npenis: "<<std::endl;
+        pUssv(line);*/
+        fillss.push_back(line);
+    }
 
-        return field;
+
+    return field;
 }
 
 
@@ -229,7 +242,7 @@ void MainWindow::boxElim(bbv &box, sv rows, uint16_t i,uint16_t x, uint16_t y){
 
 }
 
-void MainWindow::rowColSolve(ussv &field, sv pos_row, uint16_t x, uint16_t y, uint16_t xx, uint16_t yy){
+void MainWindow::rowColSolve(ussv &field, sv pos_row, uint16_t x, uint16_t y, uint16_t xb, uint16_t yb){
 
     ussv clues;
     clues.push_back( collectRow( field, x + pos_row[0], 'x' ) );
@@ -253,14 +266,14 @@ void MainWindow::rowColSolve(ussv &field, sv pos_row, uint16_t x, uint16_t y, ui
 
         for (int yy=0; yy < 3;yy++) {
             for (int xx=0; xx < 3;xx++) {
-                if( field [ybox[gridy][yy]] [xbox[gridx][xx]] != 0) box[yy][xx] = 1;
-                if( field [ybox[gridy][yy]] [xbox[gridx][xx]] == value) value_isin = 1;
+                if( field ARRAY_POS != 0) box[yy][xx] = 1;
+                if( field ARRAY_POS == value) value_isin = 1;
             }
         }
         if( value_isin ) continue;
         for(int i=0; i < 4;i++ ){
             if ( std::find(clues[i].begin(), clues[i].end(), value) != clues[i].end()){
-                boxElim(box, pos_row, i, xx, yy);
+                boxElim(box, pos_row, i, xb, yb);
             }
         }
         uint16_t complete = 0;
@@ -269,9 +282,25 @@ void MainWindow::rowColSolve(ussv &field, sv pos_row, uint16_t x, uint16_t y, ui
             if(i == 0) complete++;
             }
         }
-        if( box[yy][xx] == 0 && complete == 1) {
+        if( box[yb][xb] == 0 && complete == 1) {
             field[y][x] = value;
             pBbv(box);
+        }
+        if(complete >= 2 && complete <= 9){
+            uint16_t pos[2], one = 0;
+            for (int yy=0, i=0; yy < 3;yy++) {
+                for (int xx=0; xx < 3;xx++) {
+                    if( field ARRAY_POS == 0 && box[yy][xx] == 0) {
+                        if ( std::find(fillss ARRAY_POS.begin(), fillss ARRAY_POS.end(), value) != fillss ARRAY_POS.end()){
+                            pos[0] = (yy - yb) + y;
+                            pos[1] = (xx - xb) + x;
+                            one++;
+                        }
+                    }
+                    i++;
+                }
+            }
+            if(one == 1 && field[ pos[0] ][ pos[1] ] == 0 ) field[ pos[0] ][ pos[1] ] = value;
         }
         //std::cout<<"sack: "<<value<<std::endl;
     }
