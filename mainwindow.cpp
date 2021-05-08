@@ -9,8 +9,12 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
 
-    std::cout<<"start"<<std::endl;
 
+    std::cout<<"penis"<<std::endl;
+
+    field.clear();
+    getUi();
+    orig = field;
     on_button_clicked();
 }
 
@@ -22,12 +26,10 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_button_clicked()
 {
-    field.clear();
-    getUi();
-    orig = field;
+
     correction();
 
-
+    updateClues();
     std::cout<<std::endl;
 
     //p2d(field);
@@ -41,6 +43,20 @@ void MainWindow::on_button_clicked()
 
 }
 
+void MainWindow::updateClues(){
+    int i = 0;
+    for(int y=0; y < 9;y++){
+        for(int x=0; x < 9;x++){
+            if( field[y][x] != 0 ){
+                clues[i]->setText( QString( std::to_string( field[y][x]).c_str() ) );
+                clues[i]->setAlignment(Qt::AlignCenter);
+                pencil[i]->hide();
+
+            }
+            i++;
+        }
+    }
+}
 
 void MainWindow::correction(){
     ussv state = field;
@@ -54,7 +70,7 @@ void MainWindow::correction(){
     }
     fills = negative( fills );
 
-    //p2d( fills );
+    p2d( fills );
 
 
     for(int i=0; i < 81;i++){
@@ -69,26 +85,16 @@ void MainWindow::correction(){
 
     p2d(orig);
 
-    int i = 0;
-    for(int y=0; y < 9;y++){
-        for(int x=0; x < 9;x++){
-            if( field[y][x] != 0 ){
-                clues[i]->setText( QString( std::to_string( field[y][x]).c_str() ) );
-                clues[i]->setAlignment(Qt::AlignCenter);
-                pencil[i]->hide();
 
-            }
-            i++;
-        }
-    }
 
 
     std::cout<<std::endl;
 
 
-    overFly( field );
+    overFly();
+    overFly();
 
-
+    updateClues();
 
 }
 
@@ -113,6 +119,22 @@ void MainWindow::p2d(ussv vector){
             if(ii == vector[i].size() - 1) std::cout<<std::endl;
         }
     }
+}
+
+void MainWindow::pB2d(bbv vector){
+    for(uint32_t i=0; i < vector.size();i++){
+        for(uint32_t ii=0; ii < vector[i].size() ;ii++){
+            std::cout<< vector[i][ii];
+            if(ii == vector[i].size() - 1) std::cout<<std::endl;
+        }
+    }
+}
+
+void MainWindow::pUsv(usv vector){
+    for(auto i: vector){
+        std::cout<<i;
+    }
+    std::cout<<std::endl;
 }
 
 ussv MainWindow::find_8(ussv field){
@@ -189,92 +211,118 @@ usv MainWindow::collectRow(ussv field, int rc, char roc){
     return collect;
 }
 
-void MainWindow::overFly(ussv field){
-    ussv xbox = {{0,1,2},{3,4,5},{6,7,8}};
-    ussv ybox = {{0,1,2},{3,4,5},{6,7,8}};
-    ubbv box = {{0,0,0},
-                {0,0,0},
-                {0,0,0}};
+void MainWindow::boxElim(bbv &box, sv rows, uint16_t i,uint16_t x, uint16_t y){
+    if(i == 0 || i == 1){
+        for(int el=0; el < 3;el++)
+            box[ el ][ x + rows[i] ] = 1;
+    }
+    else if(i == 2 || i == 3){
+        for(int el=0; el < 3;el++)
+            box[ y + rows[i] ][ el ] = 1;
+    }
+
+}
+
+void MainWindow::rowColSolve(sv pos_row, uint16_t x, uint16_t y, uint16_t xx, uint16_t yy){
+
+    ussv clues;
+    clues.push_back( collectRow( field, x + pos_row[0], 'x' ) );
+    clues.push_back( collectRow( field, x + pos_row[1], 'x' ) );
+    clues.push_back( collectRow( field, y + pos_row[2], 'y' ) );
+    clues.push_back( collectRow( field, y + pos_row[3], 'y' ) );
+
+    for (int value=1; value < 10;value++ ){
+        bbv box = {{0,0,0},
+                   {0,0,0},
+                   {0,0,0}};
+        uint16_t gridx=0;
+        uint16_t gridy=0;
+        bool value_isin = 0;
+
+        for(; gridx < 3 ; gridx++)
+            if ( std::find(xbox[gridx].begin(), xbox[gridx].end(), x) != xbox[gridx].end()) break;
+
+        for(; gridy < 3 ; gridy++)
+            if ( std::find(ybox[gridy].begin(), ybox[gridy].end(), y) != ybox[gridy].end()) break;
+
+        for (int yy=0; yy < 3;yy++) {
+            for (int xx=0; xx < 3;xx++) {
+                if( field [ybox[gridy][yy]] [xbox[gridx][xx]] != 0) box[yy][xx] = 1;
+                if( field [ybox[gridy][yy]] [xbox[gridx][xx]] == value) value_isin = 1;
+            }
+        }
+        if( value_isin ) continue;
+        for(int i=0; i < 4;i++ ){
+            if ( std::find(clues[i].begin(), clues[i].end(), value) != clues[i].end()){
+                boxElim(box, pos_row, i, xx, yy);
+            }
+        }
+        uint16_t complete = 0;
+        for(auto &ii: box){
+            for(auto i: ii){
+            if(i == 0) complete++;
+            }
+        }
+        if( box[yy][xx] == 0 && complete == 1) {
+            field[y][x] = value;
+            pB2d(box);
+        }
+        std::cout<<"sack: "<<value<<std::endl;
+    }
+}
+
+void MainWindow::overFly(){
+    ssv position = {{1,2,1,2},
+                    {1,-1,1,2},
+                    {-1,-2,1,2},
+                    {1,2,1,-1},
+                    {1,-1,1,-1},
+                    {1,-2,1,-1},
+                    {1,2,-1,-2},
+                    {1,-1,-1,-2},
+                    {-1,-2,-1,-2}};
 
 
-    for(int y=0; y < 9;y++){
-        for(int x=0; x < 9;x++){
+    for(uint16_t y=0; y < 9;y++){
+        for(uint16_t x=0; x < 9;x++){
             if( (x == 0 || x == 0 +3 || x == 0 +3+3) && (y == 0 || y == 0 +3 || y == 0 +3+3) ){
                 //x + 1 & x + 2 & y + 1 & y + 2
-                ussv clues;
-                clues.push_back( collectRow( field, x + 1, 'x' ) );
-                clues.push_back( collectRow( field, x + 2, 'x' ) );
-                clues.push_back( collectRow( field, y + 1, 'y' ) );
-                clues.push_back( collectRow( field, y + 2, 'y' ) );
-
-                int gridx=0;
-                int gridy=0;
-
-                for(; gridx < 3 ; gridx++)
-                    if ( std::find(xbox[gridx].begin(), xbox[gridx].end(), x) != xbox[gridx].end()) break;
-
-                for(; gridy < 3 ; gridy++)
-                    if ( std::find(ybox[gridy].begin(), ybox[gridy].end(), y) != ybox[gridy].end()) break;
-
-                for (int yy=0; yy < 3;yy++) {
-                    for (int xx=0; xx < 3;xx++) {
-                        if( field [ybox[gridy][yy]] [xbox[gridx][xx]] != 0) box[yy][xx] = 1;
-                    }
-                }
-
-                for (int i=0; i < 9;i++ ){
-                    if ( std::find(clues[0].begin(), clues[0].end(), i) != clues[0].end()){
-                        box[0][1] = 1;
-                        box[1][1] = 1;
-                        box[2][1] = 1;
-                    }
-                    if ( std::find(clues[1].begin(), clues[1].end(), i) != clues[1].end()){
-                        box[0][2] = 1;
-                        box[1][2] = 1;
-                        box[2][2] = 1;
-                    }
-                    if ( std::find(clues[2].begin(), clues[2].end(), i) != clues[2].end()){
-                        box[1][0] = 1;
-                        box[1][1] = 1;
-                        box[1][2] = 1;
-                    }
-                    if ( std::find(clues[3].begin(), clues[3].end(), i) != clues[3].end()){
-                        box[2][0] = 1;
-                        box[2][1] = 1;
-                        box[2][2] = 1;
-                    }
-                }
-
-
+                rowColSolve(position[0], x, y, 0, 0);
             }
             if( (x == 1 || x == 1 +3 || x == 1 +3+3) && (y == 0 || y == 0 +3 || y == 0 +3+3) ){
                 //x + 1 & x - 1 & y + 1 & y + 2
+                rowColSolve(position[1], x, y, 1, 0);
             }
             if( (x == 2 || x == 2 +3 || x == 2 +3+3) && (y == 0 || y == 0 +3 || y == 0 +3+3) ){
                 //x - 1 & x - 2 & y + 1 & y + 2
+                rowColSolve(position[2], x, y, 2, 0);
             }
             if( (x == 0 || x == 0 +3 || x == 0 +3+3) && (y == 1 || y == 1 +3 || y == 1 +3+3) ){
                 //x + 1 & x + 2 & y + 1 & y - 1
+                rowColSolve(position[3], x, y, 0, 1);
             }
             if( (x == 1 || x == 1 +3 || x == 1 +3+3) && (y == 1 || y == 1 +3 || y == 1 +3+3) ){
                 //x + 1 & x - 1 & y + 1 & y - 1
+                rowColSolve(position[4], x, y, 1, 1);
             }
             if( (x == 2 || x == 2 +3 || x == 2 +3+3) && (y == 1 || y == 1 +3 || y == 1 +3+3) ){
                 //x + 1 & x - 2 & y + 1 & y - 1
+                rowColSolve(position[5], x, y, 2, 1);
             }
             if( (x == 0 || x == 0 +3 || x == 0 +3+3) && (y == 2 || y == 2 +3 || y == 2 +3+3) ){
                 //x + 1 & x + 2 & y - 1 & y - 2
+                rowColSolve(position[6], x, y, 0, 2);
             }
             if( (x == 1 || x == 1 +3 || x == 1 +3+3) && (y == 2 || y == 2 +3 || y == 2 +3+3) ){
                 //x + 1 & x - 1 & y - 1 & y - 2
+                rowColSolve(position[7], x, y, 1, 2);
             }
             if( (x == 2 || x == 2 +3 || x == 2 +3+3) && (y == 2 || y == 2 +3 || y == 2 +3+3) ){
                 //x - 1 & x - 2 & y - 1 & y - 2
+                rowColSolve(position[8], x, y, 2, 2);
             }
-
         }
     }
-
 }
 
 
