@@ -13,7 +13,8 @@ MainWindow::MainWindow(QWidget *parent)
     std::cout<<"penis"<<std::endl;
 
     field.clear();
-    getUi();
+    getGui();
+    initGui();
     orig = field;
     on_button_clicked();
 }
@@ -58,44 +59,53 @@ void MainWindow::updateClues(){
     }
 }
 
-void MainWindow::correction(){
-    ussv state = field;
-    field = find_8( field );
-
-    while( state != field ){
-        field = state;
-        state = find_8( field );
-
-        std::cout<<"hallo123"<<std::endl;
-    }
-    fills = negative( fills );
-
-    p2d( fills );
-
-
+void MainWindow::updatePencil(){
     for(int i=0; i < 81;i++){
         QString fill;
         for(auto i: fills[i])
             fill += std::to_string(i).c_str();
 
         pencil[i]->setText( QString( fill ) );
-
         pencil[i]->setStyleSheet( "QLineEdit{ border-width: 1px; border-style: solid; border-color: #BEBEBE #BEBEBE #323232 #BEBEBE; }" );
     }
+}
 
-    p2d(orig);
+void MainWindow::untilFind_8(){
+    ussv state = field;
+    field = find_8();
 
+    while( state != field ){
+        field = state;
+        state = find_8();
 
+        std::cout<<"hallo123"<<std::endl;
+    }
+    fills = negative( fills );
+}
 
+void MainWindow::untilOverFly(){
+    ussv state = field;
+    field = overFly();
 
+    while( state != field ){
+        field = state;
+        state = overFly();
+
+        std::cout<<"hallo123"<<std::endl;
+    }
+}
+
+void MainWindow::correction(){
+    untilFind_8();
+
+    pUssv( fills );
+    pUssv(orig);
     std::cout<<std::endl;
 
-
-    overFly();
-    overFly();
-
+    untilOverFly();
+    untilFind_8();
     updateClues();
-
+    updatePencil();
 }
 
 
@@ -112,7 +122,7 @@ ussv MainWindow::negative(ussv options){
     return positive;
 }
 
-void MainWindow::p2d(ussv vector){
+void MainWindow::pUssv(ussv vector){
     for(uint32_t i=0; i < vector.size();i++){
         for(uint32_t ii=0; ii < vector[i].size() ;ii++){
             std::cout<< vector[i][ii];
@@ -121,7 +131,7 @@ void MainWindow::p2d(ussv vector){
     }
 }
 
-void MainWindow::pB2d(bbv vector){
+void MainWindow::pBbv(bbv vector){
     for(uint32_t i=0; i < vector.size();i++){
         for(uint32_t ii=0; ii < vector[i].size() ;ii++){
             std::cout<< vector[i][ii];
@@ -137,11 +147,8 @@ void MainWindow::pUsv(usv vector){
     std::cout<<std::endl;
 }
 
-ussv MainWindow::find_8(ussv field){
-    ussv x = {{0,1,2},{3,4,5},{6,7,8}};
-    ussv y = {{0,1,2},{3,4,5},{6,7,8}};
+ussv MainWindow::find_8(){
     fills.clear();
-
 
     for(int i=0; i < 9;i++){
         for(int ii=0; ii < 9;ii++){
@@ -159,17 +166,17 @@ ussv MainWindow::find_8(ussv field){
             //std::cout<<fill.size()<<" pennis"<<std::endl;
 
             for(; gridx < 3 ; gridx++)
-                if ( std::find(x[gridx].begin(), x[gridx].end(), ii) != x[gridx].end()) break;
+                if ( std::find(xbox[gridx].begin(), xbox[gridx].end(), ii) != xbox[gridx].end()) break;
 
             for(; gridy < 3 ; gridy++)
-                if ( std::find(y[gridy].begin(), y[gridy].end(), i) != y[gridy].end()) break;
+                if ( std::find(ybox[gridy].begin(), ybox[gridy].end(), i) != ybox[gridy].end()) break;
 
             for(int yy=0; yy < 3;yy++){
                 for(int xx=0; xx < 3;xx++){
-                    if ( std::find(fill.begin(), fill.end(), field [y[gridy][yy]] [x[gridx][xx]]) == fill.end()
-                    && field [y[gridy][yy]] [x[gridx][xx]] != 0 )
+                    if ( std::find(fill.begin(), fill.end(), field [ybox[gridy][yy]] [xbox[gridx][xx]]) == fill.end()
+                    && field [ybox[gridy][yy]] [xbox[gridx][xx]] != 0 )
 
-                        fill.push_back( field [y[gridy][yy]] [x[gridx][xx]] );
+                        fill.push_back( field [ybox[gridy][yy]] [xbox[gridx][xx]] );
                 }
             }
 
@@ -198,7 +205,6 @@ ussv MainWindow::find_8(ussv field){
 
 usv MainWindow::collectRow(ussv field, int rc, char roc){
     usv collect;
-
     if(roc == 'x'){
         for(int i=0; i < 9;i++)
             if( field[i][rc] != 0 ) collect.push_back( field[i][rc] );
@@ -223,7 +229,7 @@ void MainWindow::boxElim(bbv &box, sv rows, uint16_t i,uint16_t x, uint16_t y){
 
 }
 
-void MainWindow::rowColSolve(sv pos_row, uint16_t x, uint16_t y, uint16_t xx, uint16_t yy){
+void MainWindow::rowColSolve(ussv &field, sv pos_row, uint16_t x, uint16_t y, uint16_t xx, uint16_t yy){
 
     ussv clues;
     clues.push_back( collectRow( field, x + pos_row[0], 'x' ) );
@@ -265,64 +271,65 @@ void MainWindow::rowColSolve(sv pos_row, uint16_t x, uint16_t y, uint16_t xx, ui
         }
         if( box[yy][xx] == 0 && complete == 1) {
             field[y][x] = value;
-            pB2d(box);
+            pBbv(box);
         }
-        std::cout<<"sack: "<<value<<std::endl;
+        //std::cout<<"sack: "<<value<<std::endl;
     }
 }
 
-void MainWindow::overFly(){
+ussv MainWindow::overFly(){
     ssv position = {{1,2,1,2},
                     {1,-1,1,2},
                     {-1,-2,1,2},
                     {1,2,1,-1},
                     {1,-1,1,-1},
-                    {1,-2,1,-1},
+                    {-1,-2,1,-1},
                     {1,2,-1,-2},
                     {1,-1,-1,-2},
                     {-1,-2,-1,-2}};
-
+    ussv newfield = field;
 
     for(uint16_t y=0; y < 9;y++){
         for(uint16_t x=0; x < 9;x++){
             if( (x == 0 || x == 0 +3 || x == 0 +3+3) && (y == 0 || y == 0 +3 || y == 0 +3+3) ){
                 //x + 1 & x + 2 & y + 1 & y + 2
-                rowColSolve(position[0], x, y, 0, 0);
+                rowColSolve(newfield, position[0], x, y, 0, 0);
             }
             if( (x == 1 || x == 1 +3 || x == 1 +3+3) && (y == 0 || y == 0 +3 || y == 0 +3+3) ){
                 //x + 1 & x - 1 & y + 1 & y + 2
-                rowColSolve(position[1], x, y, 1, 0);
+                rowColSolve(newfield, position[1], x, y, 1, 0);
             }
             if( (x == 2 || x == 2 +3 || x == 2 +3+3) && (y == 0 || y == 0 +3 || y == 0 +3+3) ){
                 //x - 1 & x - 2 & y + 1 & y + 2
-                rowColSolve(position[2], x, y, 2, 0);
+                rowColSolve(newfield, position[2], x, y, 2, 0);
             }
             if( (x == 0 || x == 0 +3 || x == 0 +3+3) && (y == 1 || y == 1 +3 || y == 1 +3+3) ){
                 //x + 1 & x + 2 & y + 1 & y - 1
-                rowColSolve(position[3], x, y, 0, 1);
+                rowColSolve(newfield, position[3], x, y, 0, 1);
             }
             if( (x == 1 || x == 1 +3 || x == 1 +3+3) && (y == 1 || y == 1 +3 || y == 1 +3+3) ){
                 //x + 1 & x - 1 & y + 1 & y - 1
-                rowColSolve(position[4], x, y, 1, 1);
+                rowColSolve(newfield, position[4], x, y, 1, 1);
             }
             if( (x == 2 || x == 2 +3 || x == 2 +3+3) && (y == 1 || y == 1 +3 || y == 1 +3+3) ){
                 //x + 1 & x - 2 & y + 1 & y - 1
-                rowColSolve(position[5], x, y, 2, 1);
+                rowColSolve(newfield, position[5], x, y, 2, 1);
             }
             if( (x == 0 || x == 0 +3 || x == 0 +3+3) && (y == 2 || y == 2 +3 || y == 2 +3+3) ){
                 //x + 1 & x + 2 & y - 1 & y - 2
-                rowColSolve(position[6], x, y, 0, 2);
+                rowColSolve(newfield, position[6], x, y, 0, 2);
             }
             if( (x == 1 || x == 1 +3 || x == 1 +3+3) && (y == 2 || y == 2 +3 || y == 2 +3+3) ){
                 //x + 1 & x - 1 & y - 1 & y - 2
-                rowColSolve(position[7], x, y, 1, 2);
+                rowColSolve(newfield, position[7], x, y, 1, 2);
             }
             if( (x == 2 || x == 2 +3 || x == 2 +3+3) && (y == 2 || y == 2 +3 || y == 2 +3+3) ){
                 //x - 1 & x - 2 & y - 1 & y - 2
-                rowColSolve(position[8], x, y, 2, 2);
+                rowColSolve(newfield, position[8], x, y, 2, 2);
             }
         }
     }
+    return newfield;
 }
 
 
