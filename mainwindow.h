@@ -24,34 +24,44 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-    void getUi();
+
 
 private slots:
     void on_button_clicked();
 
+private:
+    void getGui();
+
+    void initGui();
+
     void correction();
 
-    ussv find_8(ussv field);
+    ussv find_8();
 
     ussv negative(ussv options);
 
-    void p2d(ussv vector);
+    void pUssv(ussv vector);
 
-    void pB2d(bbv vector);
+    void pBbv(bbv vector);
 
     void pUsv(usv vector);
 
-    void overFly();
+    ussv overFly();
 
     void updateClues();
+
+    void updatePencil();
+
+    void untilFind_8();
+
+    void untilOverFly();
 
     usv collectRow(ussv field, int rc, char roc);
 
     void boxElim(bbv &box, sv rows, uint16_t i, uint16_t x, uint16_t y);
 
-    void rowColSolve(sv pos_row, uint16_t x, uint16_t y, uint16_t xx, uint16_t yy);
+    void rowColSolve(ussv &field, sv pos_row, uint16_t x, uint16_t y, uint16_t xx, uint16_t yy);
 
-private:
     Ui::MainWindow *ui;
     ussv field, testfield, orig, pairs, coords, fills;
     usv choice;
