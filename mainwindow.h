@@ -6,11 +6,16 @@
 #include <bitset>
 #include <iostream>
 
+#define ARRAY_POS [ybox[gridxy[1]][yy]][xbox[gridxy[0]][xx]]
+#define BOX_POS [ybox[box[1]][yy]][xbox[box[0]][xx]]
+
 typedef std::vector<uint16_t> usv;
 typedef std::vector<int16_t> sv;
 typedef std::vector<std::vector<uint16_t>> ussv;
+typedef std::vector<std::vector<std::vector<uint16_t>>> usssv;
 typedef std::vector<std::vector<int16_t>> ssv;
 typedef std::vector<std::vector<bool>> bbv;
+typedef std::vector<bool> bv;
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -46,8 +51,6 @@ private:
 
     void pUsv(usv vector);
 
-    ussv overFly();
-
     void updateClues();
 
     void updatePencil();
@@ -56,13 +59,22 @@ private:
 
     void untilOverFly();
 
+    void untilRowColSearch();
+
+    ussv rowColSearch();
+
+    usv findBox(uint16_t x ,uint16_t y);
+
+    ussv overFly();
+
     usv collectRow(ussv field, int rc, char roc);
 
     void boxElim(bbv &box, sv rows, uint16_t i, uint16_t x, uint16_t y);
 
-    void rowColSolve(ussv &field, sv pos_row, uint16_t x, uint16_t y, uint16_t xx, uint16_t yy);
+    void rowColSolve(ussv &field, sv pos_row, uint16_t x, uint16_t y, uint16_t xb, uint16_t yb);
 
     Ui::MainWindow *ui;
+    usssv fillss;
     ussv field, testfield, orig, pairs, coords, fills;
     usv choice;
     uint32_t com = 0;
