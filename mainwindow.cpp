@@ -94,14 +94,28 @@ void MainWindow::untilOverFly(){
     }
 }
 
+void MainWindow::untilRowColSearch(){
+    ussv state = field;
+    field = rowColSearch();
+
+    while( state != field ){
+        field = state;
+        state = rowColSearch();
+
+        std::cout<<"hallo123"<<std::endl;
+    }
+}
+
 void MainWindow::correction(){
     untilFind_8();
+    untilRowColSearch();
 
-    pUssv( fills );
-    pUssv(orig);
-    std::cout<<std::endl;
+    //pUssv( fills );
+    //pUssv(orig);
+    //std::cout<<std::endl;
 
     untilOverFly();
+    untilRowColSearch();
     untilFind_8();
     updateClues();
     updatePencil();
@@ -160,23 +174,14 @@ ussv MainWindow::find_8(){
             for(int x=0; x < 9 ; x++)
                 if ( std::find(fill.begin(), fill.end(), field[i][x]) == fill.end() && field[i][x] != 0 ) fill.push_back( field[i][x] );
 
-            int gridx=0;
-            int gridy=0;
-
-            //std::cout<<fill.size()<<" pennis"<<std::endl;
-
-            for(; gridx < 3 ; gridx++)
-                if ( std::find(xbox[gridx].begin(), xbox[gridx].end(), ii) != xbox[gridx].end()) break;
-
-            for(; gridy < 3 ; gridy++)
-                if ( std::find(ybox[gridy].begin(), ybox[gridy].end(), i) != ybox[gridy].end()) break;
+            usv gridxy = findBox(ii, i);
 
             for(int yy=0; yy < 3;yy++){
                 for(int xx=0; xx < 3;xx++){
-                    if ( std::find(fill.begin(), fill.end(), field [ybox[gridy][yy]] [xbox[gridx][xx]]) == fill.end()
-                    && field [ybox[gridy][yy]] [xbox[gridx][xx]] != 0 )
+                    if ( std::find(fill.begin(), fill.end(), field ARRAY_POS) == fill.end()
+                    && field ARRAY_POS != 0 )
 
-                        fill.push_back( field [ybox[gridy][yy]] [xbox[gridx][xx]] );
+                        fill.push_back( field ARRAY_POS );
                 }
             }
 
@@ -242,6 +247,17 @@ void MainWindow::boxElim(bbv &box, sv rows, uint16_t i,uint16_t x, uint16_t y){
 
 }
 
+usv MainWindow::findBox(uint16_t x ,uint16_t y){
+    usv gridxy = {0,0};
+    for(; gridxy[0] < 3 ; gridxy[0]++)
+        if ( std::find(xbox[gridxy[0]].begin(), xbox[gridxy[0]].end(), x) != xbox[gridxy[0]].end()) break;
+
+    for(; gridxy[1] < 3 ; gridxy[1]++)
+        if ( std::find(ybox[gridxy[1]].begin(), ybox[gridxy[1]].end(), y) != ybox[gridxy[1]].end()) break;
+
+    return gridxy;
+}
+
 void MainWindow::rowColSolve(ussv &field, sv pos_row, uint16_t x, uint16_t y, uint16_t xb, uint16_t yb){
 
     ussv clues;
@@ -250,19 +266,14 @@ void MainWindow::rowColSolve(ussv &field, sv pos_row, uint16_t x, uint16_t y, ui
     clues.push_back( collectRow( field, y + pos_row[2], 'y' ) );
     clues.push_back( collectRow( field, y + pos_row[3], 'y' ) );
 
+    usv gridxy = findBox(x, y);
+
     for (int value=1; value < 10;value++ ){
         bbv box = {{0,0,0},
                    {0,0,0},
                    {0,0,0}};
-        uint16_t gridx=0;
-        uint16_t gridy=0;
+
         bool value_isin = 0;
-
-        for(; gridx < 3 ; gridx++)
-            if ( std::find(xbox[gridx].begin(), xbox[gridx].end(), x) != xbox[gridx].end()) break;
-
-        for(; gridy < 3 ; gridy++)
-            if ( std::find(ybox[gridy].begin(), ybox[gridy].end(), y) != ybox[gridy].end()) break;
 
         for (int yy=0; yy < 3;yy++) {
             for (int xx=0; xx < 3;xx++) {
@@ -287,22 +298,24 @@ void MainWindow::rowColSolve(ussv &field, sv pos_row, uint16_t x, uint16_t y, ui
             pBbv(box);
         }
         if(complete >= 2 && complete <= 9){
+            std::cout<<"*********************************************************************************"<<value<<std::endl;
             uint16_t pos[2], one = 0;
-            for (int yy=0, i=0; yy < 3;yy++) {
+            for (int yy=0; yy < 3;yy++) {
                 for (int xx=0; xx < 3;xx++) {
                     if( field ARRAY_POS == 0 && box[yy][xx] == 0) {
                         if ( std::find(fillss ARRAY_POS.begin(), fillss ARRAY_POS.end(), value) != fillss ARRAY_POS.end()){
                             pos[0] = (yy - yb) + y;
                             pos[1] = (xx - xb) + x;
                             one++;
+                            for(auto i: fillss ARRAY_POS)
+                                std::cout<< i;
+                            std::cout<<"\npenissack: "<<value<<std::endl;
                         }
                     }
-                    i++;
                 }
             }
             if(one == 1 && field[ pos[0] ][ pos[1] ] == 0 ) field[ pos[0] ][ pos[1] ] = value;
         }
-        //std::cout<<"sack: "<<value<<std::endl;
     }
 }
 
@@ -362,3 +375,77 @@ ussv MainWindow::overFly(){
 }
 
 
+ussv MainWindow::rowColSearch(){
+
+    for(uint16_t y=0; y < 9;y++){
+        for(uint16_t x=0; x < 9;x++){
+            if(field[y][x] == 0){
+                for(uint16_t value=1; value < 10;value++){
+                    bv line = {0,0,0,0,0,0,0,0,0};
+                    usv gridxy = findBox(x, y);
+
+                    for(uint16_t x_line=0; x_line < 9; x_line++){
+                        if(field[y][x_line] == 0){
+                            for(uint16_t y_line=0; y_line < 9; y_line++){
+                                if(field[y_line][x_line] == value) line[x_line] = 1;
+                            }
+
+                            usv box = findBox(x_line, y);
+                                for (int yy=0; yy < 3;yy++) {
+                                    for (int xx=0; xx < 3;xx++) {
+                                        if(field BOX_POS == value) line[x_line] = 1;
+                                    }
+                                }
+                        }
+                        else line[x_line] = 1;
+                    }
+                    uint16_t complete = 0;
+                    for(auto i: line)
+                        if(i == 0) complete++;
+
+                    if(complete == 1 && line[x] == 0
+                       && std::find(field[y].begin(), field[y].end(), value) == field[y].end()) field[y][x] = value;
+
+                    if(x == 3 && y == 7 && value == 3){
+                        for(auto i: line)
+                            std::cout<<i;
+                        std::cout<<"end"<<std::endl;
+                    }
+
+
+
+                    line = {0,0,0,0,0,0,0,0,0};
+                    gridxy = findBox(x, y);
+
+                    for(uint16_t y_line=0; y_line < 9; y_line++){
+                        if(field[y_line][x] == 0){
+                            for(uint16_t x_line=0; x_line < 9; x_line++){
+                                if(field[y_line][x_line] == value) line[y_line] = 1;
+                            }
+
+                            usv box = findBox(x, y_line);
+                            for (int yy=0; yy < 3;yy++) {
+                                for (int xx=0; xx < 3;xx++) {
+                                    if(field BOX_POS == value) line[y_line] = 1;
+                                }
+                            }
+                        }
+                        else line[y_line] = 1;
+                    }
+                    complete = 0;
+                    for(auto i: line)
+                        if(i == 0) complete++;
+
+                    bool found;
+                    for(uint16_t i=0; i < 9; i++)
+                        if(field[i][x] == value) found = 1;
+
+                    if(complete == 1 && line[y] == 0 && found == 0) field[y][x] = value;
+
+
+                }
+            }
+        }
+    }
+    return field;
+}
