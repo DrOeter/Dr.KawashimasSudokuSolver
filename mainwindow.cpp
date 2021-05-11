@@ -8,10 +8,6 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-
-
-    std::cout<<"penis"<<std::endl;
-
     field.clear();
     getGui();
     initGui();
@@ -70,6 +66,22 @@ void MainWindow::updatePencil(){
     }
 }
 
+void MainWindow::updatePencilxy(){
+    uint16_t i=0;
+    for (int y=0; y < 9;y++) {
+        for (int x=0; x < 9;x++) {
+
+            QString fill;
+            for(auto i: fillss[y][x])
+                fill += std::to_string(i).c_str();
+
+            pencil[i]->setText( QString( fill ) );
+            pencil[i]->setStyleSheet( "QLineEdit{ border-width: 1px; border-style: solid; border-color: #BEBEBE #BEBEBE #323232 #BEBEBE; }" );
+            i++;
+        }
+    }
+}
+
 void MainWindow::untilFind_8(){
     ussv state = field;
     field = find_8();
@@ -78,7 +90,6 @@ void MainWindow::untilFind_8(){
         field = state;
         state = find_8();
 
-        std::cout<<"hallo123"<<std::endl;
     }
 }
 
@@ -90,7 +101,6 @@ void MainWindow::untilOverFly(){
         field = state;
         state = overFly();
 
-        std::cout<<"hallo123"<<std::endl;
     }
 }
 
@@ -102,23 +112,22 @@ void MainWindow::untilRowColSearch(){
         field = state;
         state = rowColSearch();
 
-        std::cout<<"hallo123"<<std::endl;
     }
 }
 
 void MainWindow::correction(){
     untilFind_8();
     untilRowColSearch();
-
-    //pUssv( fills );
-    //pUssv(orig);
-    //std::cout<<std::endl;
-
     untilOverFly();
     untilRowColSearch();
     untilFind_8();
+    untilOverFly();
+    untilFind_8();
+
+    lockedCandidate();
+
     updateClues();
-    updatePencil();
+    updatePencilxy();
 }
 
 
@@ -136,11 +145,11 @@ ussv MainWindow::negative(ussv options){
 }
 
 void MainWindow::pUssv(ussv vector){
-    for(uint32_t i=0; i < vector.size();i++){
-        for(uint32_t ii=0; ii < vector[i].size() ;ii++){
-            std::cout<< vector[i][ii];
-            if(ii == vector[i].size() - 1) std::cout<<std::endl;
+    for(auto &ii: vector){
+        for(auto i: ii){
+            std::cout<< i;
         }
+        std::cout<<std::endl;
     }
 }
 
@@ -158,6 +167,52 @@ void MainWindow::pUsv(usv vector){
         std::cout<<i;
     }
     std::cout<<std::endl;
+}
+
+ussv MainWindow::rowColElim(){
+    for(int y=0; y < 9;y++){
+        bv line = {0,0,0,0,0,0,0,0,0};
+        for(int value=1; value < 10;value++){
+
+            int x_loc = 404;
+            line = {0,0,0,0,0,0,0,0,0};
+            for(int x=0; x < 9;x++){
+                if(field[y][x] == 0){
+                    if(std::find(fillss[y][x].begin(), fillss[y][x].end(), value) == fillss[y][x].end()) line[x] = 1;
+                    if(std::find(fillss[y][x].begin(), fillss[y][x].end(), value) != fillss[y][x].end()) x_loc = x;
+                }
+                else if(field[y][x] != value) line[x] = 1;
+            }
+            uint16_t complete = 0;
+            for(auto i: line)
+                if(i == 0) complete++;
+
+            if(complete == 1 && line[x_loc] == 0 && x_loc != 404) field[y][x_loc] = value;
+        }
+    }
+
+
+    for(int x=0; x < 9;x++){
+        bv line = {0,0,0,0,0,0,0,0,0};
+        for(int value=1; value < 10;value++){
+
+            int y_loc = 404;
+            line = {0,0,0,0,0,0,0,0,0};
+            for(int y=0; y < 9;y++){
+                if(field[y][x] == 0){
+                    if(std::find(fillss[y][x].begin(), fillss[y][x].end(), value) == fillss[y][x].end()) line[y] = 1;
+                    if(std::find(fillss[y][x].begin(), fillss[y][x].end(), value) != fillss[y][x].end()) y_loc = y;
+                }
+                else if(field[y][x] != value) line[y] = 1;
+            }
+            uint16_t complete = 0;
+            for(auto i: line)
+                if(i == 0) complete++;
+
+            if(complete == 1 && line[y_loc] == 0 && y_loc != 404) field[y_loc][x] = value;
+        }
+    }
+    return field;
 }
 
 ussv MainWindow::find_8(){
@@ -215,6 +270,8 @@ ussv MainWindow::find_8(){
         pUssv(line);*/
         fillss.push_back(line);
     }
+
+    rowColElim();
 
 
     return field;
@@ -290,7 +347,7 @@ void MainWindow::rowColSolve(ussv &field, sv pos_row, uint16_t x, uint16_t y, ui
         uint16_t complete = 0;
         for(auto &ii: box){
             for(auto i: ii){
-            if(i == 0) complete++;
+                if(i == 0) complete++;
             }
         }
         if( box[yb][xb] == 0 && complete == 1) {
@@ -298,7 +355,7 @@ void MainWindow::rowColSolve(ussv &field, sv pos_row, uint16_t x, uint16_t y, ui
             pBbv(box);
         }
         if(complete >= 2 && complete <= 9){
-            std::cout<<"*********************************************************************************"<<value<<std::endl;
+            //std::cout<<"*********************************************************************************"<<value<<std::endl;
             uint16_t pos[2], one = 0;
             for (int yy=0; yy < 3;yy++) {
                 for (int xx=0; xx < 3;xx++) {
@@ -307,9 +364,9 @@ void MainWindow::rowColSolve(ussv &field, sv pos_row, uint16_t x, uint16_t y, ui
                             pos[0] = (yy - yb) + y;
                             pos[1] = (xx - xb) + x;
                             one++;
-                            for(auto i: fillss ARRAY_POS)
+                            /*for(auto i: fillss ARRAY_POS)
                                 std::cout<< i;
-                            std::cout<<"\npenissack: "<<value<<std::endl;
+                            std::cout<<"\npenissack: "<<value<<std::endl;*/
                         }
                     }
                 }
@@ -406,12 +463,6 @@ ussv MainWindow::rowColSearch(){
                     if(complete == 1 && line[x] == 0
                        && std::find(field[y].begin(), field[y].end(), value) == field[y].end()) field[y][x] = value;
 
-                    if(x == 3 && y == 7 && value == 3){
-                        for(auto i: line)
-                            std::cout<<i;
-                        std::cout<<"end"<<std::endl;
-                    }
-
 
 
                     line = {0,0,0,0,0,0,0,0,0};
@@ -441,11 +492,89 @@ ussv MainWindow::rowColSearch(){
                         if(field[i][x] == value) found = 1;
 
                     if(complete == 1 && line[y] == 0 && found == 0) field[y][x] = value;
-
-
                 }
             }
         }
     }
+    return field;
+}
+
+int16_t MainWindow::find_v(usv v, uint16_t value){
+    auto it = std::find (v.begin(), v.end(), value);
+    if( it != v.end() ) return it - v.begin();
+    else if( it == v.end() ) return -1;
+    else return ~0L;
+}
+
+void MainWindow::clueElim(){
+    for (int y=0; y < 9;y++) {
+        for (int x=0; x < 9;x++) {
+            if(fillss[y][x].size() == 1) field[y][x] = fillss[y][x][0];
+
+        }
+    }
+
+}
+
+ussv MainWindow::lockedCandidate(){
+    for(uint16_t y=0; y < 9; y++){
+        for(uint16_t value=1; value < 10; value++){
+            bv box = {0,0,0};
+            for(uint16_t x=0; x < 9; x++){
+                usv dec_box = findBox(x, y);
+                if(!fillss[y][x].empty()){
+                    for(uint16_t i=0; i < 3; i++)
+                        if( find_v(fillss[y][x], value) != -1 && find_v(xbox[i], x) != -1 ) box[i] = 1;
+                    //if(value == 3 && y == 0)std::cout<<"yeet "<<find_v(fillss[y][x], value)<<std::endl;
+                }
+                else if(field[y][xbox[dec_box[0]][0]] != 0 && field[y][xbox[dec_box[0]][1]] != 0 && field[y][xbox[dec_box[0]][2]] != 0 )
+                    box[findBox(x, y)[0]] = 1;
+            }
+            uint16_t complete = 0;
+            for(auto i: box)
+                if(i == 1)complete++;
+
+            usv gridxy;
+            for(uint16_t i=0; i < 3; i++)
+                if(box[i] == 1 && complete == 1) gridxy = findBox(i, y);
+
+            if(y == 1 && value == 3)
+                for(auto i: box)
+                    std::cout<<i;
+
+
+
+            if(!gridxy.empty()){
+                for (int yy=0; yy < 3;yy++) {
+                    for (int xx=0; xx < 3;xx++) {
+
+                        int16_t pos = find_v(fillss ARRAY_POS, value);
+                        if(xbox[gridxy[0]][yy] != y && pos != -1 && !fillss ARRAY_POS.empty()) {
+                            fillss ARRAY_POS.erase(std::remove(fillss ARRAY_POS.begin(), fillss ARRAY_POS.end(), value), fillss ARRAY_POS.end());
+                            clueElim();
+
+                            //if( y == 6) qInfo()<<"yee"<<gridxy[0]<<gridxy[1];
+
+                            untilFind_8();
+                            find_8();
+
+
+                        }
+                    }
+                }
+            }
+            /*if( y == 0 && value == 3){
+                std::cout<<"peniskakastart: ";
+                for(auto i: box)
+                    std::cout<<i<<" ";
+
+                pUssv(fills);
+
+                std::cout<<std::endl;
+            }*/
+
+        }
+    }
+
     return field;
 }
