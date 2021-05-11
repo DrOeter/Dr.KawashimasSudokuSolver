@@ -5,6 +5,7 @@
 #include <QLineEdit>
 #include <bitset>
 #include <iostream>
+#include <algorithm>
 
 #define ARRAY_POS [ybox[gridxy[1]][yy]][xbox[gridxy[0]][xx]]
 #define BOX_POS [ybox[box[1]][yy]][xbox[box[0]][xx]]
@@ -45,6 +46,10 @@ private:
 
     ussv negative(ussv options);
 
+    int16_t find_v(usv v, uint16_t value);
+
+    void clueElim();
+
     void pUssv(ussv vector);
 
     void pBbv(bbv vector);
@@ -55,11 +60,17 @@ private:
 
     void updatePencil();
 
+    void updatePencilxy();
+
     void untilFind_8();
 
     void untilOverFly();
 
     void untilRowColSearch();
+
+    ussv lockedCandidate();
+
+    ussv rowColElim();
 
     ussv rowColSearch();
 
