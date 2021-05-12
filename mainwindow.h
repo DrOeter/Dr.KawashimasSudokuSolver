@@ -72,9 +72,17 @@ private:
 
     void untilRowColSearch();
 
+    void untilNakedDouble();
+
+    void untilLockedCandidate();
+
+    void untilInBoxLockedCandidate();
+
     ussv nakedDouble();
 
     ussv lockedCandidate();
+
+    ussv inBoxLockedCandidate();
 
     ussv rowColElim();
 
