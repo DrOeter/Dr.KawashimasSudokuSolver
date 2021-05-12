@@ -115,6 +115,39 @@ void MainWindow::untilRowColSearch(){
     }
 }
 
+void MainWindow::untilNakedDouble(){
+    ussv state = field;
+    field = nakedDouble();
+
+    while( state != field ){
+        field = state;
+        state = nakedDouble();
+
+    }
+}
+
+void MainWindow::untilLockedCandidate(){
+    ussv state = field;
+    field = lockedCandidate();
+
+    while( state != field ){
+        field = state;
+        state = lockedCandidate();
+
+    }
+}
+
+void MainWindow::untilInBoxLockedCandidate(){
+    ussv state = field;
+    field = inBoxLockedCandidate();
+
+    while( state != field ){
+        field = state;
+        state = inBoxLockedCandidate();
+
+    }
+}
+
 void MainWindow::correction(){
     untilFind_8();
     untilRowColSearch();
@@ -127,6 +160,8 @@ void MainWindow::correction(){
     lockedCandidate();
 
     nakedDouble();
+
+    inBoxLockedCandidate();
 
     updateClues();
     updatePencilxy();
@@ -557,9 +592,6 @@ ussv MainWindow::lockedCandidate(){
                         if(xbox[gridxy[0]][yy] != y && pos != -1 && !fillss ARRAY_POS.empty()) {
                             fillss ARRAY_POS.erase(std::remove(fillss ARRAY_POS.begin(), fillss ARRAY_POS.end(), value), fillss ARRAY_POS.end());
                             clueElim();
-
-                            //if( y == 6) qInfo()<<"yee"<<gridxy[0]<<gridxy[1];
-
                             untilFind_8();
                             find_8();
 
@@ -600,9 +632,6 @@ ussv MainWindow::lockedCandidate(){
                         if(xbox[gridxy[1]][xx] != x && pos != -1 && !fillss ARRAY_POS.empty()) {
                             fillss ARRAY_POS.erase(std::remove(fillss ARRAY_POS.begin(), fillss ARRAY_POS.end(), value), fillss ARRAY_POS.end());
                             clueElim();
-
-                            //if( y == 6) qInfo()<<"yee"<<gridxy[0]<<gridxy[1];
-
                             untilFind_8();
                             find_8();
 
@@ -705,6 +734,78 @@ ussv MainWindow::nakedDouble(){
         clueElim();
         untilFind_8();
         find_8();
+    }
+
+    return field;
+}
+
+
+ussv MainWindow::inBoxLockedCandidate(){
+    usv gridxy = {0,0};
+    for(gridxy[1] = 0;gridxy[1] < 3;gridxy[1]++){
+        for(gridxy[0] = 0;gridxy[0] < 3;gridxy[0]++){
+            for(uint16_t value=1; value < 10; value++){
+
+                bv row = {0,0,0};
+                for(uint16_t yy=0; yy < 3; yy++){
+                    for(uint16_t xx=0; xx < 3; xx++){
+                        if(!fillss ARRAY_POS.empty()){
+                            if(find_v(fillss ARRAY_POS, value) != -1){
+                                row[yy] = 1;
+                            }
+                        }
+                    }
+                }
+                uint16_t complete = 0;
+                for(auto i: row)
+                    if(i == 1)complete++;
+
+                for(uint16_t y=0; y < 3; y++){
+                    if(row[y] == 1 && complete == 1) {
+                        for(uint16_t x=0; x < 9; x++){
+                            if( find_v(xbox[gridxy[0]], x) == -1 && find_v(fillss[ybox[gridxy[1]][y]][x], value) != -1 ) erase(fillss[ybox[gridxy[1]][y]][x], value);
+                        }
+                    }
+                }
+            }
+            clueElim();
+                    untilFind_8();
+                    find_8();
+        }
+    }
+    gridxy.clear();
+    gridxy = {0,0};
+
+    for(gridxy[1] = 0;gridxy[1] < 3;gridxy[1]++){
+        for(gridxy[0] = 0;gridxy[0] < 3;gridxy[0]++){
+            for(uint16_t value=1; value < 10; value++){
+
+                bv col = {0,0,0};
+                for(uint16_t xx=0; xx < 3; xx++){
+                    for(uint16_t yy=0; yy < 3; yy++){
+                        if(!fillss ARRAY_POS.empty()){
+                            if(find_v(fillss ARRAY_POS, value) != -1){
+                                col[xx] = 1;
+                            }
+                        }
+                    }
+                }
+                uint16_t complete = 0;
+                for(auto i: col)
+                    if(i == 1)complete++;
+
+                for(uint16_t x=0; x < 3; x++){
+                    if(col[x] == 1 && complete == 1) {
+                        for(uint16_t y=0; y < 9; y++){
+                            if( find_v(ybox[gridxy[1]], y) == -1 && find_v(fillss[y][xbox[gridxy[0]][x]], value) != -1 ) erase(fillss[y][xbox[gridxy[0]][x]], value);
+                        }
+                    }
+                }
+            }
+            clueElim();
+            untilFind_8();
+            find_8();
+        }
     }
 
     return field;
