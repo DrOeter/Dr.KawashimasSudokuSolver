@@ -30,8 +30,6 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
 
-
-
 private slots:
     void on_button_clicked();
 
@@ -47,6 +45,12 @@ private:
     ussv negative(ussv options);
 
     int16_t find_v(usv v, uint16_t value);
+
+    int16_t search_v(usv in, usv array);
+
+    int16_t find_bv(bv v, uint16_t value);
+
+    void erase(usv &v, uint16_t value);
 
     void clueElim();
 
@@ -67,6 +71,8 @@ private:
     void untilOverFly();
 
     void untilRowColSearch();
+
+    ussv nakedDouble();
 
     ussv lockedCandidate();
 
