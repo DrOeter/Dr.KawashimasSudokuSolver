@@ -126,6 +126,8 @@ void MainWindow::correction(){
 
     lockedCandidate();
 
+    nakedDouble();
+
     updateClues();
     updatePencilxy();
 }
@@ -506,14 +508,19 @@ int16_t MainWindow::find_v(usv v, uint16_t value){
     else return ~0L;
 }
 
+int16_t MainWindow::find_bv(bv v, uint16_t value){
+    auto it = std::find (v.begin(), v.end(), value);
+    if( it != v.end() ) return it - v.begin();
+    else if( it == v.end() ) return -1;
+    else return ~0L;
+}
+
 void MainWindow::clueElim(){
     for (int y=0; y < 9;y++) {
         for (int x=0; x < 9;x++) {
             if(fillss[y][x].size() == 1) field[y][x] = fillss[y][x][0];
-
         }
     }
-
 }
 
 ussv MainWindow::lockedCandidate(){
@@ -538,11 +545,9 @@ ussv MainWindow::lockedCandidate(){
             for(uint16_t i=0; i < 3; i++)
                 if(box[i] == 1 && complete == 1) gridxy = findBox(i, y);
 
-            if(y == 1 && value == 3)
+           /* if(y == 1 && value == 3)
                 for(auto i: box)
-                    std::cout<<i;
-
-
+                    std::cout<<i;*/
 
             if(!gridxy.empty()){
                 for (int yy=0; yy < 3;yy++) {
@@ -563,17 +568,143 @@ ussv MainWindow::lockedCandidate(){
                     }
                 }
             }
-            /*if( y == 0 && value == 3){
-                std::cout<<"peniskakastart: ";
-                for(auto i: box)
-                    std::cout<<i<<" ";
-
-                pUssv(fills);
-
-                std::cout<<std::endl;
-            }*/
-
         }
+    }
+
+    for(uint16_t x=0; x < 9; x++){
+        for(uint16_t value=1; value < 10; value++){
+            bv box = {0,0,0};
+            for(uint16_t y=0; y < 9; y++){
+                usv dec_box = findBox(x, y);
+                if(!fillss[y][x].empty()){
+                    for(uint16_t i=0; i < 3; i++)
+                        if( find_v(fillss[y][x], value) != -1 && find_v(xbox[i], y) != -1 ) box[i] = 1;
+                    //if(value == 3 && y == 0)std::cout<<"yeet "<<find_v(fillss[y][x], value)<<std::endl;
+                }
+                else if(field[ybox[dec_box[0]][0]][x] != 0 && field[ybox[dec_box[0]][0]][x] != 0 && field[ybox[dec_box[0]][0]][x] != 0 )
+                    box[findBox(x, y)[1]] = 1;
+            }
+            uint16_t complete = 0;
+            for(auto i: box)
+                if(i == 1)complete++;
+
+            usv gridxy;
+            for(uint16_t i=0; i < 3; i++)
+                if(box[i] == 1 && complete == 1) gridxy = findBox(x, i);
+
+            if(!gridxy.empty()){
+                for (int yy=0; yy < 3;yy++) {
+                    for (int xx=0; xx < 3;xx++) {
+
+                        int16_t pos = find_v(fillss ARRAY_POS, value);
+                        if(xbox[gridxy[1]][xx] != x && pos != -1 && !fillss ARRAY_POS.empty()) {
+                            fillss ARRAY_POS.erase(std::remove(fillss ARRAY_POS.begin(), fillss ARRAY_POS.end(), value), fillss ARRAY_POS.end());
+                            clueElim();
+
+                            //if( y == 6) qInfo()<<"yee"<<gridxy[0]<<gridxy[1];
+
+                            untilFind_8();
+                            find_8();
+
+
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    return field;
+}
+
+void MainWindow::erase(usv &v, uint16_t value){
+    v.erase(std::remove(v.begin(), v.end(), value), v.end());
+}
+
+int16_t MainWindow::search_v(usv in, usv array){
+    auto it = std::search(in.begin(), in.end(), array.begin(), array.end());
+    if( it != in.end() ) return it - in.begin();
+    else if( it == in.end() ) return -1;
+    else return ~0L;
+}
+
+ussv MainWindow::nakedDouble(){
+    for(uint16_t y=0; y < 9; y++){
+        ussv pair;
+        usv coords;
+        usv recoverd = {404,404};
+        bool find = 0;
+
+        for(uint16_t x=0; x < 9; x++){
+            if( fillss[y][x].size() == 2){
+
+                pair.push_back(fillss[y][x]);
+                coords.push_back(x);
+                for(auto it = pair.begin(); it != pair.end() - 1; it++)
+                    if(pair.size() > 1 && *it == pair.back()){
+                        for(auto it = pair.begin(); it != pair.end() - 1; it++){
+                            uint16_t pos = it - pair.begin();
+                            if(*it != pair.back()) coords.erase(coords.begin()+pos);
+                        }
+                        recoverd = pair.back();
+                        find = 1;
+                    }
+
+                if(find == 1) break;
+            }
+        }
+
+       /* pUssv(pair);
+        for(auto i: coords)
+            std::cout<<"x: "<<i;
+
+        std::cout<<"\nfind "<<find<<std::endl;*/
+
+        if(find == 1 && coords.size() == 2){
+            for(uint16_t x=0; x < 9; x++){
+                if(coords[0] != x && coords[1] != x && find_v(fillss[y][x], recoverd[0]) != -1 ) erase(fillss[y][x], recoverd[0]);
+                if(coords[0] != x && coords[1] != x && find_v(fillss[y][x], recoverd[1]) != -1 ) erase(fillss[y][x], recoverd[1]);
+            }
+        }
+        clueElim();
+        untilFind_8();
+        find_8();
+    }
+
+    for(uint16_t x=0; x < 9; x++){
+        ussv pair;
+        usv coords;
+        usv recoverd = {404,404};
+        bool find = 0;
+
+        for(uint16_t y=0; y < 9; y++){
+            if( fillss[y][x].size() == 2){
+
+                pair.push_back(fillss[y][x]);
+                coords.push_back(y);
+                for(auto it = pair.begin(); it != pair.end() - 1; it++)
+                    if(pair.size() > 1 && *it == pair.back()){
+                        for(auto it = pair.begin(); it != pair.end() - 1; it++){
+                            uint16_t pos = it - pair.begin();
+                            if(*it != pair.back()) coords.erase(coords.begin()+pos);
+                        }
+                        recoverd = pair.back();
+                        find = 1;
+                    }
+
+                if(find == 1) break;
+            }
+        }
+
+        if(find == 1 && coords.size() == 2){
+            for(uint16_t y=0; y < 9; y++){
+                if(coords[0] != y && coords[1] != y && find_v(fillss[y][x], recoverd[0]) != -1 ) erase(fillss[y][x], recoverd[0]);
+                if(coords[0] != y && coords[1] != y && find_v(fillss[y][x], recoverd[1]) != -1 ) erase(fillss[y][x], recoverd[1]);
+            }
+        }
+        clueElim();
+        untilFind_8();
+        find_8();
     }
 
     return field;
