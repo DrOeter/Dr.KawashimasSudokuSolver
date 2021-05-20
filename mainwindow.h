@@ -6,17 +6,28 @@
 #include <bitset>
 #include <iostream>
 #include <algorithm>
+#include <variant>
+#include <string>
+#include <cassert>
+
 
 #define ARRAY_POS [ybox[gridxy[1]][yy]][xbox[gridxy[0]][xx]]
 #define BOX_POS [ybox[box[1]][yy]][xbox[box[0]][xx]]
 
+typedef std::vector<uint16_t*> uspv;
 typedef std::vector<uint16_t> usv;
 typedef std::vector<int16_t> sv;
 typedef std::vector<std::vector<uint16_t>> ussv;
+typedef std::vector<std::vector<uint16_t>*> usspv;
+typedef std::vector<std::vector<uint16_t*>> uspsv;
 typedef std::vector<std::vector<std::vector<uint16_t>>> usssv;
+typedef std::vector<std::vector<std::vector<uint16_t>*>> ussspv;
 typedef std::vector<std::vector<int16_t>> ssv;
 typedef std::vector<std::vector<bool>> bbv;
 typedef std::vector<bool> bv;
+typedef std::vector<void*> vpv;
+typedef std::vector<QLineEdit*> Qline_v;
+class Sudoku;
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -38,9 +49,26 @@ private:
 
     void initGui();
 
-    void correction();
+    Ui::MainWindow *ui;
+    Sudoku *sudoku;
+    ussv field;
+    Qline_v pencil, clues;
+};
 
-    ussv find_8();
+
+class Sudoku{
+public:
+    Sudoku(ussv m_field, Qline_v m_clues, Qline_v m_pencil)
+        : field(m_field)
+        , clues(m_clues)
+        , pencil(m_pencil){
+        Solve();
+    }
+
+private:
+    void Solve();
+
+    vpv find_8();
 
     ussv negative(ussv options);
 
@@ -88,8 +116,6 @@ private:
 
     ussv rowColSearch();
 
-    usv findBox(uint16_t x ,uint16_t y);
-
     ussv overFly();
 
     usv collectRow(ussv field, int rc, char roc);
@@ -98,13 +124,51 @@ private:
 
     void rowColSolve(ussv &field, sv pos_row, uint16_t x, uint16_t y, uint16_t xb, uint16_t yb);
 
-    Ui::MainWindow *ui;
     usssv fillss;
-    ussv field, testfield, orig, pairs, coords, fills;
-    usv choice;
-    uint32_t com = 0;
-    std::vector<QLineEdit*> pencil, clues;
+    ussv field, orig, coords, fills;
+    std::vector<QLineEdit*> clues, pencil;
     ussv xbox = {{0,1,2},{3,4,5},{6,7,8}};
     ussv ybox = {{0,1,2},{3,4,5},{6,7,8}};
+};
+
+class SudokuBox{
+public:
+    SudokuBox(ussv m_field):field(m_field){ }
+
+    usv getBox(uint16_t x ,uint16_t y);
+
+    ussv get2dBox(uint16_t x ,uint16_t y);
+
+    static usv findBox(uint16_t x ,uint16_t y);
+
+    ussv field;
+    ussv xbox = {{0,1,2},{3,4,5},{6,7,8}};
+    ussv ybox = {{0,1,2},{3,4,5},{6,7,8}};
+};
+
+class SudokuBoxOptions{
+public:
+
+    SudokuBoxOptions(usssv &m_options):options(m_options){ }
+
+    usspv getBox(uint16_t x ,uint16_t y);
+
+    ussspv  get2dBox(uint16_t x ,uint16_t y);
+
+
+    usssv &options;
+    ussv xbox = {{0,1,2},{3,4,5},{6,7,8}};
+    ussv ybox = {{0,1,2},{3,4,5},{6,7,8}};
+};
+
+class SudokuRowCol{
+public:
+    SudokuRowCol(ussv m_field):field(m_field){ }
+
+    usv getRow(uint16_t y);
+
+    usv getCol(uint16_t x);
+
+    ussv field;
 };
 #endif // MAINWINDOW_H
