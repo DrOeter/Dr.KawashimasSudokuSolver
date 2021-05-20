@@ -3,6 +3,8 @@
 
 #include <QMainWindow>
 #include <QLineEdit>
+#include <QTime>
+#include <QElapsedTimer>
 #include <bitset>
 #include <iostream>
 #include <algorithm>
@@ -20,6 +22,7 @@ typedef std::vector<std::vector<uint16_t>*> usspv;
 typedef std::vector<std::vector<uint16_t*>> uspsv;
 typedef std::vector<std::vector<std::vector<uint16_t>>> usssv;
 typedef std::vector<std::vector<std::vector<uint16_t>*>> ussspv;
+typedef std::vector<std::vector<std::reference_wrapper<usv>>> usssrv;
 typedef std::vector<std::vector<int16_t>> ssv;
 typedef std::vector<std::vector<bool>> bbv;
 typedef std::vector<bool> bv;
@@ -69,6 +72,8 @@ private:
     vpv find_8();
 
     ussv negative(ussv options);
+
+    usv getFieldlist( ussv field );
 
     int16_t find_v(usv v, uint16_t value);
 
@@ -151,9 +156,9 @@ public:
 
     SudokuBoxOptions(usssv &m_options):options(m_options){ }
 
-    usspv getBox(uint16_t x ,uint16_t y);
+    ussv getBox(uint16_t x ,uint16_t y);
 
-    ussspv  get2dBox(uint16_t x ,uint16_t y);
+    usssv get2dBox(uint16_t x ,uint16_t y);
 
     uint16_t getPos(bool xy, uint16_t coord);
 
@@ -173,4 +178,6 @@ public:
 
     ussv field;
 };
+
+
 #endif // MAINWINDOW_H
