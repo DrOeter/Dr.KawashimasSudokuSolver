@@ -39,28 +39,30 @@ usv SudokuBox::findBox(uint16_t x ,uint16_t y){
     return gridxy;
 }
 
-usspv SudokuBoxOptions::getBox(uint16_t x ,uint16_t y){
-    usspv box;
+ussv SudokuBoxOptions::getBox(uint16_t x ,uint16_t y){
+    this->x = x;
+    this->y = y;
+    ussv box;
     usv gridxy = SudokuBox::findBox(x, y);
 
     for (int yy=0; yy < 3;yy++) {
         for (int xx=0; xx < 3;xx++) {
-            box.push_back(&options ARRAY_POS);
+            box.push_back(options ARRAY_POS);
         }
     }
     return box;
 }
 
-ussspv SudokuBoxOptions::get2dBox(uint16_t x ,uint16_t y){
+usssv SudokuBoxOptions::get2dBox(uint16_t x ,uint16_t y){
     this->x = x;
     this->y = y;
-    ussspv box;
+    usssv box;
     usv gridxy = SudokuBox::findBox(x, y);
 
     for (int yy=0; yy < 3;yy++) {
-        usspv row;
+        ussv row;
         for (int xx=0; xx < 3;xx++) {
-            row.push_back(&options ARRAY_POS);
+            row.push_back(options ARRAY_POS);
         }
         box.push_back( row );
     }
@@ -252,8 +254,16 @@ void Sudoku::pUsv(usv vector){
     std::cout<<std::endl;
 }
 
+usv Sudoku::getFieldlist(ussv field){
+    usv fieldList;
 
-
+    for(auto &i: field){
+        for(auto ii: i){
+            fieldList.push_back( ii );
+        }
+    }
+    return fieldList;
+}
 
 int16_t Sudoku::find_v(usv v, uint16_t value){
     auto it = std::find (v.begin(), v.end(), value);
