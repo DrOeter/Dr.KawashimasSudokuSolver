@@ -10,9 +10,7 @@
 #include <string>
 #include <cassert>
 
-
 #define ARRAY_POS [ybox[gridxy[1]][yy]][xbox[gridxy[0]][xx]]
-#define BOX_POS [ybox[box[1]][yy]][xbox[box[0]][xx]]
 
 typedef std::vector<uint16_t*> uspv;
 typedef std::vector<uint16_t> usv;
@@ -79,6 +77,8 @@ private:
     int16_t find_bv(bv v, uint16_t value);
 
     void erase(usv &v, uint16_t value);
+
+    void eraseP(usv *v, uint16_t value);
 
     void clueElim();
 
@@ -155,8 +155,10 @@ public:
 
     ussspv  get2dBox(uint16_t x ,uint16_t y);
 
+    uint16_t getPos(bool xy, uint16_t coord);
 
     usssv &options;
+    uint16_t x, y;
     ussv xbox = {{0,1,2},{3,4,5},{6,7,8}};
     ussv ybox = {{0,1,2},{3,4,5},{6,7,8}};
 };
