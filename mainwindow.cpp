@@ -6,7 +6,14 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 {
     ui->setupUi(this);
 
-    on_button_clicked();
+    initGui();
+    for(uint16_t i=0; i < 81;i++){
+        pencil[i]->hide();
+        clues[i]->setAlignment(Qt::AlignCenter);
+        clues[i]->setMaxLength(1);
+    }
+
+    //on_button_clicked();
 }
 
 MainWindow::~MainWindow()
@@ -17,14 +24,17 @@ MainWindow::~MainWindow()
 void MainWindow::on_button_clicked()
 {
     getGui();
-    initGui();
     sudoku = new Sudoku(field, clues, pencil);
 
 }
 
+
 void Sudoku::Solve(){
     orig = field;
-    untilFind_8();
+    QElapsedTimer myTimer;
+    myTimer.start();
+
+        untilFind_8();
 
     /*SudokuBoxOptions options(fillss);
 
@@ -48,22 +58,23 @@ void Sudoku::Solve(){
     lockedCandidate();
     */
 
-    untilFind_8();
-       untilRowColSearch();
-       untilOverFly();
-       untilRowColSearch();
-       untilFind_8();
-       untilOverFly();
-       untilFind_8();
+        untilOverFly();
 
-       lockedCandidate();
+        lockedCandidate();
 
-       nakedDouble();
+        nakedDouble();
 
-       inBoxLockedCandidate();
+        inBoxLockedCandidate();
 
-    updatePencilxy();
-    updateClues();
+        nakedDouble();
+
+        lockedCandidate();
+
+        int mili = myTimer.elapsed();
+        std::cout<<"yeet "<<mili<<std::endl;
+
+        updatePencilxy();
+        updateClues();
 }
 
 
@@ -257,13 +268,13 @@ void Sudoku::rowColSolve(ussv &field, sv pos_row, uint16_t x, uint16_t y, uint16
             field[y][x] = value;
         }
         if(complete >= 2 && complete <= 9){
-            ussspv options = SudokuBoxOptions(fillss).get2dBox(x, y);
+            usssv options = SudokuBoxOptions(fillss).get2dBox(x, y);
 
             uint16_t pos[2], one = 0;
             for (int yy=0; yy < 3;yy++) {
                 for (int xx=0; xx < 3;xx++) {
                     if( selectBox[yy][xx] == 0 && box[yy][xx] == 0) {
-                        if ( find_v(*options[yy][xx], value) != -1){
+                        if ( find_v(options[yy][xx], value) != -1){
                             pos[0] = (yy - yb) + y;
                             pos[1] = (xx - xb) + x;
                             one++;
@@ -411,19 +422,23 @@ ussv Sudoku::lockedCandidate(){
             for(auto i: box)
                 if(i == 1)complete++;
 
-            ussspv options;
+            usv gridxy;
+            usssv options;
             SudokuBoxOptions boxObj(fillss);
 
             for(uint16_t i=0; i < 3; i++)
-                if(box[i] == 1 && complete == 1)  options = boxObj.get2dBox(i, y);
+                if(box[i] == 1 && complete == 1)  {
+                    options = boxObj.get2dBox(i, y);
+                    gridxy = SudokuBox::findBox(i, y);
+                }
 
             if(!options.empty()){
                 for (int yy=0; yy < 3;yy++) {
                     for (int xx=0; xx < 3;xx++) {
 
-                        int16_t pos = find_v(*options[yy][xx], value);
-                        if( boxObj.getPos(0, yy) != y && pos != -1 && !(*options[yy][xx]).empty()) {
-                            eraseP(options[yy][xx], value);
+                        int16_t pos = find_v(options[yy][xx], value);
+                        if( boxObj.getPos(0, yy) != y && pos != -1 && !options[yy][xx].empty()) {
+                            erase(fillss ARRAY_POS, value);
                             clueElim();
                             untilFind_8();
 
@@ -450,19 +465,23 @@ ussv Sudoku::lockedCandidate(){
             for(auto i: box)
                 if(i == 1)complete++;
 
-            ussspv options;
+            usv gridxy;
+            usssv options;
             SudokuBoxOptions boxObj(fillss);
 
             for(uint16_t i=0; i < 3; i++)
-                if(box[i] == 1 && complete == 1) options = boxObj.get2dBox(x, i);
+                if(box[i] == 1 && complete == 1) {
+                    options = boxObj.get2dBox(x, i);
+                    gridxy = SudokuBox::findBox(x, i);
+                }
 
             if(!options.empty()){
                 for (int yy=0; yy < 3;yy++) {
                     for (int xx=0; xx < 3;xx++) {
 
-                        int16_t pos = find_v(*options[yy][xx], value);
-                        if(boxObj.getPos(1, xx) != x && pos != -1 && !(*options[yy][xx]).empty()) {
-                            eraseP(options[yy][xx], value);
+                        int16_t pos = find_v(options[yy][xx], value);
+                        if(boxObj.getPos(1, xx) != x && pos != -1 && !options[yy][xx].empty()) {
+                            erase(fillss ARRAY_POS, value);
                             clueElim();
                             untilFind_8();
 
@@ -512,13 +531,14 @@ ussv Sudoku::nakedDouble(){
         if(!coords.empty()){
             if(SudokuBox::findBox(coords[0], y) == SudokuBox::findBox(coords[1], y)){
                 SudokuBoxOptions boxObj(fillss);
-                ussspv options = boxObj.get2dBox(coords[0], y);
+                usssv options = boxObj.get2dBox(coords[0], y);
+                usv gridxy = SudokuBox::findBox(coords[0], y);
 
                 for(uint16_t yy=0; yy < 3; yy++){
                     for(uint16_t xx=0; xx < 3; xx++){
-                        if( !(*options[yy][xx]).empty() && boxObj.getPos(1, yy) != y){
-                            if( find_v(*options[yy][xx], recoverd[0]) != -1 ) eraseP( options[yy][xx], recoverd[0]);
-                            if( find_v(*options[yy][xx], recoverd[1]) != -1 ) eraseP( options[yy][xx], recoverd[1]);
+                        if( !options[yy][xx].empty() && boxObj.getPos(1, yy) != y){
+                            if( find_v(options[yy][xx], recoverd[0]) != -1 ) erase( fillss ARRAY_POS, recoverd[0]);
+                            if( find_v(options[yy][xx], recoverd[1]) != -1 ) erase( fillss ARRAY_POS, recoverd[1]);
                         }
                     }
                 }
@@ -562,13 +582,14 @@ ussv Sudoku::nakedDouble(){
         if(!coords.empty()){
             if(SudokuBox::findBox(x, coords[0]) == SudokuBox::findBox(x, coords[1])){
                 SudokuBoxOptions boxObj(fillss);
-                ussspv options = boxObj.get2dBox(x, coords[0]);
+                usssv options = boxObj.get2dBox(x, coords[0]);
+                usv gridxy = SudokuBox::findBox(x, coords[0]);
 
                 for(uint16_t xx=0; xx < 3; xx++){
                     for(uint16_t yy=0; yy < 3; yy++){
-                        if( !(*options[yy][xx]).empty() && boxObj.getPos(0, xx) != x){
-                            if( find_v(*options[yy][xx], recoverd[0]) != -1 ) eraseP( options[yy][xx], recoverd[0]);
-                            if( find_v(*options[yy][xx], recoverd[1]) != -1 ) eraseP( options[yy][xx], recoverd[1]);
+                        if( !options[yy][xx].empty() && boxObj.getPos(0, xx) != x){
+                            if( find_v(options[yy][xx], recoverd[0]) != -1 ) erase( fillss ARRAY_POS, recoverd[0]);
+                            if( find_v(options[yy][xx], recoverd[1]) != -1 ) erase( fillss ARRAY_POS, recoverd[1]);
                         }
                     }
                 }
