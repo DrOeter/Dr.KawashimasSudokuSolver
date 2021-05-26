@@ -67,9 +67,15 @@ public:
     }
 
 private:
+    enum class Axis{
+        X,
+        Y,
+        XY
+    };
+
     void Solve();
 
-    vpv find_8();
+    ussv find_8();
 
     ussv negative(ussv options);
 
@@ -111,13 +117,15 @@ private:
 
     void untilInBoxLockedCandidate();
 
-    ussv nakedDouble();
+    usssv nakedDouble();
 
-    ussv lockedCandidate();
+    usssv nakedTriplet();
 
-    ussv inBoxLockedCandidate();
+    usssv lockedCandidate();
 
-    ussv rowColElim();
+    usssv inBoxLockedCandidate();
+
+    ussv rowColElim(Axis axis, uint16_t loop_value, usv coords);
 
     ussv rowColSearch();
 
@@ -130,7 +138,7 @@ private:
     void rowColSolve(ussv &field, sv pos_row, uint16_t x, uint16_t y, uint16_t xb, uint16_t yb);
 
     usssv fillss;
-    ussv field, orig, coords, fills;
+    ussv field, orig, fills;
     std::vector<QLineEdit*> clues, pencil;
     ussv xbox = {{0,1,2},{3,4,5},{6,7,8}};
     ussv ybox = {{0,1,2},{3,4,5},{6,7,8}};
@@ -154,15 +162,17 @@ public:
 class SudokuBoxOptions{
 public:
 
-    SudokuBoxOptions(usssv &m_options):options(m_options){ }
+    SudokuBoxOptions(usssv m_options):options(m_options){ }
 
-    ussv getBox(uint16_t x ,uint16_t y);
+    usv getBox(uint16_t x ,uint16_t y);
 
-    usssv get2dBox(uint16_t x ,uint16_t y);
+    ussv get2dBox(uint16_t x ,uint16_t y);
+
+    usssv get3dBox(uint16_t x ,uint16_t y);
 
     uint16_t getPos(bool xy, uint16_t coord);
 
-    usssv &options;
+    usssv options;
     uint16_t x, y;
     ussv xbox = {{0,1,2},{3,4,5},{6,7,8}};
     ussv ybox = {{0,1,2},{3,4,5},{6,7,8}};
@@ -178,6 +188,4 @@ public:
 
     ussv field;
 };
-
-
 #endif // MAINWINDOW_H
