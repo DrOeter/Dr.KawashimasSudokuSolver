@@ -39,7 +39,20 @@ usv SudokuBox::findBox(uint16_t x ,uint16_t y){
     return gridxy;
 }
 
-ussv SudokuBoxOptions::getBox(uint16_t x ,uint16_t y){
+usv SudokuBoxOptions::getBox(uint16_t x ,uint16_t y){
+    this->x = x;
+    this->y = y;
+    usv box;
+
+    for(auto &i: options)
+        for(auto &ii: i)
+            for(auto iii: ii)
+                box.push_back( iii );
+
+    return box;
+}
+
+ussv SudokuBoxOptions::get2dBox(uint16_t x ,uint16_t y){
     this->x = x;
     this->y = y;
     ussv box;
@@ -53,7 +66,7 @@ ussv SudokuBoxOptions::getBox(uint16_t x ,uint16_t y){
     return box;
 }
 
-usssv SudokuBoxOptions::get2dBox(uint16_t x ,uint16_t y){
+usssv SudokuBoxOptions::get3dBox(uint16_t x ,uint16_t y){
     this->x = x;
     this->y = y;
     usssv box;
@@ -137,20 +150,17 @@ void Sudoku::updatePencilxy(){
 }
 
 void Sudoku::untilFind_8(){
-    ussv state = field;
-    usssv ostate = fillss;
+    ussv state = fills;
+    fills = find_8();
 
-    vpv data = find_8();
-    field = *(ussv*)data[0];
-    fillss = *(usssv*)data[1];
-
-    while( state != field || ostate != fillss ){
-        field = state;
-        vpv data = find_8();
-        state = *(ussv*)data[0];
-        ostate = *(usssv*)data[1];
+    while( state != fills ){
+        fills = state;
+        state = find_8();
 
     }
+    find_8();
+    rowColElim(Axis::XY, 0 , usv() = {404,404,404});
+
 }
 
 void Sudoku::untilOverFly(){
@@ -184,33 +194,33 @@ void Sudoku::untilRowColSearch(){
 }
 
 void Sudoku::untilNakedDouble(){
-    ussv state = field;
-    field = nakedDouble();
+    usssv state = fillss;
+    fillss = nakedDouble();
 
-    while( state != field ){
-        field = state;
+    while( state != fillss ){
+        fillss = state;
         state = nakedDouble();
 
     }
 }
 
 void Sudoku::untilLockedCandidate(){
-    ussv state = field;
-    field = lockedCandidate();
+    usssv state = fillss;
+    fillss = lockedCandidate();
 
-    while( state != field ){
-        field = state;
+    while( state != fillss ){
+        fillss = state;
         state = lockedCandidate();
 
     }
 }
 
 void Sudoku::untilInBoxLockedCandidate(){
-    ussv state = field;
-    field = inBoxLockedCandidate();
+    usssv state = fillss;
+    fillss = inBoxLockedCandidate();
 
-    while( state != field ){
-        field = state;
+    while( state != fillss ){
+        fillss = state;
         state = inBoxLockedCandidate();
 
     }
@@ -282,7 +292,10 @@ int16_t Sudoku::find_bv(bv v, uint16_t value){
 void Sudoku::clueElim(){
     for (int y=0; y < 9;y++) {
         for (int x=0; x < 9;x++) {
-            if(fillss[y][x].size() == 1) field[y][x] = fillss[y][x][0];
+            if(fillss[y][x].size() == 1) {
+                field[y][x] = fillss[y][x][0];
+                fillss[y][x] = {};
+            }
         }
     }
 }
