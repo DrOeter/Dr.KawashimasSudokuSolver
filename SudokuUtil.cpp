@@ -1,4 +1,4 @@
-#include "mainwindow.h"
+#include "Sudoku.h"
 
 void Sudoku::updateClues(){
     int i = 0;
@@ -17,7 +17,7 @@ void Sudoku::updateClues(){
 void Sudoku::updatePencil(){
     for(int i=0; i < 81;i++){
         QString fill;
-        for(auto i: fills[i])
+        for(auto i: fieldOptionList[i])
             fill += std::to_string(i).c_str();
         pencil[i]->show();
         pencil[i]->setText( QString( fill ) );
@@ -31,7 +31,7 @@ void Sudoku::updatePencilxy(){
         for (int x=0; x < 9;x++) {
 
             QString fill;
-            for(auto i: fillss[y][x])
+            for(auto i: fieldOptions[y][x])
                 fill += std::to_string(i).c_str();
             pencil[i]->show();
             pencil[i]->setText( QString( fill ) );
@@ -43,16 +43,16 @@ void Sudoku::updatePencilxy(){
 }
 
 void Sudoku::untilFind_8(){
-    ussv state = fills;
-    fills = find_8();
+    ussv state = fieldOptionList;
+    fieldOptionList = find_8();
 
-    while( state != fills ){
-        fills = state;
+    while( state != fieldOptionList ){
+        fieldOptionList = state;
         state = find_8();
     }
     find_8();
-    rowColElim(Axis::XY, 0 , usv() = {404,404,404});
 
+    rowColElim(Axis::XY, 0 , usv() = {404,404,404});
 }
 
 void Sudoku::untilOverFly(){
@@ -84,39 +84,39 @@ void Sudoku::untilRowColSearch(){
 
     }
 }
-/*
-void Sudoku::untilNakedDouble(){
-    usssv state = fillss;
-    fillss = nakedDouble();
 
-    while( state != fillss ){
-        fillss = state;
+void Sudoku::untilNakedDouble(){
+    usssv state = fieldOptions;
+    fieldOptions = nakedDouble();
+
+    while( state != fieldOptions ){
+        fieldOptions = state;
         state = nakedDouble();
 
     }
 }
 
 void Sudoku::untilLockedCandidate(){
-    usssv state = fillss;
-    fillss = lockedCandidate();
+    usssv state = fieldOptions;
+    fieldOptions = lockedCandidate();
 
-    while( state != fillss ){
-        fillss = state;
+    while( state != fieldOptions ){
+        fieldOptions = state;
         state = lockedCandidate();
 
     }
 }
 
 void Sudoku::untilInBoxLockedCandidate(){
-    usssv state = fillss;
-    fillss = inBoxLockedCandidate();
+    usssv state = fieldOptions;
+    fieldOptions = inBoxLockedCandidate();
 
-    while( state != fillss ){
-        fillss = state;
+    while( state != fieldOptions ){
+        fieldOptions = state;
         state = inBoxLockedCandidate();
 
     }
-}*/
+}
 
 ussv Sudoku::negative(ussv options){
     ussv positive;
@@ -184,9 +184,9 @@ int16_t Sudoku::find_bv(bv v, uint16_t value){
 void Sudoku::clueElim(){
     for (int y=0; y < 9;y++) {
         for (int x=0; x < 9;x++) {
-            if(fillss[y][x].size() == 1) {
-                field[y][x] = fillss[y][x][0];
-                fillss[y][x] = {};
+            if(fieldOptions[y][x].size() == 1) {
+                field[y][x] = fieldOptions[y][x][0];
+                fieldOptions[y][x] = {};
             }
         }
     }
