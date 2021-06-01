@@ -16,7 +16,7 @@ SOURCES += \
     SudokuRowCol.cpp \
     main.cpp \
     mainwindow.cpp \
-    sudokuUtil.cpp
+    SudokuUtil.cpp
 
 HEADERS += \
     Sudoku.h \
