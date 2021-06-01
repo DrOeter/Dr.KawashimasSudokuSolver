@@ -13,13 +13,13 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
         pencil[i]->hide();
         clues[i]->setAlignment(Qt::AlignCenter);
         clues[i]->setMaxLength(1);
+        clues[i]->installEventFilter(this);
         connect(clues[i], &QLineEdit::selectionChanged, clues[i], &QLineEdit::deselect);
         connect(pencil[i], &QLineEdit::selectionChanged, pencil[i], &QLineEdit::deselect);
     }
 
-    on_button_clicked();
+    //on_button_clicked();
 }
-
 bool MainWindow::eventFilter(QObject* object, QEvent* event){
     uint16_t find = 0;
     QLineEdit *line = NULL;
@@ -39,7 +39,7 @@ bool MainWindow::eventFilter(QObject* object, QEvent* event){
         char c = line->text().toStdString().c_str()[0];
 
         if( line->text().isEmpty() ) line->setStyleSheet("QLineEdit { background-color: #303030 } ");
-        if( !line->text().isEmpty() && ( c < 48 || c > 57) ) {
+        if( !line->text().isEmpty() && ( c < 49 || c > 57) ) {
             line->setStyleSheet("QLineEdit { background-color: #303030 } ");
             line->clear();
         }
@@ -67,3 +67,4 @@ void MainWindow::on_button_clicked(){
 
     sudoku = new Sudoku(field, clues, pencil);
 }
+

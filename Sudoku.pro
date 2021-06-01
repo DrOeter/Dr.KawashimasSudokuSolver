@@ -4,7 +4,7 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 win32:RC_ICONS += C:\Users\Whoami\Documents\PROJEKTE\QT\Sudoku\brain.ico
 
-CONFIG += c++17
+CONFIG += c++11
 
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
@@ -16,7 +16,7 @@ SOURCES += \
     SudokuRowCol.cpp \
     main.cpp \
     mainwindow.cpp \
-    SudokuUtil.cpp
+    sudokuUtil.cpp
 
 HEADERS += \
     Sudoku.h \

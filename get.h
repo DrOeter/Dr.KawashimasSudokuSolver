@@ -3,7 +3,7 @@
 #include <vector>
 #include <QDebug>
 #include <iostream>
-
+/*
 void MainWindow::getGui(){
     std::vector<unsigned short> line;
     line.push_back( 7 );//ui->a1->text().toInt() );
@@ -124,8 +124,7 @@ void MainWindow::getGui(){
     line.clear();
 
 }
-/*
-
+*/
 void MainWindow::getGui(){
     std::vector<unsigned short> line;
     line.push_back( ui->a1->text().toInt() );
@@ -245,7 +244,7 @@ void MainWindow::getGui(){
     field.push_back(line);
     line.clear();
 
-}*/
+}
 
 /*
 void MainWindow::getGui(){
@@ -1027,5 +1026,4 @@ void MainWindow::getGui(){
     line.clear();
 
 }
-
 */

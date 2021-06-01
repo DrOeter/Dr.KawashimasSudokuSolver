@@ -1,13 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QMainWindow>
-#include <QLineEdit>
-#include <QElapsedTimer>
 #include "Sudoku.h"
-
-
-typedef std::vector<QLineEdit*> Qline_v;
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -20,6 +14,8 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+
+    bool eventFilter(QObject* object, QEvent* event) override;
 
 private slots:
     void on_button_clicked();
@@ -34,7 +30,6 @@ private:
     ussv field;
     Qline_v pencil, clues;
 };
-
 
 
 #endif // MAINWINDOW_H

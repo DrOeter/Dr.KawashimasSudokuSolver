@@ -92,5 +92,5 @@ void SudokuBoxOptions::erase(uint16_t x, uint16_t y, uint16_t value){
     uint16_t xx = this->getPos(0, x);
     uint16_t yy = this->getPos(1, y);
 
-    options[yy][xx].erase(std::remove(options[yy][xx].begin(), options[yy][xx].end(), value), options[yy][xx].end());
+    Sudoku().erase(options[yy][xx], value);
 }

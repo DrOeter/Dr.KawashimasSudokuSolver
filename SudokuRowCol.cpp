@@ -16,6 +16,7 @@ usv SudokuRowCol::getCol(uint16_t x){
     return col;
 }
 
+
 ussv SudokuRowColOptions::getRow(uint16_t y){
     ussv row;
     for (int x=0; x < 9;x++) {

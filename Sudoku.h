@@ -1,10 +1,16 @@
 #ifndef SUDOKU_H
 #define SUDOKU_H
 
-#include <QElapsedTimer>
+#include <QMainWindow>
 #include <QLineEdit>
-#include <vector>
+#include <QTime>
+#include <QElapsedTimer>
+#include <bitset>
 #include <iostream>
+#include <algorithm>
+#include <variant>
+#include <string>
+#include <cassert>
 
 #define ARRAY_POS [ybox[gridxy[1]][yy]][xbox[gridxy[0]][xx]]
 
@@ -12,15 +18,24 @@ typedef std::vector<uint16_t*> uspv;
 typedef std::vector<uint16_t> usv;
 typedef std::vector<int16_t> sv;
 typedef std::vector<std::vector<uint16_t>> ussv;
+typedef std::vector<std::vector<uint16_t>*> usspv;
+typedef std::vector<std::vector<uint16_t*>> uspsv;
 typedef std::vector<std::vector<std::vector<uint16_t>>> usssv;
+typedef std::vector<std::vector<std::vector<uint16_t>*>> ussspv;
+typedef std::vector<std::vector<std::reference_wrapper<usv>>> usssrv;
 typedef std::vector<std::vector<int16_t>> ssv;
 typedef std::vector<std::vector<bool>> bbv;
 typedef std::vector<bool> bv;
 typedef std::vector<void*> vpv;
 typedef std::vector<QLineEdit*> Qline_v;
+class SudokuBoxOptions;
 
 class Sudoku{
 public:
+     friend SudokuBoxOptions;
+
+    Sudoku(){}
+
     Sudoku(ussv m_field, Qline_v m_clues, Qline_v m_pencil)
         : field(m_field)
         , clues(m_clues)
@@ -72,18 +87,18 @@ private:
     void untilOverFly();
 
     void untilRowColSearch();
-/*
+
     void untilNakedDouble();
 
     void untilLockedCandidate();
 
-    void untilInBoxLockedCandidate();*/
+    void untilInBoxLockedCandidate();
 
     usssv nakedDouble();
 
     usssv nakedTriplet();
 
-    void advancedHelper(usv &coords, usv &recoverd, usv position, bool &find);
+    void advancedHelper(usv &coords, usv &recoverd, usv position, bool &find );
 
     usssv lockedCandidate();
 
@@ -95,14 +110,14 @@ private:
 
     ussv overFly();
 
-    usv collectRow(ussv field, int rc, char roc);
+    usv collectRow(ussv field, int rc, Axis axis);
 
     void boxElim(bbv &box, sv rows, uint16_t i, uint16_t x, uint16_t y);
 
     void rowColSolve(ussv &field, sv pos_row, uint16_t x, uint16_t y, uint16_t xb, uint16_t yb);
 
-    usssv fillss;
-    ussv field, orig, fills;
+    usssv fieldOptions;
+    ussv field, orig, fieldOptionList;
     std::vector<QLineEdit*> clues, pencil;
     ussv xbox = {{0,1,2},{3,4,5},{6,7,8}};
     ussv ybox = {{0,1,2},{3,4,5},{6,7,8}};
