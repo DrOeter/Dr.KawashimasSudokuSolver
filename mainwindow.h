@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include "Sudoku.h"
+#include <fstream>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -20,13 +21,14 @@ public:
 private slots:
     void on_button_clicked();
 
+    void on_pushButton_clicked();
+
 private:
     void getGui();
 
     void initGui();
 
     Ui::MainWindow *ui;
-    Sudoku *sudoku;
     ussv field;
     Qline_v pencil, clues;
 };

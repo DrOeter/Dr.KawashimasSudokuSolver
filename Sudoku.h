@@ -5,6 +5,7 @@
 #include <QLineEdit>
 #include <QTime>
 #include <QElapsedTimer>
+#include <QLabel>
 #include <bitset>
 #include <iostream>
 #include <algorithm>
@@ -42,6 +43,7 @@ public:
         , pencil(m_pencil){
         Solve();
     }
+    bool hasIntegrity();
 
 private:
     enum class Axis{

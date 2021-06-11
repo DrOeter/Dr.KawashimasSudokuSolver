@@ -6,11 +6,13 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 {
     ui->setupUi(this);
 
+    this->setFixedSize(483, 550);
     this->setWindowTitle("Dr. Kawashima's Sudoku Solver");
 
     initGui();
     for(uint16_t i=0; i < 81;i++){
         pencil[i]->hide();
+        pencil[i]->setReadOnly(false);
         clues[i]->setAlignment(Qt::AlignCenter);
         clues[i]->setMaxLength(1);
         clues[i]->installEventFilter(this);
@@ -52,10 +54,10 @@ bool MainWindow::eventFilter(QObject* object, QEvent* event){
 
 MainWindow::~MainWindow(){
     delete ui;
-    delete sudoku;
 }
 
 void MainWindow::on_button_clicked(){
+    ui->button->setEnabled(false);
     getGui();
     uint16_t it = 0;
 
@@ -65,6 +67,69 @@ void MainWindow::on_button_clicked(){
             it++;
         }
 
-    sudoku = new Sudoku(field, clues, pencil);
+    Sudoku sudoku(field, clues, pencil);
+
+    if(sudoku.hasIntegrity()){
+        ui->label->setText("Solved");
+        ui->label->setStyleSheet("QLabel { color: green } ");
+    }
+    else if(!sudoku.hasIntegrity()){
+        ui->label->setText("Unsolved");
+        ui->label->setStyleSheet("QLabel { color: red } ");
+    }
+
+/*
+    std::ifstream list("C:\\Users\\Whoami\\Desktop\\sudoku.csv");
+    std::string line;
+    uint64_t correct = 0, count = 0;
+
+    while(!list.eof()){
+        ussv ffield;
+        uint16_t i = 0;
+        std::getline(list, line);
+        std::cout<<line<<std::endl;
+
+        for(uint16_t y=0; y < 9;y++){
+            ffield.push_back( {} );
+            for(uint16_t x=0; x < 9;x++){
+                ffield[y].push_back( (line.c_str()[i]) - '0' );
+                i++;
+            }
+        }
+
+        for(auto &i: ffield){
+            for(auto ii: i){
+                std::cout<<ii;
+            }
+        }
+
+        std::cout<<std::endl;
+
+
+        Sudoku sudoku(ffield, clues, pencil);
+
+        if(sudoku.hasIntegrity()) {
+            correct++;
+            std::cout<<correct<<" / "<<count<<" CORRECT!!!!!!!!!!!!!!!!!"<<std::endl;
+
+        }
+        else if(!sudoku.hasIntegrity()) std::cout<<"FALSE"<<std::endl;
+        count++;
+    }*/
+
 }
 
+
+void MainWindow::on_pushButton_clicked(){
+    field.clear();
+    ui->label->clear();
+    for(auto i: clues){
+        i->clear();
+        i->setStyleSheet("QLineEdit { background-color: #303030 } ");
+        i->setReadOnly(false);
+    }
+    for(auto i: pencil)
+        i->clear();
+
+    ui->button->setEnabled(true);
+}

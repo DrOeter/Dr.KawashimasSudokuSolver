@@ -11,16 +11,21 @@ void Sudoku::Solve(){
     lockedCandidate();
     nakedDouble();
     nakedTriplet();
-    inBoxLockedCandidate();
 
-    lockedCandidate();
-    nakedDouble();
-    nakedTriplet();
 
     lockedCandidate();
     nakedDouble();
     nakedTriplet();
     //inBoxLockedCandidate();
+    nakedDouble();
+
+    lockedCandidate();
+    nakedDouble();
+    nakedTriplet();
+    inBoxLockedCandidate();
+
+    nakedDouble();
+    nakedTriplet();
 
     lockedCandidate();
 
@@ -29,6 +34,38 @@ void Sudoku::Solve(){
 
     updatePencilxy();
     updateClues();
+}
+
+bool Sudoku::hasIntegrity(){
+    bool integrity = 1;
+
+    for(uint16_t y=0; y < 9;y++){
+        usv row = SudokuRowCol(field).getRow(y);
+        for(uint16_t value=1; value < 10;value++){
+            uint16_t count = std::count (row.begin(), row.end(), value);
+            if(count > 1 || count < 1) integrity = 0;
+        }
+    }
+
+    for(uint16_t x=0; x < 9;x++){
+        usv col = SudokuRowCol(field).getCol(x);
+        for(uint16_t value=1; value < 10;value++){
+            uint16_t count = std::count (col.begin(), col.end(), value);
+            if(count > 1 || count < 1) integrity = 0;
+        }
+    }
+
+    for(uint16_t y=0; y < 3;y++){
+        for(uint16_t x=0; x < 3;x++){
+            usv box = SudokuBox(field).getBox(x, y);
+            for(uint16_t value=1; value < 10;value++){
+                uint16_t count = std::count (box.begin(), box.end(), value);
+                if(count > 1 || count < 1) integrity = 0;
+            }
+        }
+    }
+
+    return integrity;
 }
 
 
@@ -379,7 +416,7 @@ ussv Sudoku::rowColSearch(){
 }
 
 usssv Sudoku::lockedCandidate(){
-    if(find_v(getFieldlist(field), 0) == -1) return usssv();
+    if(hasIntegrity()) return usssv();
 
     for(uint16_t y=0; y < 9; y++){
         for(uint16_t value=1; value < 10; value++){
@@ -484,7 +521,7 @@ usssv Sudoku::lockedCandidate(){
 
 
 usssv Sudoku::inBoxLockedCandidate(){
-    if(find_v(getFieldlist(field), 0) == -1) return usssv();
+    if(hasIntegrity()) return usssv();
 
     usv gridxy = {0,0};
     for(gridxy[1] = 0;gridxy[1] < 3;gridxy[1]++){
@@ -556,7 +593,7 @@ usssv Sudoku::inBoxLockedCandidate(){
 }
 
 usssv Sudoku::nakedDouble(){
-    if(find_v(getFieldlist(field), 0) == -1) return usssv();
+    if(hasIntegrity()) return usssv();
 
     for(uint16_t y=0; y < 9; y++){
         ussv pair;
@@ -566,20 +603,31 @@ usssv Sudoku::nakedDouble(){
 
         for(uint16_t x=0; x < 9; x++){
             if( fieldOptions[y][x].size() == 2){
-
+                uint16_t equals = 0;
                 pair.push_back(fieldOptions[y][x]);
                 coords.push_back(x);
-                for(auto it = pair.begin(); it != pair.end() - 1; it++)
-                    if(pair.size() > 1 && *it == pair.back()){
-                        for(auto it2 = pair.begin(); it2 != pair.end() - 1; it2++){
-                            uint16_t pos = it2 - pair.begin();
-                            if(*it2 != pair.back()) coords.erase(coords.begin()+pos);
+
+                //std::cout<<coords[0]<<" "<<coords[1] <<" "<<coords.size()<<std::endl;
+
+                for(auto it = pair.begin(); it != pair.end() - 1; it++){
+                    if( *it == pair.back() && pair.size() > 1) {
+                        equals++;
+                    }
+                }
+                if(equals == 1){
+                    uint16_t count = 0;
+                    for(auto it = pair.begin(); it != pair.end() - 1; it++){
+                        uint16_t pos = it - pair.begin();
+                        if( *it != pair.back() && coords.size() > 2) {
+                            coords.erase((coords.begin() + pos) - count);
+                            count++;
                         }
-                        recoverd = pair.back();
-                        find = 1;
                     }
 
-                if(find == 1) break;
+                    recoverd = pair.back();
+                    find = 1;
+                    break;
+                }
             }
         }
         if(find == 1 && coords.size() == 2){
@@ -613,23 +661,34 @@ usssv Sudoku::nakedDouble(){
         bool find = 0;
 
         for(uint16_t y=0; y < 9; y++){
-            if( fieldOptions[y][x].size() == 2){
-
+            if( fieldOptions[y][x].size() == 2 ){
+                uint16_t equals = 0;
                 pair.push_back(fieldOptions[y][x]);
                 coords.push_back(y);
-                for(auto it = pair.begin(); it != pair.end() - 1; it++)
-                    if(pair.size() > 1 && *it == pair.back()){
-                        for(auto it2 = pair.begin(); it2 != pair.end() - 1; it2++){
-                            uint16_t pos = it2 - pair.begin();
-                            if(*it2 != pair.back()) coords.erase(coords.begin()+pos);
+
+                for(auto it = pair.begin(); it != pair.end() - 1; it++){
+                    if( *it == pair.back() && pair.size() > 1) {
+                        equals++;
+                    }
+                }
+                if(equals == 1){
+                    uint16_t count = 0;
+                    for(auto it = pair.begin(); it != pair.end() - 1; it++){
+                        uint16_t pos = it - pair.begin();
+                        if( *it != pair.back() && coords.size() > 2) {
+                            coords.erase((coords.begin() + pos) - count);
+                            count++;
                         }
-                        recoverd = pair.back();
-                        find = 1;
                     }
 
-                if(find == 1) break;
+                    recoverd = pair.back();
+                    find = 1;
+                    break;
+                }
             }
         }
+
+
 
         if(find == 1 && coords.size() == 2){
             for(uint16_t y=0; y < 9; y++){
@@ -660,7 +719,7 @@ usssv Sudoku::nakedDouble(){
 }
 
 usssv Sudoku::nakedTriplet(){
-    if(find_v(getFieldlist(field), 0) == -1) return usssv();
+    if(hasIntegrity()) return usssv();
 
     for(uint16_t y=0; y < 9; y++){
         ussv triple;
@@ -674,13 +733,21 @@ usssv Sudoku::nakedTriplet(){
                 coords.push_back(x);
 
                 for(auto it = triple.begin(); it != triple.end() - 1; it++){
-                    if( *it == triple.back()) equals++;
-
-                     uint16_t pos = it - triple.begin();
-                     if( *it != triple.back() && coords.size() > 1) coords.erase(coords.begin()+pos);
+                    if( *it == triple.back() && triple.size() > 1){
+                        equals++;
+                    }
                 }
 
                 if(equals == 2){
+                    uint16_t count = 0;
+                    for(auto it = triple.begin(); it != triple.end() - 1; it++){
+                        uint16_t pos = it - triple.begin();
+                        if( *it != triple.back() && coords.size() > 3) {
+                            coords.erase((coords.begin() + pos) - count);
+                            count++;
+                        }
+                    }
+
                     recoverd = triple.back();
                     find = 1;
                     break;
@@ -731,13 +798,21 @@ usssv Sudoku::nakedTriplet(){
                 coords.push_back(y);
 
                 for(auto it = triple.begin(); it != triple.end() - 1; it++){
-                    if( *it == triple.back()) equals++;
-
-                     uint16_t pos = it - triple.begin();
-                     if( *it != triple.back() && coords.size() > 1) coords.erase(coords.begin()+pos);
+                    if( *it == triple.back() && triple.size() > 1) {
+                        equals++;
+                    }
                 }
 
                 if(equals == 2){
+                    uint16_t count = 0;
+                    for(auto it = triple.begin(); it != triple.end() - 1; it++){
+                        uint16_t pos = it - triple.begin();
+                        if( *it != triple.back() && coords.size() > 3) {
+                            coords.erase((coords.begin() + pos) - count);
+                            count++;
+                        }
+                    }
+
                     recoverd = triple.back();
                     find = 1;
                     break;
@@ -793,10 +868,15 @@ void Sudoku::advancedHelper(usv &coords, usv &recoverd, usv position, bool &find
             for(auto second = first + 1; second != rowCol.end(); second++){
 
                 if((*second).size() == 2
-                    &&( ( (*first)[0] == (*second)[0]
+                    && ( ( ( (*first)[0] == (*second)[0]
                     && (*first)[1] != (*second)[1] )
                     || ( (*first)[0] != (*second)[0]
-                    && (*first)[1] == (*second)[1] ) ) ){
+                    && (*first)[1] == (*second)[1] ) )
+
+                    || ( ( (*first)[0] == (*second)[1]
+                    && (*first)[1] != (*second)[0] )
+                    || ( (*first)[0] != (*second)[1]
+                    && (*first)[1] == (*second)[0] ) ) ) ){
 
                     for(auto third = second + 1; third != rowCol.end(); third++){
 
@@ -825,10 +905,15 @@ void Sudoku::advancedHelper(usv &coords, usv &recoverd, usv position, bool &find
                            && find_v(*second, (*third)[0]) != -1
                            && find_v(*second, (*third)[1]) != -1
 
-                           &&( ( (*first)[0] == (*third)[0]
+                           && ( ( ( (*first)[0] == (*third)[0]
                            && (*first)[1] != (*third)[1] )
                            || ( (*first)[0] != (*third)[0]
-                           && (*first)[1] == (*third)[1] ) ) ){
+                           && (*first)[1] == (*third)[1] ) )
+
+                           || ( ( (*first)[0] == (*third)[1]
+                           && (*first)[1] != (*third)[0] )
+                           || ( (*first)[0] != (*third)[1]
+                           && (*first)[1] == (*third)[0] ) ) ) ){
                                 find = 1;
                                 coords.push_back( (uint16_t)(first - rowCol.begin()) );
                                 coords.push_back( (uint16_t)(second - rowCol.begin()) );
@@ -913,10 +998,15 @@ void Sudoku::advancedHelper(usv &coords, usv &recoverd, usv position, bool &find
                             && find_v(*first, (*third)[0]) != -1
                             && find_v(*first, (*third)[1]) != -1
 
-                            &&( ( (*second)[0] == (*third)[0]
+                            && ( ( ( (*second)[0] == (*third)[0]
                             && (*second)[1] != (*third)[1] )
                             || ( (*second)[0] != (*third)[0]
-                            && (*second)[1] == (*third)[1] ) ) ){
+                            && (*second)[1] == (*third)[1] ) )
+
+                            || ( ( (*second)[0] == (*third)[1]
+                            && (*second)[1] != (*third)[0] )
+                            || ( (*second)[0] != (*third)[1]
+                            && (*second)[1] == (*third)[0] ) ) ) ){
                                 find = 1;
                                 coords.push_back( (uint16_t)(first - rowCol.begin()) );
                                 coords.push_back( (uint16_t)(second - rowCol.begin()) );
