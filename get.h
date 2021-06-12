@@ -3,6 +3,129 @@
 #include <vector>
 #include <QDebug>
 #include <iostream>
+
+void MainWindow::getGui(){
+    std::vector<unsigned short> line;
+    line.push_back( ui->a1->text().toInt() );
+    line.push_back( 6 );//ui->a2->text().toInt() );
+    line.push_back( 8 );//ui->a3->text().toInt() );
+    line.push_back( ui->a4->text().toInt() );
+    line.push_back( 2 );//ui->a5->text().toInt() );
+    line.push_back( ui->a6->text().toInt() );
+    line.push_back( ui->a7->text().toInt() );
+    line.push_back( ui->a8->text().toInt() );
+    line.push_back( ui->a9->text().toInt() );
+
+    field.push_back(line);
+    line.clear();
+
+    line.push_back( ui->b1->text().toInt() );
+    line.push_back( 4 );//ui->b2->text().toInt() );
+    line.push_back( ui->b3->text().toInt() );
+    line.push_back( ui->b4->text().toInt() );
+    line.push_back( ui->b5->text().toInt() );
+    line.push_back( 3 );//ui->b6->text().toInt() );
+    line.push_back( ui->b7->text().toInt() );
+    line.push_back( ui->b8->text().toInt() );
+    line.push_back( ui->b9->text().toInt() );
+
+    field.push_back(line);
+    line.clear();
+
+    line.push_back( ui->c1->text().toInt() );
+    line.push_back( ui->c2->text().toInt() );
+    line.push_back( 1 );//ui->c3->text().toInt() );
+    line.push_back( ui->c4->text().toInt() );
+    line.push_back( ui->c5->text().toInt() );
+    line.push_back( ui->c6->text().toInt() );
+    line.push_back( 2 );//ui->c7->text().toInt() );
+    line.push_back( 7 );//ui->c8->text().toInt() );
+    line.push_back( ui->c9->text().toInt() );
+
+    field.push_back(line);
+    line.clear();
+
+    line.push_back( ui->d1->text().toInt() );
+    line.push_back( 3 );//ui->d2->text().toInt() );
+    line.push_back( ui->d3->text().toInt() );
+    line.push_back( 1 );//ui->d4->text().toInt() );
+    line.push_back( 4 );//ui->d5->text().toInt() );
+    line.push_back( ui->d6->text().toInt() );
+    line.push_back( 5 );//ui->d7->text().toInt() );
+    line.push_back( ui->d8->text().toInt() );
+    line.push_back( ui->d9->text().toInt() );
+
+    field.push_back(line);
+    line.clear();
+
+    line.push_back( ui->e1->text().toInt() );
+    line.push_back( ui->e2->text().toInt() );
+    line.push_back( ui->e3->text().toInt() );
+    line.push_back( ui->e4->text().toInt() );
+    line.push_back( 9 );//ui->e5->text().toInt() );
+    line.push_back( ui->e6->text().toInt() );
+    line.push_back( ui->e7->text().toInt() );
+    line.push_back( ui->e8->text().toInt() );
+    line.push_back( ui->e9->text().toInt() );
+
+    field.push_back(line);
+    line.clear();
+
+    line.push_back( ui->f1->text().toInt() );
+    line.push_back( ui->f2->text().toInt() );
+    line.push_back( 4 );//ui->f3->text().toInt() );
+    line.push_back( ui->f4->text().toInt() );
+    line.push_back( 3 );//ui->f5->text().toInt() );
+    line.push_back( 2 );//ui->f6->text().toInt() );
+    line.push_back( ui->f7->text().toInt() );
+    line.push_back( 8 );//ui->f8->text().toInt() );
+    line.push_back( ui->f9->text().toInt() );
+
+    field.push_back(line);
+    line.clear();
+
+    line.push_back( ui->g1->text().toInt() );
+    line.push_back( 8 );//ui->g2->text().toInt() );
+    line.push_back( 6 );//ui->g3->text().toInt() );
+    line.push_back( ui->g4->text().toInt() );
+    line.push_back( ui->g5->text().toInt() );
+    line.push_back( ui->g6->text().toInt() );
+    line.push_back( 4 );//ui->g7->text().toInt() );
+    line.push_back( ui->g8->text().toInt() );
+    line.push_back( ui->g9->text().toInt() );
+
+    field.push_back(line);
+    line.clear();
+
+    line.push_back( ui->h1->text().toInt() );
+    line.push_back( ui->h2->text().toInt() );
+    line.push_back( ui->h3->text().toInt() );
+    line.push_back( 4 );//ui->h4->text().toInt() );
+    line.push_back( ui->h5->text().toInt() );
+    line.push_back( ui->h6->text().toInt() );
+    line.push_back( ui->h7->text().toInt() );
+    line.push_back( 1 );//ui->h8->text().toInt() );
+    line.push_back( ui->h9->text().toInt() );
+
+    field.push_back(line);
+    line.clear();
+
+    line.push_back( ui->i1->text().toInt() );
+    line.push_back( ui->i2->text().toInt() );
+    line.push_back( ui->i3->text().toInt() );
+    line.push_back( ui->i4->text().toInt() );
+    line.push_back( 5 );//ui->i5->text().toInt() );
+    line.push_back( ui->i6->text().toInt() );
+    line.push_back( 7 );//ui->i7->text().toInt() );
+    line.push_back( 2 );//ui->i8->text().toInt() );
+    line.push_back( ui->i9->text().toInt() );
+
+    field.push_back(line);
+    line.clear();
+
+}
+
+
 /*
 void MainWindow::getGui(){
     std::vector<unsigned short> line;
@@ -247,7 +370,7 @@ void MainWindow::getGui(){
 
 }
 */
-
+/*
 
 void MainWindow::getGui(){
     std::vector<unsigned short> line;
@@ -370,7 +493,7 @@ void MainWindow::getGui(){
 
 }
 
-/*
+*//*
 void MainWindow::getGui(){
     std::vector<unsigned short> line;
     line.push_back( ui->a1->text().toInt() );
@@ -1516,5 +1639,6 @@ void MainWindow::getGui(){
     line.clear();
 
 }
-*/
 
+
+*/

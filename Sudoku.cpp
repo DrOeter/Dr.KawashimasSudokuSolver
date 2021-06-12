@@ -688,8 +688,6 @@ usssv Sudoku::nakedDouble(){
             }
         }
 
-
-
         if(find == 1 && coords.size() == 2){
             for(uint16_t y=0; y < 9; y++){
                 if(coords[0] != y && coords[1] != y && find_v(fieldOptions[y][x], recoverd[0]) != -1 ) erase(fieldOptions[y][x], recoverd[0]);
@@ -849,6 +847,53 @@ usssv Sudoku::nakedTriplet(){
         }
         clueElim();
     }
+
+    for(uint16_t yBoxPos=0; yBoxPos < 3; yBoxPos++){
+        for(uint16_t xBoxPos=0; xBoxPos < 3; xBoxPos++){
+            uint16_t x = xbox[xBoxPos][0];
+            uint16_t y = ybox[yBoxPos][0];
+            SudokuBoxOptions boxObj(fieldOptions);
+            ussv boxList = boxObj.get2dBox(x, y);
+            usssv options = boxObj.get3dBox(x, y);
+            bool find = 0;
+            usv recoverd = {404,404,404};
+            usv coords;
+
+            for(auto it = boxList.begin(); it != boxList.end(); it++){
+                uint16_t equals = 0;
+                if((*it).size() == 3){
+                    for(auto search = boxList.begin(); search != boxList.end(); search++)
+                        if((*it) == (*search) && it != search){
+                            equals++;
+                        }
+
+                    if(equals == 2){
+                        recoverd = (*it);
+                        find = 1;
+                        break;
+                    }
+                }
+            }
+            if(find == 0) advancedHelper(coords, recoverd, {2, x, y}, find);
+
+            if(find == 1 && coords.size() == 3){
+                for(uint16_t yy=0; yy < 3; yy++){
+                    for(uint16_t xx=0; xx < 3; xx++){
+                        if( !options[yy][xx].empty() && options[yy][xx] != recoverd
+                            && listToPos[coords[0]] != usv{xx, yy}
+                            && listToPos[coords[1]] != usv{xx, yy}
+                            && listToPos[coords[2]] != usv{xx, yy}  ){
+
+                            if( find_v(options[yy][xx], recoverd[0]) != -1 ) boxObj.erase( xx, yy, recoverd[0]);
+                            if( find_v(options[yy][xx], recoverd[1]) != -1 ) boxObj.erase( xx, yy, recoverd[1]);
+                            if( find_v(options[yy][xx], recoverd[2]) != -1 ) boxObj.erase( xx, yy, recoverd[2]);
+                        }
+                    }
+                }
+            }
+            clueElim();
+        }
+    }
     untilFind_8();
 
     return fieldOptions;
@@ -861,6 +906,9 @@ void Sudoku::advancedHelper(usv &coords, usv &recoverd, usv position, bool &find
     ussv rowCol;
     if(position[0] == 0) rowCol = SudokuRowColOptions(fieldOptions).getRow(position[1]);
     if(position[0] == 1) rowCol = SudokuRowColOptions(fieldOptions).getCol(position[1]);
+    if(position[0] == 2) rowCol = SudokuBoxOptions(fieldOptions).get2dBox(position[1], position[2]);
+
+
 
     for(auto first = rowCol.begin(); first != rowCol.end(); first++) {
 
@@ -931,7 +979,7 @@ void Sudoku::advancedHelper(usv &coords, usv &recoverd, usv position, bool &find
                     for(auto third = second + 1; third != rowCol.end(); third++){
 
                         if((*third).size() == 3
-                            && (*second) == (*first)
+                            && (*second) == (*third)
                             && find_v(*third, (*first)[0]) != -1
                             && find_v(*third, (*first)[1]) != -1 ){
                                 find = 1;
