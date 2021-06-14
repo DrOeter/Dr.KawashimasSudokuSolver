@@ -58,7 +58,36 @@ MainWindow::~MainWindow(){
 
 void MainWindow::on_button_clicked(){
     ui->button->setEnabled(false);
+    std::ifstream fi("C:\\Users\\Whoami\\Documents\\PROJEKTE\\QT\\Sudoku\\SudokuOld\\Sudoku\\sudokus");
+    std::ofstream fo("C:\\Users\\Whoami\\Documents\\PROJEKTE\\QT\\Sudoku\\SudokuOld\\Sudoku\\sudokus", std::ios::app);
+    ussv fileField;
+    std::string line;
+    uint16_t i = 0;
+    std::getline(fi, line);
+
+    for(uint16_t y=0; y < 9;y++){
+        fileField.push_back( {} );
+        for(uint16_t x=0; x < 9;x++){
+            fileField[y].push_back( (line.c_str()[i]) - '0' );
+            i++;
+        }
+    }
+
     getGui();
+
+    std::string toFile;
+    usv fieldList = Sudoku().getFieldlist( field );
+
+    for(auto i: fieldList)
+        toFile.append(std::to_string(i));
+    toFile.append("\n");
+
+    if(!line.empty() && field != fileField && std::count(fieldList.begin(), fieldList.end(), 0) == 81) field = fileField;
+    else fo.write(toFile.c_str(), toFile.size());
+
+    fo.close();
+    fi.close();
+
     uint16_t it = 0;
 
     for(auto &i: field)
@@ -77,17 +106,16 @@ void MainWindow::on_button_clicked(){
         ui->label->setText("Unsolved");
         ui->label->setStyleSheet("QLabel { color: red } ");
     }
-
 /*
-    std::ifstream list("C:\\Users\\Whoami\\Desktop\\sudoku.csv");
+
+    std::ifstream list("C:\\Users\\Whoami\\Desktop\\sudokusfinal.txt");
     std::string line;
-    uint64_t correct = 0, count = 0;
+    uint64_t correct = 1, count = 1;
 
     while(!list.eof()){
         ussv ffield;
         uint16_t i = 0;
         std::getline(list, line);
-        std::cout<<line<<std::endl;
 
         for(uint16_t y=0; y < 9;y++){
             ffield.push_back( {} );
@@ -97,23 +125,16 @@ void MainWindow::on_button_clicked(){
             }
         }
 
-        for(auto &i: ffield){
-            for(auto ii: i){
-                std::cout<<ii;
-            }
-        }
-
-        std::cout<<std::endl;
 
 
         Sudoku sudoku(ffield, clues, pencil);
 
         if(sudoku.hasIntegrity()) {
-            correct++;
             std::cout<<correct<<" / "<<count<<" CORRECT!!!!!!!!!!!!!!!!!"<<std::endl;
+            correct++;
 
         }
-        else if(!sudoku.hasIntegrity()) std::cout<<"FALSE"<<std::endl;
+        else if(!sudoku.hasIntegrity()) std::cout<<"FALSE\n"<<line<<std::endl;
         count++;
     }*/
 

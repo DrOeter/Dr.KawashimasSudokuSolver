@@ -8,7 +8,9 @@ void Sudoku::Solve(){
     untilFind_8();
     untilOverFly();
 
+    //inBoxLockedCandidate();
     lockedCandidate();
+    //inBoxLockedCandidate();
     nakedDouble();
     nakedTriplet();
 
@@ -914,6 +916,71 @@ void Sudoku::advancedHelper(usv &coords, usv &recoverd, usv position, bool &find
 
         if((*first).size() == 2){
             for(auto second = first + 1; second != rowCol.end(); second++){
+
+                if((*second).size() == 2
+                    && ( ( ( (*first)[0] == (*second)[0]
+                    && (*first)[1] != (*second)[1] )
+                    || ( (*first)[0] != (*second)[0]
+                    && (*first)[1] == (*second)[1] ) )
+
+                    || ( ( (*first)[0] == (*second)[1]
+                    && (*first)[1] != (*second)[0] )
+                    || ( (*first)[0] != (*second)[1]
+                    && (*first)[1] == (*second)[0] ) ) ) ){
+
+                    for(auto third = second + 1; third != rowCol.end(); third++){
+
+                        if((*third).size() == 2
+                            && ( ( (*first)[0] == (*second)[1]
+                            && (*first)[1] != (*second)[0]
+                            && (*first)[1] == (*third)[1]
+                            && (*first)[0] != (*third)[0]
+                            && (*second)[0] == (*third)[0]
+                            && (*second)[1] != (*third)[1] )
+
+                            || ( (*first)[1] == (*second)[0]
+                            && (*first)[0] != (*second)[1]
+                            && (*first)[0] == (*third)[0]
+                            && (*first)[1] != (*third)[1]
+                            && (*second)[1] == (*third)[1]
+                            && (*second)[0] != (*third)[0] )
+
+                            || ( (*first)[1] == (*second)[1]
+                            && (*first)[0] != (*second)[0]
+                            && (*first)[0] == (*third)[1]
+                            && (*first)[1] != (*third)[0]
+                            && (*second)[0] == (*third)[0]
+                            && (*second)[1] != (*third)[1] )
+
+                            || ( (*first)[0] == (*second)[0]
+                            && (*first)[1] != (*second)[1]
+                            && (*first)[1] == (*third)[0]
+                            && (*first)[0] != (*third)[1]
+                            && (*second)[1] == (*third)[1]
+                            && (*second)[0] != (*third)[0] )
+
+                            || ( (*first)[1] == (*second)[1]
+                            && (*first)[0] != (*second)[0]
+                            && (*first)[0] == (*third)[0]
+                            && (*first)[1] != (*third)[1]
+                            && (*second)[0] == (*third)[1]
+                            && (*second)[1] != (*third)[0] )
+
+                            || ( (*first)[0] == (*second)[0]
+                            && (*first)[1] != (*second)[1]
+                            && (*first)[1] == (*third)[1]
+                            && (*first)[0] != (*third)[0]
+                            && (*second)[1] == (*third)[0]
+                            && (*second)[0] != (*third)[1] ) ) ){
+                                find = 1;
+                                coords.push_back( (uint16_t)(first - rowCol.begin()) );
+                                coords.push_back( (uint16_t)(second - rowCol.begin()) );
+                                coords.push_back( (uint16_t)(third - rowCol.begin()) );
+
+                                recoverd = (*third);
+                        }
+                    }
+                }
 
                 if((*second).size() == 2
                     && ( ( ( (*first)[0] == (*second)[0]

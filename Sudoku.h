@@ -30,10 +30,12 @@ typedef std::vector<bool> bv;
 typedef std::vector<void*> vpv;
 typedef std::vector<QLineEdit*> Qline_v;
 class SudokuBoxOptions;
+class MainWindow;
 
 class Sudoku{
 public:
      friend SudokuBoxOptions;
+     friend MainWindow;
 
     Sudoku(){}
 
