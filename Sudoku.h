@@ -33,22 +33,8 @@ typedef std::vector<void*> vpv;
 typedef std::vector<QLineEdit*> Qline_v;
 class SudokuBoxOptions;
 class MainWindow;
+class SudokuThread;
 
-class SudokuThread{
-public:
-    SudokuThread(){}
-
-    void start(ussv m_field, Qline_v m_clues, Qline_v m_pencil);
-
-    bool hasIntegrity();
-
-public slots:
-    void tFinished();
-
-private:
-    ussv field;
-
-};
 
 class Sudoku{
 public:
@@ -67,13 +53,14 @@ public:
         : field(m_field)
         , fieldOptions(m_fieldOptions){}
 
-    bool hasIntegrity();
+    bool hasIntegrity(ussv field = {});
 
     void Solve();
 
     void AdvancedSolve(usv combi);
 
     ussv getField();
+
     usssv getFieldOptions();
 
 private:
@@ -82,10 +69,6 @@ private:
         Y,
         XY
     };
-
-
-
-    void thread( ussv field, usssv fieldOptions, uint16_t algo );
 
     void useAlgo( uint16_t algo );
 
@@ -168,6 +151,21 @@ private:
                       {0, 2},
                       {1, 2},
                       {2, 2}};
+};
+
+class SudokuThread: public Sudoku{
+public:
+    SudokuThread(){}
+
+    void start(ussv m_field, Qline_v m_clues, Qline_v m_pencil);
+
+    //bool hasIntegrity();
+
+    ussv getField();
+
+private:
+    ussv field;
+
 };
 
 class SudokuBox{

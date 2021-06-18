@@ -100,14 +100,11 @@ void MainWindow::on_button_clicked(){
 
     sudoku.start(field, clues, pencil);
 
-
-   // Sudoku sudoku(field, clues, pencil);
-
-    if(sudoku.hasIntegrity()){
+    if(sudoku.hasIntegrity(sudoku.getField())){
         ui->label->setText("Solved");
         ui->label->setStyleSheet("QLabel { color: green } ");
     }
-    else if(!sudoku.hasIntegrity()){
+    else if(!sudoku.hasIntegrity(sudoku.getField())){
         ui->label->setText("Unsolved");
         ui->label->setStyleSheet("QLabel { color: red } ");
     }

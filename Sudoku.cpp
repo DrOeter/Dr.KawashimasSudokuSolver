@@ -103,16 +103,16 @@ void Sudoku::AdvancedSolve(usv combi){
     //updateClues();
 }
 
+ussv SudokuThread::getField(){
+    return field;
+}
+
 ussv Sudoku::getField(){
     return field;
 }
 
 usssv Sudoku::getFieldOptions(){
     return fieldOptions;
-}
-
-void Sudoku::thread(ussv field, usssv fieldOptions, uint16_t algo){
-    QThread::create([&]{ useAlgo( algo); })->start();
 }
 
 void Sudoku::useAlgo(uint16_t algo){
@@ -122,11 +122,12 @@ void Sudoku::useAlgo(uint16_t algo){
     if(algo == 3) nakedTriplet();
 }
 
-bool Sudoku::hasIntegrity(){
+bool Sudoku::hasIntegrity(ussv field){
     bool integrity = 1;
+    if(!field.empty()) this->field = field;
 
     for(uint16_t y=0; y < 9;y++){
-        usv row = SudokuRowCol(field).getRow(y);
+        usv row = SudokuRowCol(this->field).getRow(y);
         for(uint16_t value=1; value < 10;value++){
             uint16_t count = std::count (row.begin(), row.end(), value);
             if(count > 1 || count < 1) integrity = 0;
@@ -134,7 +135,7 @@ bool Sudoku::hasIntegrity(){
     }
 
     for(uint16_t x=0; x < 9;x++){
-        usv col = SudokuRowCol(field).getCol(x);
+        usv col = SudokuRowCol(this->field).getCol(x);
         for(uint16_t value=1; value < 10;value++){
             uint16_t count = std::count (col.begin(), col.end(), value);
             if(count > 1 || count < 1) integrity = 0;
@@ -143,7 +144,7 @@ bool Sudoku::hasIntegrity(){
 
     for(uint16_t y=0; y < 3;y++){
         for(uint16_t x=0; x < 3;x++){
-            usv box = SudokuBox(field).getBox(x, y);
+            usv box = SudokuBox(this->field).getBox(x, y);
             for(uint16_t value=1; value < 10;value++){
                 uint16_t count = std::count (box.begin(), box.end(), value);
                 if(count > 1 || count < 1) integrity = 0;
@@ -153,7 +154,7 @@ bool Sudoku::hasIntegrity(){
 
     return integrity;
 }
-
+/*
 bool SudokuThread::hasIntegrity(){
     bool integrity = 1;
 
@@ -185,7 +186,7 @@ bool SudokuThread::hasIntegrity(){
 
     return integrity;
 }
-
+*/
 
 ussv Sudoku::rowColElim(Axis axis, uint16_t loop_value, usv coords){
     if( axis == Axis::X || axis == Axis::XY){
