@@ -6,6 +6,8 @@
 #include <QTime>
 #include <QElapsedTimer>
 #include <QLabel>
+#include <QThread>
+#include <QMutex>
 #include <bitset>
 #include <iostream>
 #include <algorithm>
@@ -32,20 +34,47 @@ typedef std::vector<QLineEdit*> Qline_v;
 class SudokuBoxOptions;
 class MainWindow;
 
+class SudokuThread{
+public:
+    SudokuThread(){}
+
+    void start(ussv m_field, Qline_v m_clues, Qline_v m_pencil);
+
+    bool hasIntegrity();
+
+public slots:
+    void tFinished();
+
+private:
+    ussv field;
+
+};
+
 class Sudoku{
 public:
      friend SudokuBoxOptions;
      friend MainWindow;
+     friend SudokuThread;
 
     Sudoku(){}
 
     Sudoku(ussv m_field, Qline_v m_clues, Qline_v m_pencil)
         : field(m_field)
         , clues(m_clues)
-        , pencil(m_pencil){
-        Solve();
-    }
+        , pencil(m_pencil){}
+
+    Sudoku(ussv m_field, usssv m_fieldOptions)
+        : field(m_field)
+        , fieldOptions(m_fieldOptions){}
+
     bool hasIntegrity();
+
+    void Solve();
+
+    void AdvancedSolve(usv combi);
+
+    ussv getField();
+    usssv getFieldOptions();
 
 private:
     enum class Axis{
@@ -54,7 +83,11 @@ private:
         XY
     };
 
-    void Solve();
+
+
+    void thread( ussv field, usssv fieldOptions, uint16_t algo );
+
+    void useAlgo( uint16_t algo );
 
     ussv find_8();
 
@@ -91,13 +124,13 @@ private:
     void untilOverFly();
 
     void untilRowColSearch();
-
+/*
     void untilNakedDouble();
 
     void untilLockedCandidate();
 
     void untilInBoxLockedCandidate();
-
+*/
     usssv nakedDouble();
 
     usssv nakedTriplet();
@@ -120,8 +153,9 @@ private:
 
     void rowColSolve(ussv &field, sv pos_row, uint16_t x, uint16_t y, uint16_t xb, uint16_t yb);
 
-    usssv fieldOptions;
+
     ussv field, orig, fieldOptionList;
+    usssv fieldOptions;
     std::vector<QLineEdit*> clues, pencil;
     ussv xbox = {{0,1,2},{3,4,5},{6,7,8}};
     ussv ybox = {{0,1,2},{3,4,5},{6,7,8}};

@@ -84,7 +84,7 @@ void Sudoku::untilRowColSearch(){
 
     }
 }
-
+/*
 void Sudoku::untilNakedDouble(){
     usssv state = fieldOptions;
     fieldOptions = nakedDouble();
@@ -117,7 +117,7 @@ void Sudoku::untilInBoxLockedCandidate(){
 
     }
 }
-
+*/
 ussv Sudoku::negative(ussv options){
     ussv positive;
     for(uint32_t i=0; i < options.size();i++){

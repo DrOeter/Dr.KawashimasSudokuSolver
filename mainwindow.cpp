@@ -22,6 +22,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
 
     //on_button_clicked();
 }
+
 bool MainWindow::eventFilter(QObject* object, QEvent* event){
     uint16_t find = 0;
     QLineEdit *line = NULL;
@@ -45,7 +46,6 @@ bool MainWindow::eventFilter(QObject* object, QEvent* event){
             line->setStyleSheet("QLineEdit { background-color: #303030 } ");
             line->clear();
         }
-
 
         return false;
     }
@@ -96,7 +96,12 @@ void MainWindow::on_button_clicked(){
             it++;
         }
 
-    Sudoku sudoku(field, clues, pencil);
+    SudokuThread sudoku;
+
+    sudoku.start(field, clues, pencil);
+
+
+   // Sudoku sudoku(field, clues, pencil);
 
     if(sudoku.hasIntegrity()){
         ui->label->setText("Solved");
@@ -106,9 +111,9 @@ void MainWindow::on_button_clicked(){
         ui->label->setText("Unsolved");
         ui->label->setStyleSheet("QLabel { color: red } ");
     }
-/*
 
-    std::ifstream list("C:\\Users\\Whoami\\Desktop\\sudokusfinal.txt");
+
+   /* std::ifstream list("C:\\Users\\Whoami\\Desktop\\sudokusfinal.txt");
     std::string line;
     uint64_t correct = 1, count = 1;
 
@@ -127,7 +132,9 @@ void MainWindow::on_button_clicked(){
 
 
 
-        Sudoku sudoku(ffield, clues, pencil);
+        SudokuThread sudoku;
+
+        sudoku.start(field, clues, pencil);
 
         if(sudoku.hasIntegrity()) {
             std::cout<<correct<<" / "<<count<<" CORRECT!!!!!!!!!!!!!!!!!"<<std::endl;
