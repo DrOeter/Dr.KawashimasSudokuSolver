@@ -35,8 +35,27 @@ class SudokuBoxOptions;
 class MainWindow;
 class SudokuThread;
 
+class SudokuThread{
+public:
+    SudokuThread(){}
 
-class Sudoku{
+    void start(ussv m_field);
+
+    bool hasIntegrity(ussv field = {});
+
+    ussv getField();
+
+    usssv getFieldOptions();
+
+    void setFieldOptions(usssv fieldOptions);
+
+private:
+    ussv field;
+    usssv fieldOptions;
+
+};
+
+class Sudoku: public SudokuThread{
 public:
      friend SudokuBoxOptions;
      friend MainWindow;
@@ -44,16 +63,14 @@ public:
 
     Sudoku(){}
 
-    Sudoku(ussv m_field, Qline_v m_clues, Qline_v m_pencil)
-        : field(m_field)
-        , clues(m_clues)
-        , pencil(m_pencil){}
+    Sudoku(ussv m_field)
+        : field(m_field){}
 
     Sudoku(ussv m_field, usssv m_fieldOptions)
         : field(m_field)
         , fieldOptions(m_fieldOptions){}
 
-    bool hasIntegrity(ussv field = {});
+    //bool hasIntegrity(ussv field = {});
 
     void Solve();
 
@@ -96,12 +113,6 @@ private:
 
     void pUsv(usv vector);
 
-    void updateClues();
-
-    void updatePencil();
-
-    void updatePencilxy();
-
     void untilFind_8();
 
     void untilOverFly();
@@ -125,6 +136,8 @@ private:
     usssv inBoxLockedCandidate();
 
     ussv rowColElim(Axis axis, uint16_t loop_value, usv coords);
+
+    void hiddenSingle();
 
     ussv rowColSearch();
 
@@ -151,21 +164,6 @@ private:
                       {0, 2},
                       {1, 2},
                       {2, 2}};
-};
-
-class SudokuThread: public Sudoku{
-public:
-    SudokuThread(){}
-
-    void start(ussv m_field, Qline_v m_clues, Qline_v m_pencil);
-
-    //bool hasIntegrity();
-
-    ussv getField();
-
-private:
-    ussv field;
-
 };
 
 class SudokuBox{

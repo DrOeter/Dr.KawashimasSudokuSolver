@@ -58,7 +58,7 @@ MainWindow::~MainWindow(){
 
 void MainWindow::on_button_clicked(){
     ui->button->setEnabled(false);
-    std::ifstream fi("C:\\Users\\Whoami\\Documents\\PROJEKTE\\QT\\Sudoku\\SudokuOld\\Sudoku\\sudokus");
+  /*  std::ifstream fi("C:\\Users\\Whoami\\Documents\\PROJEKTE\\QT\\Sudoku\\SudokuOld\\Sudoku\\sudokus");
     std::ofstream fo("C:\\Users\\Whoami\\Documents\\PROJEKTE\\QT\\Sudoku\\SudokuOld\\Sudoku\\sudokus", std::ios::app);
     ussv fileField;
     std::string line;
@@ -98,19 +98,22 @@ void MainWindow::on_button_clicked(){
 
     SudokuThread sudoku;
 
-    sudoku.start(field, clues, pencil);
+    sudoku.start(field);
 
-    if(sudoku.hasIntegrity(sudoku.getField())){
+    if(sudoku.hasIntegrity()){
         ui->label->setText("Solved");
         ui->label->setStyleSheet("QLabel { color: green } ");
     }
-    else if(!sudoku.hasIntegrity(sudoku.getField())){
+    else if(!sudoku.hasIntegrity()){
         ui->label->setText("Unsolved");
         ui->label->setStyleSheet("QLabel { color: red } ");
     }
 
+    updateClues(sudoku.getField());
+    updatePencilxy(sudoku.getFieldOptions());
 
-   /* std::ifstream list("C:\\Users\\Whoami\\Desktop\\sudokusfinal.txt");
+*/
+    std::ifstream list("C:\\Users\\Whoami\\Desktop\\sudokusfinal.txt");
     std::string line;
     uint64_t correct = 1, count = 1;
 
@@ -126,12 +129,15 @@ void MainWindow::on_button_clicked(){
                 i++;
             }
         }
-
-
+        QElapsedTimer myTimer;
+        myTimer.start();
 
         SudokuThread sudoku;
 
-        sudoku.start(field, clues, pencil);
+        sudoku.start(ffield);
+
+        int mili = myTimer.elapsed();
+        std::cout<<"time: "<<mili<<std::endl;
 
         if(sudoku.hasIntegrity()) {
             std::cout<<correct<<" / "<<count<<" CORRECT!!!!!!!!!!!!!!!!!"<<std::endl;
@@ -140,7 +146,7 @@ void MainWindow::on_button_clicked(){
         }
         else if(!sudoku.hasIntegrity()) std::cout<<"FALSE\n"<<line<<std::endl;
         count++;
-    }*/
+    }
 
 }
 

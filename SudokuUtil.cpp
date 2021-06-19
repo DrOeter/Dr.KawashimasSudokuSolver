@@ -1,6 +1,7 @@
 #include "Sudoku.h"
+#include "mainwindow.h"
 
-void Sudoku::updateClues(){
+void MainWindow::updateClues(ussv field){
     int i = 0;
     for(int y=0; y < 9;y++){
         for(int x=0; x < 9;x++){
@@ -14,18 +15,8 @@ void Sudoku::updateClues(){
     }
 }
 
-void Sudoku::updatePencil(){
-    for(int i=0; i < 81;i++){
-        QString fill;
-        for(auto i: fieldOptionList[i])
-            fill += std::to_string(i).c_str();
-        pencil[i]->show();
-        pencil[i]->setText( QString( fill ) );
-        pencil[i]->setStyleSheet( "QLineEdit{ border-width: 1px; border-style: solid; border-color: #BEBEBE #BEBEBE #323232 #BEBEBE; }" );
-    }
-}
 
-void Sudoku::updatePencilxy(){
+void MainWindow::updatePencilxy(usssv fieldOptions){
     uint16_t i=0;
     for (int y=0; y < 9;y++) {
         for (int x=0; x < 9;x++) {
@@ -53,6 +44,7 @@ void Sudoku::untilFind_8(){
     find_8();
 
     rowColElim(Axis::XY, 0 , usv() = {404,404,404});
+    //hiddenSingle();
 }
 
 void Sudoku::untilOverFly(){

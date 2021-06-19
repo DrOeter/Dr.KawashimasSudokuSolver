@@ -28,6 +28,10 @@ private:
 
     void initGui();
 
+    void updateClues(ussv field);
+
+    void updatePencilxy(usssv fieldOptions);
+
     Ui::MainWindow *ui;
     ussv field;
     Qline_v pencil, clues;
