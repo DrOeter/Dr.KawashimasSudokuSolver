@@ -826,6 +826,36 @@ usssv Sudoku::nakedDouble(){
         }
         clueElim();
     }
+
+    for(uint16_t yBoxPos=0; yBoxPos < 3; yBoxPos++){
+        for(uint16_t xBoxPos=0; xBoxPos < 3; xBoxPos++){
+            uint16_t x = xbox[xBoxPos][0];
+            uint16_t y = ybox[yBoxPos][0];
+            SudokuBoxOptions boxObj(fieldOptions);
+            usssv options = boxObj.get3dBox(x, y);
+            bool find = 0;
+            usv recoverd = {404,404,404};
+            usv coords;
+
+            advancedHelper(coords, recoverd, {2, x, y}, find);
+
+            if(find == 1 && coords.size() == 2){
+                for(uint16_t yy=0; yy < 3; yy++){
+                    for(uint16_t xx=0; xx < 3; xx++){
+                        if( !options[yy][xx].empty() && options[yy][xx] != recoverd
+                            && listToPos[coords[0]] != usv{xx, yy}
+                            && listToPos[coords[1]] != usv{xx, yy} ){
+
+                            if( find_v(options[yy][xx], recoverd[0]) != -1 ) boxObj.erase( xx, yy, recoverd[0]);
+                            if( find_v(options[yy][xx], recoverd[1]) != -1 ) boxObj.erase( xx, yy, recoverd[1]);
+                        }
+                    }
+                }
+            }
+            clueElim();
+        }
+    }
+
     untilFind_8();
 
     return fieldOptions;
