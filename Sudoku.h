@@ -8,6 +8,7 @@
 #include <QLabel>
 #include <QThread>
 #include <QMutex>
+#include <QtCore>
 #include <bitset>
 #include <iostream>
 #include <algorithm>
@@ -17,23 +18,21 @@
 
 #define ARRAY_POS [ybox[gridxy[1]][yy]][xbox[gridxy[0]][xx]]
 
-typedef std::vector<uint16_t*> uspv;
+class SudokuBoxOptions;
+class MainWindow;
+class SudokuField;
+
 typedef std::vector<uint16_t> usv;
 typedef std::vector<int16_t> sv;
 typedef std::vector<std::vector<uint16_t>> ussv;
-typedef std::vector<std::vector<uint16_t>*> usspv;
-typedef std::vector<std::vector<uint16_t*>> uspsv;
 typedef std::vector<std::vector<std::vector<uint16_t>>> usssv;
-typedef std::vector<std::vector<std::vector<uint16_t>*>> ussspv;
-typedef std::vector<std::vector<std::reference_wrapper<usv>>> usssrv;
 typedef std::vector<std::vector<int16_t>> ssv;
 typedef std::vector<std::vector<bool>> bbv;
 typedef std::vector<bool> bv;
 typedef std::vector<void*> vpv;
+typedef std::vector<SudokuField> sfv;
+typedef std::vector<std::vector<SudokuField>> sffv;
 typedef std::vector<QLineEdit*> Qline_v;
-class SudokuBoxOptions;
-class MainWindow;
-class SudokuThread;
 
 class SudokuThread{
 public:
@@ -52,16 +51,42 @@ public:
 private:
     ussv field;
     usssv fieldOptions;
+};
 
+class SudokuField{
+public:
+    SudokuField(ussv m_field, usssv m_fieldOptions):field(m_field), fieldOptions(m_fieldOptions){ }
+    SudokuField(){}
+
+    usssv getFieldOptions(){
+        return fieldOptions;
+    }
+    ussv getField(){
+        return field;
+    }
+    void setFieldOptions(usssv o){
+        fieldOptions = o;
+    }
+    void setField(ussv f){
+        field = f;
+    }
+private:
+    ussv field;
+    usssv fieldOptions;
 };
 
 class Sudoku: public SudokuThread{
 public:
-     friend SudokuBoxOptions;
-     friend MainWindow;
-     friend SudokuThread;
+    friend SudokuBoxOptions;
+    friend MainWindow;
+    friend SudokuThread;
 
     Sudoku(){}
+
+    Sudoku(SudokuField m_sf){
+        field = m_sf.getField();
+        fieldOptions = m_sf.getFieldOptions();
+    }
 
     Sudoku(ussv m_field)
         : field(m_field){}
@@ -69,6 +94,8 @@ public:
     Sudoku(ussv m_field, usssv m_fieldOptions)
         : field(m_field)
         , fieldOptions(m_fieldOptions){}
+
+
 
     //bool hasIntegrity(ussv field = {});
 
@@ -79,6 +106,10 @@ public:
     ussv getField();
 
     usssv getFieldOptions();
+
+    void setField(ussv f);
+
+    void setFieldOptions(usssv o);
 
 private:
     enum class Axis{
@@ -135,7 +166,7 @@ private:
 
     usssv inBoxLockedCandidate();
 
-    ussv rowColElim(Axis axis, uint16_t loop_value, usv coords);
+    ussv rowColElim();
 
     void hiddenSingle();
 

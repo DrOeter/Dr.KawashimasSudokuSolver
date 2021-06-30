@@ -110,10 +110,10 @@ void MainWindow::on_button_clicked(){
     }
 
     updateClues(sudoku.getField());
-    updatePencilxy(sudoku.getFieldOptions());
+    //updatePencilxy(sudoku.getFieldOptions());
 
 */
-    std::ifstream list("C:\\Users\\Whoami\\Desktop\\sudokusfinal.txt");
+    std::ifstream list("C:\\Users\\Whoami\\Desktop\\Sudoku\\sudokusfinal.txt");
     std::string line;
     uint64_t correct = 1, count = 1;
 
@@ -129,6 +129,7 @@ void MainWindow::on_button_clicked(){
                 i++;
             }
         }
+        std::cout<<line<<std::endl;
         QElapsedTimer myTimer;
         myTimer.start();
 

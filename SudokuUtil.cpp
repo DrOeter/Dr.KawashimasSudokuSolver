@@ -43,7 +43,7 @@ void Sudoku::untilFind_8(){
     }
     find_8();
 
-    rowColElim(Axis::XY, 0 , usv() = {404,404,404});
+    rowColElim();
     //hiddenSingle();
 }
 
@@ -51,18 +51,18 @@ void Sudoku::untilOverFly(){
     ussv state = field;
     field = overFly();
 
-    untilRowColSearch();
+    //untilRowColSearch();
     untilFind_8();
 
     while( state != field ){
         field = state;
-        untilRowColSearch();
-        untilFind_8();
+      //  untilRowColSearch();
+        //untilFind_8();
         state = overFly();
 
 
     }
-    untilRowColSearch();
+    //untilRowColSearch();
     untilFind_8();
 }
 
