@@ -1,48 +1,79 @@
 #include "Sudoku.h"
 #include <windows.h>
 
+std::vector<std::string> permute(std::string a, int l, int r){
+    static std::vector<std::string> sv;
+    if (l == r) sv.push_back(a);
+    else {
+        for (int i = l; i <= r; i++) {
+            std::swap(a[l], a[i]);
+            permute(a, l+1, r);
+            std::swap(a[l], a[i]);
+        }
+    }
+    return sv;
+}
+
 void SudokuThread::start(ussv field){
-    sfv list(10000);
-    uint16_t done = 0, c = 0;
+    sfv list;
+    std::vector<std::string> combis = permute("01234", 0, 4);
+    uint16_t done = 0, c = 0, ci = 0;
     bool first = 0;
     Sudoku sudoku(field);
     sudoku.Solve();
-    field = sudoku.getField();
-    fieldOptions = sudoku.getFieldOptions();
+
+
+
+    Sudoku::SudokuField orig(sudoku.getField(), sudoku.getFieldOptions());
+
+    A:
+    QElapsedTimer timer;
+    timer.start();
+    first = 0;
+    c = 0;
+    list.clear();
+    list.resize(10000);
+
     std::vector<QThread*> t(6);
     QMutex m;
 
     while(done == 0){
         for(uint16_t i=0; i < 5;i++){
+            Sudoku tmp_sudoku = sudoku;
             if(!list.empty() && first == 1){
 
-                while(list[c].getField().empty() || list[c].getFieldOptions().empty() ){ c--; }
+                while(list[c].getField().empty() || list[c].getFieldOptions().empty() ){
+                    c--;
+                    //std::cout<<"hodensack"<<ci<<std::endl;
+                }
+                /*uint64_t back = 0;
+                for(auto i: list){
+                    if(!i.getField().empty()) back++;
+                    else break;
+                }*/
                 sudoku.setField(list[c].getField());
                 sudoku.setFieldOptions(list[c].getFieldOptions());
                 c++;
-                //std::cout<<"penis"<<std::endl;
-                //Sleep(1000);
-                //sfv tmp_list(list);
-                //list.clear();
-                //list.assign(tmp_list.begin() + 1, tmp_list.end());
             }
 
-
             t[i] = QThread::create([&](Sudoku ssudoku, uint16_t ii, uint16_t *done){
-                if( *done == 1) return;
-                SudokuField before, after;
+                if( *done == 1 || ssudoku.getField().empty()) return;
+                Sudoku::SudokuField before, after;
 
                 if(!ssudoku.hasIntegrity(ssudoku.getField()) && *done == 0){
-                    before.setField(ssudoku.getField());
-                    before.setFieldOptions(ssudoku.getFieldOptions());
+                    //before.setField(ssudoku.getField());
+                    //before.setFieldOptions(ssudoku.getFieldOptions());
+                    before = sudoku;
 
                     ssudoku.useAlgo(ii);
 
-                    after.setField(ssudoku.getField());
-                    after.setFieldOptions(ssudoku.getFieldOptions());
+                    after = sudoku;
 
-                    //std::cout<<"penis2"<<std::endl;
-                    //Sudoku().pUssv(ssudoku.getField());
+                    //if( ssudoku.hasFailed()) return;
+                    //std::cout<<"hodensack "<<ci<<std::endl;
+
+                    //after.setField(ssudoku.getField());
+                    //after.setFieldOptions(ssudoku.getFieldOptions());
 
                     uint64_t back = 0;
                     for(auto i: list){
@@ -55,12 +86,22 @@ void SudokuThread::start(ussv field){
                     *done = 1;
                     field = ssudoku.getField();
                 }
-            }, sudoku, i, &done );
+            }, sudoku, (combis[ci][i] - '0'), &done );
             t[i]->start();
         }
         for(uint16_t i=0; i < 5;i++)
             t[i]->wait();
         first = 1;
+
+        int mili = timer.elapsed();
+        if(mili > 1000){
+            sudoku.setField(orig.getField());
+            sudoku.setFieldOptions(orig.getFieldOptions());
+            std::cout<<"Penis "<<ci<<std::endl;
+            ci++;
+            goto A;
+        }
+
     }
 
     this->field = field;
@@ -68,24 +109,14 @@ void SudokuThread::start(ussv field){
 }
 
 void Sudoku::Solve(){
-    orig = field;
-    QElapsedTimer myTimer;
-    myTimer.start();
-
     untilFind_8();
     untilOverFly();
-
-    int mili = myTimer.elapsed();
-    std::cout<<"yeet1 "<<mili<<std::endl;
-
-    //updatePencilxy();
-    //updateClues();
+    find_8();
 }
 
 void Sudoku::AdvancedSolve(usv combi){
     for(auto i: combi)
         useAlgo(i);
-
 }
 
 void SudokuThread::setFieldOptions(usssv o){
@@ -196,9 +227,10 @@ void Sudoku::hiddenSingle(){
                             erase(fieldOptions[y][coords[0]], value);
                         }
                     }
+                    clueElim();
+                    find_8();
                 }
             }
-            clueElim();
         }
     }
 }
@@ -254,6 +286,7 @@ ussv Sudoku::rowColElim(){
                 if(complete == 1 && line[y_loc] == 0 && y_loc != 404 && find_v(box, value) == -1 ) field[y_loc][x] = value;
             }
         }
+    find_8();
 
     return field;
 }
@@ -583,10 +616,10 @@ usssv Sudoku::lockedCandidate(){
                         if( boxObj.getPos(1, yy) != y && pos != -1 && !options[yy][xx].empty()) {
                             boxObj.erase( xx, yy, value);
                             clueElim();
+                            find_8();
                         }
                     }
                 }
-                untilFind_8();
             }
         }
     }
@@ -634,13 +667,14 @@ usssv Sudoku::lockedCandidate(){
                         if( boxObj.getPos(0, xx) != x && pos != -1 && !options[yy][xx].empty()) {
                             boxObj.erase( xx, yy, value);
                             clueElim();
+                            find_8();
                         }
                     }
                 }
-                untilFind_8();
             }
         }
     }
+    untilFind_8();
     return fieldOptions;
 }
 
@@ -670,13 +704,15 @@ usssv Sudoku::inBoxLockedCandidate(){
                 for(uint16_t y=0; y < 3; y++){
                     if(row[y] == 1 && complete == 1) {
                         for(uint16_t x=0; x < 9; x++){
-                            if( find_v(xbox[gridxy[0]], x) == -1 && find_v(fieldOptions[ybox[gridxy[1]][y]][x], value) != -1 )
+                            if( find_v(xbox[gridxy[0]], x) == -1 && find_v(fieldOptions[ybox[gridxy[1]][y]][x], value) != -1 ){
                                 erase(fieldOptions[ybox[gridxy[1]][y]][x], value);
+                                clueElim();
+                                find_8();
+                            }
                         }
                     }
                 }
             }
-            clueElim();
         }
     }
     gridxy.clear();
@@ -703,13 +739,15 @@ usssv Sudoku::inBoxLockedCandidate(){
                 for(uint16_t x=0; x < 3; x++){
                     if(col[x] == 1 && complete == 1) {
                         for(uint16_t y=0; y < 9; y++){
-                            if( find_v(ybox[gridxy[1]], y) == -1 && find_v(fieldOptions[y][xbox[gridxy[0]][x]], value) != -1 )
+                            if( find_v(ybox[gridxy[1]], y) == -1 && find_v(fieldOptions[y][xbox[gridxy[0]][x]], value) != -1 ){
                                 erase(fieldOptions[y][xbox[gridxy[0]][x]], value);
+                                clueElim();
+                                find_8();
+                            }
                         }
                     }
                 }
             }
-            clueElim();
         }
     }
     untilFind_8();
@@ -744,12 +782,14 @@ usssv Sudoku::nakedDouble(){
                         if( !options[yy][xx].empty() && boxObj.getPos(1, yy) != y){
                             if( find_v(options[yy][xx], recoverd[0]) != -1 ) boxObj.erase( xx, yy, recoverd[0]);
                             if( find_v(options[yy][xx], recoverd[1]) != -1 ) boxObj.erase( xx, yy, recoverd[1]);
+
+                            clueElim();
+                            find_8();
                         }
                     }
                 }
             }
         }
-        clueElim();
     }
 
     for(uint16_t x=0; x < 9; x++){
@@ -776,12 +816,14 @@ usssv Sudoku::nakedDouble(){
                         if( !options[yy][xx].empty() && boxObj.getPos(0, xx) != x){
                             if( find_v(options[yy][xx], recoverd[0]) != -1 ) boxObj.erase( xx, yy, recoverd[0]);
                             if( find_v(options[yy][xx], recoverd[1]) != -1 ) boxObj.erase( xx, yy, recoverd[1]);
+
+                            clueElim();
+                            find_8();
                         }
                     }
                 }
             }
         }
-        clueElim();
     }
 
     for(uint16_t yBoxPos=0; yBoxPos < 3; yBoxPos++){
@@ -805,11 +847,12 @@ usssv Sudoku::nakedDouble(){
 
                             if( find_v(options[yy][xx], recoverd[0]) != -1 ) boxObj.erase( xx, yy, recoverd[0]);
                             if( find_v(options[yy][xx], recoverd[1]) != -1 ) boxObj.erase( xx, yy, recoverd[1]);
+                            clueElim();
+                            find_8();
                         }
                     }
                 }
             }
-            clueElim();
         }
     }
 
@@ -847,13 +890,14 @@ usssv Sudoku::nakedTriplet(){
                                 if( find_v(options[yy][xx], recoverd[0]) != -1 ) boxObj.erase( xx, yy, recoverd[0]);
                                 if( find_v(options[yy][xx], recoverd[1]) != -1 ) boxObj.erase( xx, yy, recoverd[1]);
                                 if( find_v(options[yy][xx], recoverd[2]) != -1 ) boxObj.erase( xx, yy, recoverd[2]);
+                                clueElim();
+                                find_8();
                             }
                         }
                     }
                 }
             }
         }
-        clueElim();
     }
 
     for(uint16_t x=0; x < 9; x++){
@@ -882,13 +926,14 @@ usssv Sudoku::nakedTriplet(){
                                 if( find_v(options[yy][xx], recoverd[0]) != -1 ) boxObj.erase( xx, yy, recoverd[0]);
                                 if( find_v(options[yy][xx], recoverd[1]) != -1 ) boxObj.erase( xx, yy, recoverd[1]);
                                 if( find_v(options[yy][xx], recoverd[2]) != -1 ) boxObj.erase( xx, yy, recoverd[2]);
+                                clueElim();
+                                find_8();
                             }
                         }
                     }
                 }
             }
         }
-        clueElim();
     }
 
     for(uint16_t yBoxPos=0; yBoxPos < 3; yBoxPos++){
@@ -914,11 +959,12 @@ usssv Sudoku::nakedTriplet(){
                             if( find_v(options[yy][xx], recoverd[0]) != -1 ) boxObj.erase( xx, yy, recoverd[0]);
                             if( find_v(options[yy][xx], recoverd[1]) != -1 ) boxObj.erase( xx, yy, recoverd[1]);
                             if( find_v(options[yy][xx], recoverd[2]) != -1 ) boxObj.erase( xx, yy, recoverd[2]);
+                            clueElim();
+                            find_8();
                         }
                     }
                 }
             }
-            clueElim();
         }
     }
     untilFind_8();

@@ -184,6 +184,18 @@ void Sudoku::clueElim(){
     }
 }
 
+bool Sudoku::hasFailed(){
+    bool failed = 0;
+    if(!field.empty() && !fieldOptions.empty()){
+        for (int y=0; y < 9;y++) {
+            for (int x=0; x < 9;x++) {
+                if(fieldOptions[y][x] != usv({}) && field[y][x] == 0) failed = 1;
+            }
+        }
+    }
+    return failed;
+}
+
 void Sudoku::erase(usv &v, uint16_t value){
     v.erase(std::remove(v.begin(), v.end(), value), v.end());
 }

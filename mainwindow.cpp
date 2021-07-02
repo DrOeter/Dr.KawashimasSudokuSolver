@@ -58,7 +58,7 @@ MainWindow::~MainWindow(){
 
 void MainWindow::on_button_clicked(){
     ui->button->setEnabled(false);
-  /*  std::ifstream fi("C:\\Users\\Whoami\\Documents\\PROJEKTE\\QT\\Sudoku\\SudokuOld\\Sudoku\\sudokus");
+ /*   std::ifstream fi("C:\\Users\\Whoami\\Documents\\PROJEKTE\\QT\\Sudoku\\SudokuOld\\Sudoku\\sudokus");
     std::ofstream fo("C:\\Users\\Whoami\\Documents\\PROJEKTE\\QT\\Sudoku\\SudokuOld\\Sudoku\\sudokus", std::ios::app);
     ussv fileField;
     std::string line;
@@ -100,20 +100,26 @@ void MainWindow::on_button_clicked(){
 
     sudoku.start(field);
 
-    if(sudoku.hasIntegrity()){
+    //Sudoku sudoku(field);
+
+    //sudoku.Solve();
+    //sudoku.lockedCandidate();
+
+    if(sudoku.hasIntegrity(sudoku.getField())){
         ui->label->setText("Solved");
         ui->label->setStyleSheet("QLabel { color: green } ");
     }
-    else if(!sudoku.hasIntegrity()){
+    else if(!sudoku.hasIntegrity(sudoku.getField())){
         ui->label->setText("Unsolved");
         ui->label->setStyleSheet("QLabel { color: red } ");
     }
 
-    updateClues(sudoku.getField());
     //updatePencilxy(sudoku.getFieldOptions());
+    updateClues(sudoku.getField());
 
-*/
-    std::ifstream list("C:\\Users\\Whoami\\Desktop\\Sudoku\\sudokusfinal.txt");
+
+
+    */ std::ifstream list("C:\\Users\\Whoami\\Desktop\\Sudoku\\evilsudoku.txt");
     std::string line;
     uint64_t correct = 1, count = 1;
 

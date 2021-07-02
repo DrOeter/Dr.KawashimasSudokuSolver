@@ -21,6 +21,7 @@
 class SudokuBoxOptions;
 class MainWindow;
 class SudokuField;
+class Sudoku;
 
 typedef std::vector<uint16_t> usv;
 typedef std::vector<int16_t> sv;
@@ -30,7 +31,6 @@ typedef std::vector<std::vector<int16_t>> ssv;
 typedef std::vector<std::vector<bool>> bbv;
 typedef std::vector<bool> bv;
 typedef std::vector<void*> vpv;
-typedef std::vector<SudokuField> sfv;
 typedef std::vector<std::vector<SudokuField>> sffv;
 typedef std::vector<QLineEdit*> Qline_v;
 
@@ -53,47 +53,55 @@ private:
     usssv fieldOptions;
 };
 
-class SudokuField{
-public:
-    SudokuField(ussv m_field, usssv m_fieldOptions):field(m_field), fieldOptions(m_fieldOptions){ }
-    SudokuField(){}
-
-    usssv getFieldOptions(){
-        return fieldOptions;
-    }
-    ussv getField(){
-        return field;
-    }
-    void setFieldOptions(usssv o){
-        fieldOptions = o;
-    }
-    void setField(ussv f){
-        field = f;
-    }
-private:
-    ussv field;
-    usssv fieldOptions;
-};
-
 class Sudoku: public SudokuThread{
 public:
     friend SudokuBoxOptions;
     friend MainWindow;
     friend SudokuThread;
 
+    class SudokuField{
+    public:
+        SudokuField(ussv m_field, usssv m_fieldOptions):field(m_field), fieldOptions(m_fieldOptions){ }
+        SudokuField(){}
+
+        usssv getFieldOptions(){
+            return fieldOptions;
+        }
+        ussv getField(){
+            return field;
+        }
+        void setFieldOptions(usssv o){
+            fieldOptions = o;
+        }
+        void setField(ussv f){
+            field = f;
+        }
+        SudokuField operator=(Sudoku &sudoku){
+            SudokuField sf;
+            sf.setField(sudoku.getField());
+            sf.setFieldOptions(sudoku.getFieldOptions());
+            return sf;
+        }
+
+    private:
+        ussv field;
+        usssv fieldOptions;
+    };
+
     Sudoku(){}
 
     Sudoku(SudokuField m_sf){
         field = m_sf.getField();
         fieldOptions = m_sf.getFieldOptions();
+        orig = field;
     }
 
     Sudoku(ussv m_field)
-        : field(m_field){}
+        : field(m_field){orig = field;}
 
     Sudoku(ussv m_field, usssv m_fieldOptions)
         : field(m_field)
-        , fieldOptions(m_fieldOptions){}
+        , fieldOptions(m_fieldOptions){orig = field;}
 
 
 
@@ -110,6 +118,8 @@ public:
     void setField(ussv f);
 
     void setFieldOptions(usssv o);
+
+    bool hasFailed();
 
 private:
     enum class Axis{
@@ -196,6 +206,7 @@ private:
                       {1, 2},
                       {2, 2}};
 };
+typedef std::vector<Sudoku::SudokuField> sfv;
 
 class SudokuBox{
 public:
