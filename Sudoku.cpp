@@ -95,7 +95,6 @@ void SudokuThread::start(ussv field){
             goto A;
         }
     }
-B:
 
     this->fieldOptions = list[::back(list) - 1].getFieldOptions();
     this->field = field;
@@ -221,7 +220,7 @@ void Sudoku::hiddenSingle(){
                         }
                     }
                     clueElim();
-                    find_8();
+                    untilRefresh();
                 }
             }
         }
@@ -279,7 +278,7 @@ ussv Sudoku::rowColElim(){
                 if(complete == 1 && line[y_loc] == 0 && y_loc != 404 && find_v(box, value) == -1 ) field[y_loc][x] = value;
             }
         }
-    find_8();
+    untilRefresh();
 
     return field;
 }
