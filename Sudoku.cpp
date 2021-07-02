@@ -22,8 +22,10 @@ void SudokuThread::start(ussv field){
     Sudoku sudoku(field);
     sudoku.Solve();
 
-
-
+    if(hasIntegrity(sudoku.getField())){
+        field = sudoku.getField();
+        done = 1;
+    }
     Sudoku::SudokuField orig(sudoku.getField(), sudoku.getFieldOptions());
 
     A:
@@ -42,15 +44,7 @@ void SudokuThread::start(ussv field){
             Sudoku tmp_sudoku = sudoku;
             if(!list.empty() && first == 1){
 
-                while(list[c].getField().empty() || list[c].getFieldOptions().empty() ){
-                    c--;
-                    //std::cout<<"hodensack"<<ci<<std::endl;
-                }
-                /*uint64_t back = 0;
-                for(auto i: list){
-                    if(!i.getField().empty()) back++;
-                    else break;
-                }*/
+                while(list[c].getField().empty() || list[c].getFieldOptions().empty() ){ c--; }
                 sudoku.setField(list[c].getField());
                 sudoku.setFieldOptions(list[c].getFieldOptions());
                 c++;
@@ -61,19 +55,16 @@ void SudokuThread::start(ussv field){
                 Sudoku::SudokuField before, after;
 
                 if(!ssudoku.hasIntegrity(ssudoku.getField()) && *done == 0){
-                    //before.setField(ssudoku.getField());
-                    //before.setFieldOptions(ssudoku.getFieldOptions());
-                    before = sudoku;
+                    before.setField(ssudoku.getField());
+                    before.setFieldOptions(ssudoku.getFieldOptions());
+                    //before = sudoku;
 
                     ssudoku.useAlgo(ii);
 
-                    after = sudoku;
+                    //after = sudoku;
 
-                    //if( ssudoku.hasFailed()) return;
-                    //std::cout<<"hodensack "<<ci<<std::endl;
-
-                    //after.setField(ssudoku.getField());
-                    //after.setFieldOptions(ssudoku.getFieldOptions());
+                    after.setField(ssudoku.getField());
+                    after.setFieldOptions(ssudoku.getFieldOptions());
 
                     uint64_t back = 0;
                     for(auto i: list){
@@ -101,9 +92,14 @@ void SudokuThread::start(ussv field){
             ci++;
             goto A;
         }
-
     }
 
+    uint64_t back = 0;
+    for(auto i: list){
+        if(!i.getField().empty()) back++;
+        else break;
+    }
+    this->fieldOptions = list[back - 1].getFieldOptions();
     this->field = field;
 
 }
@@ -111,7 +107,6 @@ void SudokuThread::start(ussv field){
 void Sudoku::Solve(){
     untilFind_8();
     untilOverFly();
-    find_8();
 }
 
 void Sudoku::AdvancedSolve(usv combi){
@@ -506,6 +501,7 @@ ussv Sudoku::overFly(){
             }
         }
     }
+    field = newfield;
     return newfield;
 }
 

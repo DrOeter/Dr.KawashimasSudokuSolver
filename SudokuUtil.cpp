@@ -48,21 +48,21 @@ void Sudoku::untilFind_8(){
 }
 
 void Sudoku::untilOverFly(){
+    if(hasIntegrity(field)) return;
     ussv state = field;
-    field = overFly();
+    overFly();
+    A:
 
-    //untilRowColSearch();
-    untilFind_8();
-
-    while( state != field ){
-        field = state;
-      //  untilRowColSearch();
+    while( state != field && hasIntegrity(state) ){
+        state = field;
         //untilFind_8();
-        state = overFly();
-
-
+        overFly();
     }
-    //untilRowColSearch();
+    ussv last_state = rowColElim();
+
+
+
+    if(last_state != field && !last_state.empty() && !state.empty()) goto A;
     untilFind_8();
 }
 
