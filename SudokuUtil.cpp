@@ -44,7 +44,18 @@ void Sudoku::untilFind_8(){
     find_8();
 
     rowColElim();
-    //hiddenSingle();
+}
+
+void Sudoku::untilRefresh(){
+    ussv state = fieldOptionList;
+    fieldOptionList = find_8();
+
+    while( state != fieldOptionList ){
+        fieldOptionList = state;
+        state = find_8();
+    }
+    find_8();
+
 }
 
 void Sudoku::untilOverFly(){

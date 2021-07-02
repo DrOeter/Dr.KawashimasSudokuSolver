@@ -80,6 +80,11 @@ public:
             this->setField(sudoku.getField());
             this->setFieldOptions(sudoku.getFieldOptions());
         }
+        bool operator!=(SudokuField sudoku){
+            bool unequal = 0;
+            if(this->getField() != sudoku.getField() || this->getFieldOptions() != sudoku.getFieldOptions())unequal = 1;
+            return unequal;
+        }
 
     private:
         ussv field;
@@ -161,6 +166,8 @@ private:
     void pUsv(usv vector);
 
     void untilFind_8();
+
+    void untilRefresh();
 
     void untilOverFly();
 

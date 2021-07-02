@@ -106,10 +106,7 @@ void MainWindow::on_button_clicked(){
 
     sudoku.untilFind_8();
     sudoku.untilOverFly();
-    sudoku.nakedDouble();
-    sudoku.hiddenSingle();
-    sudoku.hiddenSingle();
-    sudoku.lockedCandidate();*/
+    sudoku.nakedTriplet();*/
 
 
     if(sudoku.hasIntegrity(sudoku.getField())){
@@ -121,12 +118,12 @@ void MainWindow::on_button_clicked(){
         ui->label->setStyleSheet("QLabel { color: red } ");
     }
 
-    updatePencilxy(sudoku.getFieldOptions());
+    //updatePencilxy(sudoku.getFieldOptions());
     updateClues(sudoku.getField());
 #endif
 
 #ifdef MODE_M
-    std::ifstream list("C:\\Users\\Whoami\\Desktop\\Sudoku\\sudokusfinal.txt");
+    std::ifstream list("C:\\Users\\Whoami\\Desktop\\Sudoku\\evilsudoku.txt");
     std::string line;
     uint64_t correct = 1, count = 1;
 
