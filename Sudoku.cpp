@@ -14,10 +14,19 @@ std::vector<std::string> permute(std::string a, int l, int r){
     return sv;
 }
 
+uint64_t back(sfv list){
+uint64_t back = 0;
+for(auto i: list){
+    if(!i.getField().empty()) back++;
+    else break;
+}
+    return back;
+}
+
 void SudokuThread::start(ussv field){
     sfv list;
     std::vector<std::string> combis = permute("01234", 0, 4);
-    uint16_t done = 0, c = 0, ci = 0;
+    uint16_t done = 0, c = 0, ci = 0, equals = 0;
     bool first = 0;
     Sudoku sudoku(field);
     sudoku.Solve();
@@ -33,45 +42,38 @@ void SudokuThread::start(ussv field){
     timer.start();
     first = 0;
     c = 0;
+    equals = 0;
+    Sudoku tmp_sudoku;
     list.clear();
     list.resize(10000);
 
-    std::vector<QThread*> t(6);
+    std::vector<QThread*> t(5);
     QMutex m;
 
     while(done == 0){
         for(uint16_t i=0; i < 5;i++){
-            Sudoku tmp_sudoku = sudoku;
-            if(!list.empty() && first == 1){
 
+            if(!list.empty() && first == 1){
                 while(list[c].getField().empty() || list[c].getFieldOptions().empty() ){ c--; }
                 sudoku.setField(list[c].getField());
                 sudoku.setFieldOptions(list[c].getFieldOptions());
                 c++;
             }
+            if(tmp_sudoku == sudoku) equals++;
+            tmp_sudoku = sudoku;
 
             t[i] = QThread::create([&](Sudoku ssudoku, uint16_t ii, uint16_t *done){
                 if( *done == 1 || ssudoku.getField().empty()) return;
                 Sudoku::SudokuField before, after;
 
                 if(!ssudoku.hasIntegrity(ssudoku.getField()) && *done == 0){
-                    before.setField(ssudoku.getField());
-                    before.setFieldOptions(ssudoku.getFieldOptions());
-                    //before = sudoku;
+                    before.setSudoku(ssudoku);
 
                     ssudoku.useAlgo(ii);
 
-                    //after = sudoku;
+                    after.setSudoku(ssudoku);
 
-                    after.setField(ssudoku.getField());
-                    after.setFieldOptions(ssudoku.getFieldOptions());
-
-                    uint64_t back = 0;
-                    for(auto i: list){
-                        if(!i.getField().empty()) back++;
-                        else break;
-                    }
-                    if(before.getField() != after.getField() || before.getFieldOptions() != after.getFieldOptions()) list[back] = after;
+                    if(before.getField() != after.getField() || before.getFieldOptions() != after.getFieldOptions()) list[::back(list)] = after;
                 }
                 if(ssudoku.hasIntegrity(ssudoku.getField()) && *done == 0){
                     *done = 1;
@@ -85,7 +87,7 @@ void SudokuThread::start(ussv field){
         first = 1;
 
         int mili = timer.elapsed();
-        if(mili > 1000){
+        if(mili > 1000 || equals >= 100){
             sudoku.setField(orig.getField());
             sudoku.setFieldOptions(orig.getFieldOptions());
             std::cout<<"Penis "<<ci<<std::endl;
@@ -94,12 +96,7 @@ void SudokuThread::start(ussv field){
         }
     }
 
-    uint64_t back = 0;
-    for(auto i: list){
-        if(!i.getField().empty()) back++;
-        else break;
-    }
-    this->fieldOptions = list[back - 1].getFieldOptions();
+    this->fieldOptions = list[::back(list) - 1].getFieldOptions();
     this->field = field;
 
 }

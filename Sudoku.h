@@ -76,17 +76,23 @@ public:
         void setField(ussv f){
             field = f;
         }
-        SudokuField operator=(Sudoku &sudoku){
-            SudokuField sf;
-            sf.setField(sudoku.getField());
-            sf.setFieldOptions(sudoku.getFieldOptions());
-            return sf;
+        void setSudoku(Sudoku sudoku){
+            this->setField(sudoku.getField());
+            this->setFieldOptions(sudoku.getFieldOptions());
         }
 
     private:
         ussv field;
         usssv fieldOptions;
     };
+
+    bool operator==(Sudoku sudoku){
+        bool equal = 0;
+        if(this->getField() == sudoku.getField() && this->getFieldOptions() == sudoku.getFieldOptions())equal = 1;
+        return equal;
+    }
+
+
 
     Sudoku(){}
 
