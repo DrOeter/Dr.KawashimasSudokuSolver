@@ -54,8 +54,6 @@ void Sudoku::untilRefresh(){
         fieldOptionList = state;
         state = find_8();
     }
-    find_8();
-
 }
 
 void Sudoku::untilOverFly(){
