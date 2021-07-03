@@ -38,66 +38,67 @@ void SudokuThread::start(ussv field){
     Sudoku::SudokuField orig(sudoku.getField(), sudoku.getFieldOptions());
 
     A:
-    QElapsedTimer timer;
-    timer.start();
-    first = 0;
-    c = 0;
-    equals = 0;
-    Sudoku tmp_sudoku;
-    list.clear();
-    list.resize(10000);
+    if(done == 0){
+        QElapsedTimer timer;
+        timer.start();
+        first = 0;
+        c = 0;
+        equals = 0;
+        Sudoku tmp_sudoku;
+        list.clear();
+        list.resize(10000);
+    
+        std::vector<QThread*> t(5);
+        QMutex m;
+    
+        while(done == 0){
+            for(uint16_t i=0; i < 5;i++){
 
-    std::vector<QThread*> t(5);
-    QMutex m;
+                if(!list.empty() && first == 1){
+                    while(list[c].getField().empty() || list[c].getFieldOptions().empty() ){ c--; }
+                    sudoku.setField(list[c].getField());
+                    sudoku.setFieldOptions(list[c].getFieldOptions());
+                    c++;
+                }
+                if(tmp_sudoku == sudoku) equals++;
+                tmp_sudoku = sudoku;
 
-    while(done == 0){
-        for(uint16_t i=0; i < 5;i++){
+                t[i] = QThread::create([&](Sudoku ssudoku, uint16_t ii, uint16_t *done){
+                    if( *done == 1 || ssudoku.getField().empty()) return;
+                    Sudoku::SudokuField before, after;
 
-            if(!list.empty() && first == 1){
-                while(list[c].getField().empty() || list[c].getFieldOptions().empty() ){ c--; }
-                sudoku.setField(list[c].getField());
-                sudoku.setFieldOptions(list[c].getFieldOptions());
-                c++;
+                    if(!ssudoku.hasIntegrity(ssudoku.getField()) && *done == 0){
+                        before.setSudoku(ssudoku);
+
+                        ssudoku.useAlgo(ii);
+
+                        after.setSudoku(ssudoku);
+
+                        if(before != after) list[::back(list)] = after;
+                    }
+                    if(ssudoku.hasIntegrity(ssudoku.getField()) && *done == 0){
+                        *done = 1;
+                        field = ssudoku.getField();
+                    }
+                }, sudoku, (combis[ci][i] - '0'), &done );
+                t[i]->start();
             }
-            if(tmp_sudoku == sudoku) equals++;
-            tmp_sudoku = sudoku;
+            for(uint16_t i=0; i < 5;i++)
+                t[i]->wait();
+            first = 1;
 
-            t[i] = QThread::create([&](Sudoku ssudoku, uint16_t ii, uint16_t *done){
-                if( *done == 1 || ssudoku.getField().empty()) return;
-                Sudoku::SudokuField before, after;
-
-                if(!ssudoku.hasIntegrity(ssudoku.getField()) && *done == 0){
-                    before.setSudoku(ssudoku);
-
-                    ssudoku.useAlgo(ii);
-
-                    after.setSudoku(ssudoku);
-
-                    if(before != after) list[::back(list)] = after;
-                }
-                if(ssudoku.hasIntegrity(ssudoku.getField()) && *done == 0){
-                    *done = 1;
-                    field = ssudoku.getField();
-                }
-            }, sudoku, (combis[ci][i] - '0'), &done );
-            t[i]->start();
-        }
-        for(uint16_t i=0; i < 5;i++)
-            t[i]->wait();
-        first = 1;
-
-        int mili = timer.elapsed();
-        if(mili > 10000 || equals >= 100){
-            sudoku.setField(orig.getField());
-            sudoku.setFieldOptions(orig.getFieldOptions());
-            std::cout<<"Penis "<<ci<<std::endl;
-            ci++;
-            goto A;
+            int mili = timer.elapsed();
+            if(mili > 10000 || equals >= 100){
+                sudoku.setField(orig.getField());
+                sudoku.setFieldOptions(orig.getFieldOptions());
+                std::cout<<"Penis "<<ci<<std::endl;
+                ci++;
+                goto A;
+            }
         }
     }
-B:
 
-    this->fieldOptions = list[::back(list) - 1].getFieldOptions();
+    //this->fieldOptions = list[::back(list) - 1].getFieldOptions();
     this->field = field;
 
 }
