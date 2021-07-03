@@ -143,9 +143,9 @@ void MainWindow::on_button_clicked(){
         QElapsedTimer myTimer;
         myTimer.start();
 
-        Sudoku sudoku;
+        Sudoku sudoku(ffield);
 
-        sudoku.start(ffield);
+        sudoku.start();
 
         int mili = myTimer.elapsed();
         std::cout<<"time: "<<mili<<std::endl;

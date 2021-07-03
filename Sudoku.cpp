@@ -22,8 +22,9 @@ for(auto i: list){
     return back;
 }
 
-void Sudoku::start(ussv field){
+void Sudoku::start(){
     sfv list;
+    ussv unsolved = field;
     std::vector<std::string> combis = permute("01234", 0, 4);
     uint16_t done = 0, c = 0, ci = 0, equals = 0;
     bool first = 0;
@@ -36,8 +37,7 @@ void Sudoku::start(ussv field){
     }
     SudokuSolv::SudokuField orig(sudoku.getField(), sudoku.getFieldOptions());
 
-    A:
-    if(done == 0){
+    while(done == 0){
         auto start = std::chrono::system_clock::now();
         first = 0;
         c = 0;
@@ -91,13 +91,11 @@ void Sudoku::start(ussv field){
                 sudoku.setFieldOptions(orig.getFieldOptions());
                 std::cout<<"Cycle "<<ci<<std::endl;
                 ci++;
-                goto A;
+                break;
             }
         }
     }
-
     if(!list.empty()) this->fieldOptions = list[::back(list) - 1].getFieldOptions();
-    this->field = field;
 }
 
 void SudokuSolv::Solve(){
@@ -179,8 +177,8 @@ void SudokuSolv::hiddenSingle(){
 
     for(uint16_t yBoxPos=0; yBoxPos < 3; yBoxPos++){
         for(uint16_t xBoxPos=0; xBoxPos < 3; xBoxPos++){
-            uint16_t x = xbox[xBoxPos][0];
-            uint16_t y = ybox[yBoxPos][0];
+            uint16_t x = sus::xbox[xBoxPos][0];
+            uint16_t y = sus::ybox[yBoxPos][0];
             SudokuBoxOptions boxObj(fieldOptions);
             usssv options = boxObj.get3dBox(x, y);
 
@@ -441,54 +439,46 @@ void SudokuSolv::rowColSolve(ussv &field, sv pos_row, uint16_t x, uint16_t y, ui
 
 ussv SudokuSolv::overFly(){
     if(hasIntegrity(field)) return ussv();
-    ssv position = {{1,2,1,2},
-                    {1,-1,1,2},
-                    {-1,-2,1,2},
-                    {1,2,1,-1},
-                    {1,-1,1,-1},
-                    {-1,-2,1,-1},
-                    {1,2,-1,-2},
-                    {1,-1,-1,-2},
-                    {-1,-2,-1,-2}};
+
     ussv newfield = field;
 
     for(uint16_t y=0; y < 9;y++){
         for(uint16_t x=0; x < 9;x++){
             if( (x == 0 || x == 0 +3 || x == 0 +3+3) && (y == 0 || y == 0 +3 || y == 0 +3+3) ){
                 //x + 1 & x + 2 & y + 1 & y + 2
-                rowColSolve(newfield, position[0], x, y, 0, 0);
+                rowColSolve(newfield, sus::position[0], x, y, 0, 0);
             }
             if( (x == 1 || x == 1 +3 || x == 1 +3+3) && (y == 0 || y == 0 +3 || y == 0 +3+3) ){
                 //x + 1 & x - 1 & y + 1 & y + 2
-                rowColSolve(newfield, position[1], x, y, 1, 0);
+                rowColSolve(newfield, sus::position[1], x, y, 1, 0);
             }
             if( (x == 2 || x == 2 +3 || x == 2 +3+3) && (y == 0 || y == 0 +3 || y == 0 +3+3) ){
                 //x - 1 & x - 2 & y + 1 & y + 2
-                rowColSolve(newfield, position[2], x, y, 2, 0);
+                rowColSolve(newfield, sus::position[2], x, y, 2, 0);
             }
             if( (x == 0 || x == 0 +3 || x == 0 +3+3) && (y == 1 || y == 1 +3 || y == 1 +3+3) ){
                 //x + 1 & x + 2 & y + 1 & y - 1
-                rowColSolve(newfield, position[3], x, y, 0, 1);
+                rowColSolve(newfield, sus::position[3], x, y, 0, 1);
             }
             if( (x == 1 || x == 1 +3 || x == 1 +3+3) && (y == 1 || y == 1 +3 || y == 1 +3+3) ){
                 //x + 1 & x - 1 & y + 1 & y - 1
-                rowColSolve(newfield, position[4], x, y, 1, 1);
+                rowColSolve(newfield, sus::position[4], x, y, 1, 1);
             }
             if( (x == 2 || x == 2 +3 || x == 2 +3+3) && (y == 1 || y == 1 +3 || y == 1 +3+3) ){
                 //x + 1 & x - 2 & y + 1 & y - 1
-                rowColSolve(newfield, position[5], x, y, 2, 1);
+                rowColSolve(newfield, sus::position[5], x, y, 2, 1);
             }
             if( (x == 0 || x == 0 +3 || x == 0 +3+3) && (y == 2 || y == 2 +3 || y == 2 +3+3) ){
                 //x + 1 & x + 2 & y - 1 & y - 2
-                rowColSolve(newfield, position[6], x, y, 0, 2);
+                rowColSolve(newfield, sus::position[6], x, y, 0, 2);
             }
             if( (x == 1 || x == 1 +3 || x == 1 +3+3) && (y == 2 || y == 2 +3 || y == 2 +3+3) ){
                 //x + 1 & x - 1 & y - 1 & y - 2
-                rowColSolve(newfield, position[7], x, y, 1, 2);
+                rowColSolve(newfield, sus::position[7], x, y, 1, 2);
             }
             if( (x == 2 || x == 2 +3 || x == 2 +3+3) && (y == 2 || y == 2 +3 || y == 2 +3+3) ){
                 //x - 1 & x - 2 & y - 1 & y - 2
-                rowColSolve(newfield, position[8], x, y, 2, 2);
+                rowColSolve(newfield, sus::position[8], x, y, 2, 2);
             }
         }
     }
@@ -508,9 +498,9 @@ usssv SudokuSolv::lockedCandidate(){
                 usv dec_box = SudokuBox::findBox(x, y);
                 if(!fieldOptions[y][x].empty()){
                     for(uint16_t i=0; i < 3; i++)
-                        if( find_v(fieldOptions[y][x], value) != -1 && find_v(xbox[i], x) != -1 ) box[i] = 1;
+                        if( find_v(fieldOptions[y][x], value) != -1 && find_v(sus::xbox[i], x) != -1 ) box[i] = 1;
                 }
-                else if(field[y][xbox[dec_box[0]][0]] != 0 && field[y][xbox[dec_box[0]][1]] != 0 && field[y][xbox[dec_box[0]][2]] != 0 && old_box != dec_box)
+                else if(field[y][sus::xbox[dec_box[0]][0]] != 0 && field[y][sus::xbox[dec_box[0]][1]] != 0 && field[y][sus::xbox[dec_box[0]][2]] != 0 && old_box != dec_box)
                     full_row++;
 
                 old_box = dec_box;
@@ -527,8 +517,8 @@ usssv SudokuSolv::lockedCandidate(){
 
             for(uint16_t i=0; i < 3; i++)
                 if(box[i] == 1 && complete == 1)  {
-                    options = boxObj.get3dBox(xbox[i][0], y);
-                    gridxy = SudokuBox::findBox(xbox[i][0], y);
+                    options = boxObj.get3dBox(sus::xbox[i][0], y);
+                    gridxy = SudokuBox::findBox(sus::xbox[i][0], y);
                 }
 
             if(!options.empty()){
@@ -556,10 +546,10 @@ usssv SudokuSolv::lockedCandidate(){
                 usv dec_box = SudokuBox::findBox(x, y);
                 if(!fieldOptions[y][x].empty()){
                     for(uint16_t i=0; i < 3; i++)
-                        if( find_v(fieldOptions[y][x], value) != -1 && find_v(xbox[i], y) != -1 ) box[i] = 1;
+                        if( find_v(fieldOptions[y][x], value) != -1 && find_v(sus::xbox[i], y) != -1 ) box[i] = 1;
                 }
 
-                else if(field[ybox[dec_box[1]][0]][x] != 0 && field[ybox[dec_box[1]][1]][x] != 0 && field[ybox[dec_box[1]][2]][x] != 0 && old_box != dec_box){
+                else if(field[sus::ybox[dec_box[1]][0]][x] != 0 && field[sus::ybox[dec_box[1]][1]][x] != 0 && field[sus::ybox[dec_box[1]][2]][x] != 0 && old_box != dec_box){
                     full_col++;
                 }
                 old_box = dec_box;
@@ -575,8 +565,8 @@ usssv SudokuSolv::lockedCandidate(){
 
             for(uint16_t i=0; i < 3; i++)
                 if(box[i] == 1 && complete == 1) {
-                    options = boxObj.get3dBox(x, ybox[i][0]);
-                    gridxy = SudokuBox::findBox(x, ybox[i][0]);
+                    options = boxObj.get3dBox(x, sus::ybox[i][0]);
+                    gridxy = SudokuBox::findBox(x, sus::ybox[i][0]);
                 }
 
             if(!options.empty()){
@@ -624,8 +614,8 @@ usssv SudokuSolv::inBoxLockedCandidate(){
                 for(uint16_t y=0; y < 3; y++){
                     if(row[y] == 1 && complete == 1) {
                         for(uint16_t x=0; x < 9; x++){
-                            if( find_v(xbox[gridxy[0]], x) == -1 && find_v(fieldOptions[ybox[gridxy[1]][y]][x], value) != -1 ){
-                                erase(fieldOptions[ybox[gridxy[1]][y]][x], value);
+                            if( find_v(sus::xbox[gridxy[0]], x) == -1 && find_v(fieldOptions[sus::ybox[gridxy[1]][y]][x], value) != -1 ){
+                                erase(fieldOptions[sus::ybox[gridxy[1]][y]][x], value);
                                 clueElim();
                                 untilRefresh();
                             }
@@ -659,8 +649,8 @@ usssv SudokuSolv::inBoxLockedCandidate(){
                 for(uint16_t x=0; x < 3; x++){
                     if(col[x] == 1 && complete == 1) {
                         for(uint16_t y=0; y < 9; y++){
-                            if( find_v(ybox[gridxy[1]], y) == -1 && find_v(fieldOptions[y][xbox[gridxy[0]][x]], value) != -1 ){
-                                erase(fieldOptions[y][xbox[gridxy[0]][x]], value);
+                            if( find_v(sus::ybox[gridxy[1]], y) == -1 && find_v(fieldOptions[y][sus::xbox[gridxy[0]][x]], value) != -1 ){
+                                erase(fieldOptions[y][sus::xbox[gridxy[0]][x]], value);
                                 clueElim();
                                 untilRefresh();
                             }
@@ -748,8 +738,8 @@ usssv SudokuSolv::nakedDouble(){
 
     for(uint16_t yBoxPos=0; yBoxPos < 3; yBoxPos++){
         for(uint16_t xBoxPos=0; xBoxPos < 3; xBoxPos++){
-            uint16_t x = xbox[xBoxPos][0];
-            uint16_t y = ybox[yBoxPos][0];
+            uint16_t x = sus::xbox[xBoxPos][0];
+            uint16_t y = sus::ybox[yBoxPos][0];
             SudokuBoxOptions boxObj(fieldOptions);
             usssv options = boxObj.get3dBox(x, y);
             bool find = 0;
@@ -762,8 +752,8 @@ usssv SudokuSolv::nakedDouble(){
                 for(uint16_t yy=0; yy < 3; yy++){
                     for(uint16_t xx=0; xx < 3; xx++){
                         if( !options[yy][xx].empty() && options[yy][xx] != recoverd
-                            && listToPos[coords[0]] != usv{xx, yy}
-                            && listToPos[coords[1]] != usv{xx, yy} ){
+                            && sus::listToPos[coords[0]] != usv{xx, yy}
+                            && sus::listToPos[coords[1]] != usv{xx, yy} ){
 
                             if( find_v(options[yy][xx], recoverd[0]) != -1 ) boxObj.erase( xx, yy, recoverd[0]);
                             if( find_v(options[yy][xx], recoverd[1]) != -1 ) boxObj.erase( xx, yy, recoverd[1]);
@@ -858,8 +848,8 @@ usssv SudokuSolv::nakedTriplet(){
 
     for(uint16_t yBoxPos=0; yBoxPos < 3; yBoxPos++){
         for(uint16_t xBoxPos=0; xBoxPos < 3; xBoxPos++){
-            uint16_t x = xbox[xBoxPos][0];
-            uint16_t y = ybox[yBoxPos][0];
+            uint16_t x = sus::xbox[xBoxPos][0];
+            uint16_t y = sus::ybox[yBoxPos][0];
             SudokuBoxOptions boxObj(fieldOptions);
             usssv options = boxObj.get3dBox(x, y);
             bool find = 0;
@@ -872,9 +862,9 @@ usssv SudokuSolv::nakedTriplet(){
                 for(uint16_t yy=0; yy < 3; yy++){
                     for(uint16_t xx=0; xx < 3; xx++){
                         if( !options[yy][xx].empty() && options[yy][xx] != recoverd
-                            && listToPos[coords[0]] != usv{xx, yy}
-                            && listToPos[coords[1]] != usv{xx, yy}
-                            && listToPos[coords[2]] != usv{xx, yy}  ){
+                            && sus::listToPos[coords[0]] != usv{xx, yy}
+                            && sus::listToPos[coords[1]] != usv{xx, yy}
+                            && sus::listToPos[coords[2]] != usv{xx, yy}  ){
 
                             if( find_v(options[yy][xx], recoverd[0]) != -1 ) boxObj.erase( xx, yy, recoverd[0]);
                             if( find_v(options[yy][xx], recoverd[1]) != -1 ) boxObj.erase( xx, yy, recoverd[1]);

@@ -85,7 +85,7 @@ usssv SudokuBoxOptions::get3dBox(uint16_t x ,uint16_t y){
 uint16_t SudokuBoxOptions::getPos(bool xy , uint16_t coord){
     usv gridxy = SudokuBox::findBox(x, y);
 
-    return xbox[gridxy[ xy ]][coord];
+    return sus::xbox[gridxy[ xy ]][coord];
 }
 
 void SudokuBoxOptions::erase(uint16_t x, uint16_t y, uint16_t value){

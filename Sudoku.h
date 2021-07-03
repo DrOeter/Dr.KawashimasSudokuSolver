@@ -11,7 +11,7 @@
 #include <cassert>
 #include <chrono>
 
-#define ARRAY_POS [ybox[gridxy[1]][yy]][xbox[gridxy[0]][xx]]
+#define ARRAY_POS [sus::ybox[gridxy[1]][yy]][sus::xbox[gridxy[0]][xx]]
 
 class SudokuBoxOptions;
 class MainWindow;
@@ -27,11 +27,49 @@ typedef std::vector<std::vector<bool>> bbv;
 typedef std::vector<bool> bv;
 typedef std::vector<void*> vpv;
 
+namespace sus{
+    const ussv xbox = {{0,1,2},{3,4,5},{6,7,8}};
+    const ussv ybox = {{0,1,2},{3,4,5},{6,7,8}};
+    const ussv listToPos = {{0, 0},
+                            {1, 0},
+                            {2, 0},
+                            {0, 1},
+                            {1, 1},
+                            {2, 1},
+                            {0, 2},
+                            {1, 2},
+                            {2, 2}};
+    const ssv position = {{1,2,1,2},
+                          {1,-1,1,2},
+                          {-1,-2,1,2},
+                          {1,2,1,-1},
+                          {1,-1,1,-1},
+                          {-1,-2,1,-1},
+                          {1,2,-1,-2},
+                          {1,-1,-1,-2},
+                          {-1,-2,-1,-2}};
+}
+
 class Sudoku{
 public:
     Sudoku(){}
 
-    void start(ussv m_field);
+    Sudoku(std::string m_field){
+        uint16_t i = 0;
+        for(uint16_t y=0; y < 9;y++){
+            field.push_back( {} );
+            for(uint16_t x=0; x < 9;x++){
+                field[y].push_back( (m_field.c_str()[i]) - '0' );
+                i++;
+            }
+        }
+    }
+
+    Sudoku(ussv m_field):field(m_field){}
+
+    Sudoku(uint16_t *m_field){}
+
+    void start();
 
     bool hasIntegrity(ussv field = {});
 
@@ -95,15 +133,14 @@ public:
     SudokuSolv(SudokuField m_sf){
         field = m_sf.getField();
         fieldOptions = m_sf.getFieldOptions();
-        orig = field;
     }
 
     SudokuSolv(ussv m_field)
-        : field(m_field){orig = field;}
+        : field(m_field){}
 
     SudokuSolv(ussv m_field, usssv m_fieldOptions)
         : field(m_field)
-        , fieldOptions(m_fieldOptions){orig = field;}
+        , fieldOptions(m_fieldOptions){}
 
     void Solve();
 
@@ -178,19 +215,8 @@ private:
 
     void rowColSolve(ussv &field, sv pos_row, uint16_t x, uint16_t y, uint16_t xb, uint16_t yb);
 
-    ussv field, orig, fieldOptionList;
+    ussv field, fieldOptionList;
     usssv fieldOptions;
-    ussv xbox = {{0,1,2},{3,4,5},{6,7,8}};
-    ussv ybox = {{0,1,2},{3,4,5},{6,7,8}};
-    ussv listToPos = {{0, 0},
-                      {1, 0},
-                      {2, 0},
-                      {0, 1},
-                      {1, 1},
-                      {2, 1},
-                      {0, 2},
-                      {1, 2},
-                      {2, 2}};
 };
 typedef std::vector<SudokuSolv::SudokuField> sfv;
 
@@ -205,8 +231,6 @@ public:
     static usv findBox(uint16_t x ,uint16_t y);
 
     ussv field;
-    ussv xbox = {{0,1,2},{3,4,5},{6,7,8}};
-    ussv ybox = {{0,1,2},{3,4,5},{6,7,8}};
 };
 
 class SudokuBoxOptions{
@@ -226,8 +250,6 @@ public:
 
     usssv &options;
     uint16_t x, y;
-    ussv xbox = {{0,1,2},{3,4,5},{6,7,8}};
-    ussv ybox = {{0,1,2},{3,4,5},{6,7,8}};
 };
 
 class SudokuRowCol{
