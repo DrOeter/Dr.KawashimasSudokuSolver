@@ -38,8 +38,7 @@ void Sudoku::start(ussv field){
 
     A:
     if(done == 0){
-        QElapsedTimer timer;
-        timer.start();
+        auto start = std::chrono::system_clock::now();
         first = 0;
         c = 0;
         equals = 0;
@@ -47,7 +46,7 @@ void Sudoku::start(ussv field){
         list.clear();
         list.resize(10000);
 
-        std::vector<QThread*> t(5);
+        std::vector<std::thread> t(5);
 
         while(done == 0){
             for(uint16_t i=0; i < 5;i++){
@@ -61,7 +60,7 @@ void Sudoku::start(ussv field){
                 if(tmp_sudoku == sudoku) equals++;
                 tmp_sudoku = sudoku;
 
-                t[i] = QThread::create([&](SudokuSolv ssudoku, uint16_t ii, uint16_t *done){
+                t[i] = std::thread([&](SudokuSolv ssudoku, uint16_t ii, uint16_t *done){
                     if( *done == 1 || ssudoku.getField().empty()) return;
                     SudokuSolv::SudokuField before, after;
 
@@ -79,17 +78,18 @@ void Sudoku::start(ussv field){
                         field = ssudoku.getField();
                     }
                 }, sudoku, (combis[ci][i] - '0'), &done );
-                t[i]->start();
             }
             for(uint16_t i=0; i < 5;i++)
-                t[i]->wait();
+                t[i].join();
             first = 1;
 
-            int mili = timer.elapsed();
-            if(mili > 10000 || equals >= 100){
+            auto end = std::chrono::system_clock::now();
+            std::chrono::duration<double> elapsed = end - start;
+            double mili = elapsed.count();
+            if(mili > 10 || equals >= 100){
                 sudoku.setField(orig.getField());
                 sudoku.setFieldOptions(orig.getFieldOptions());
-                std::cout<<"Penis "<<ci<<std::endl;
+                std::cout<<"Cycle "<<ci<<std::endl;
                 ci++;
                 goto A;
             }
@@ -98,7 +98,6 @@ void Sudoku::start(ussv field){
 
     if(!list.empty()) this->fieldOptions = list[::back(list) - 1].getFieldOptions();
     this->field = field;
-
 }
 
 void SudokuSolv::Solve(){

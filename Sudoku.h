@@ -1,20 +1,15 @@
 #ifndef SUDOKU_H
 #define SUDOKU_H
 
-#include <QMainWindow>
-#include <QLineEdit>
-#include <QTime>
-#include <QElapsedTimer>
-#include <QLabel>
-#include <QThread>
-#include <QMutex>
-#include <QtCore>
+#include <vector>
+#include <thread>
 #include <bitset>
 #include <iostream>
 #include <algorithm>
 #include <variant>
 #include <string>
 #include <cassert>
+#include <chrono>
 
 #define ARRAY_POS [ybox[gridxy[1]][yy]][xbox[gridxy[0]][xx]]
 
@@ -31,7 +26,6 @@ typedef std::vector<std::vector<int16_t>> ssv;
 typedef std::vector<std::vector<bool>> bbv;
 typedef std::vector<bool> bv;
 typedef std::vector<void*> vpv;
-typedef std::vector<std::vector<SudokuField>> sffv;
 
 class Sudoku{
 public:
@@ -186,7 +180,6 @@ private:
 
     ussv field, orig, fieldOptionList;
     usssv fieldOptions;
-    std::vector<QLineEdit*> clues, pencil;
     ussv xbox = {{0,1,2},{3,4,5},{6,7,8}};
     ussv ybox = {{0,1,2},{3,4,5},{6,7,8}};
     ussv listToPos = {{0, 0},

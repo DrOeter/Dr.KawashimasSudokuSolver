@@ -3,8 +3,12 @@
 
 #include "Sudoku.h"
 #include <fstream>
+#include <QMainWindow>
+#include <QLineEdit>
+#include <QElapsedTimer>
 
 typedef std::vector<QLineEdit*> Qline_v;
+
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
