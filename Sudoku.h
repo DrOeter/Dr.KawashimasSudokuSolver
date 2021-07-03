@@ -21,7 +21,7 @@
 class SudokuBoxOptions;
 class MainWindow;
 class SudokuField;
-class Sudoku;
+class SudokuSolv;
 
 typedef std::vector<uint16_t> usv;
 typedef std::vector<int16_t> sv;
@@ -32,11 +32,10 @@ typedef std::vector<std::vector<bool>> bbv;
 typedef std::vector<bool> bv;
 typedef std::vector<void*> vpv;
 typedef std::vector<std::vector<SudokuField>> sffv;
-typedef std::vector<QLineEdit*> Qline_v;
 
-class SudokuThread{
+class Sudoku{
 public:
-    SudokuThread(){}
+    Sudoku(){}
 
     void start(ussv m_field);
 
@@ -53,11 +52,11 @@ private:
     usssv fieldOptions;
 };
 
-class Sudoku: public SudokuThread{
+class SudokuSolv: public Sudoku{
 public:
     friend SudokuBoxOptions;
     friend MainWindow;
-    friend SudokuThread;
+    friend Sudoku;
 
     class SudokuField{
     public:
@@ -76,7 +75,7 @@ public:
         void setField(ussv f){
             field = f;
         }
-        void setSudoku(Sudoku sudoku){
+        void setSudokuSolv(SudokuSolv sudoku){
             this->setField(sudoku.getField());
             this->setFieldOptions(sudoku.getFieldOptions());
         }
@@ -91,36 +90,28 @@ public:
         usssv fieldOptions;
     };
 
-    bool operator==(Sudoku sudoku){
+    bool operator==(SudokuSolv sudoku){
         bool equal = 0;
         if(this->getField() == sudoku.getField() && this->getFieldOptions() == sudoku.getFieldOptions())equal = 1;
         return equal;
     }
 
+    SudokuSolv(){}
 
-
-    Sudoku(){}
-
-    Sudoku(SudokuField m_sf){
+    SudokuSolv(SudokuField m_sf){
         field = m_sf.getField();
         fieldOptions = m_sf.getFieldOptions();
         orig = field;
     }
 
-    Sudoku(ussv m_field)
+    SudokuSolv(ussv m_field)
         : field(m_field){orig = field;}
 
-    Sudoku(ussv m_field, usssv m_fieldOptions)
+    SudokuSolv(ussv m_field, usssv m_fieldOptions)
         : field(m_field)
         , fieldOptions(m_fieldOptions){orig = field;}
 
-
-
-    //bool hasIntegrity(ussv field = {});
-
     void Solve();
-
-    void AdvancedSolve(usv combi);
 
     ussv getField();
 
@@ -131,6 +122,12 @@ public:
     void setFieldOptions(usssv o);
 
     bool hasFailed();
+
+    void pUssv(ussv vector);
+
+    void pBbv(bbv vector);
+
+    void pUsv(usv vector);
 
 private:
     enum class Axis{
@@ -159,26 +156,12 @@ private:
 
     void clueElim();
 
-    void pUssv(ussv vector);
-
-    void pBbv(bbv vector);
-
-    void pUsv(usv vector);
-
     void untilFind_8();
 
     void untilRefresh();
 
     void untilOverFly();
 
-    void untilRowColSearch();
-/*
-    void untilNakedDouble();
-
-    void untilLockedCandidate();
-
-    void untilInBoxLockedCandidate();
-*/
     usssv nakedDouble();
 
     usssv nakedTriplet();
@@ -193,8 +176,6 @@ private:
 
     void hiddenSingle();
 
-    ussv rowColSearch();
-
     ussv overFly();
 
     usv collectRow(ussv field, int rc, Axis axis);
@@ -202,7 +183,6 @@ private:
     void boxElim(bbv &box, sv rows, uint16_t i, uint16_t x, uint16_t y);
 
     void rowColSolve(ussv &field, sv pos_row, uint16_t x, uint16_t y, uint16_t xb, uint16_t yb);
-
 
     ussv field, orig, fieldOptionList;
     usssv fieldOptions;
@@ -219,7 +199,7 @@ private:
                       {1, 2},
                       {2, 2}};
 };
-typedef std::vector<Sudoku::SudokuField> sfv;
+typedef std::vector<SudokuSolv::SudokuField> sfv;
 
 class SudokuBox{
 public:

@@ -7,7 +7,7 @@ MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent), ui(new Ui::MainWi
     ui->setupUi(this);
 
     this->setFixedSize(483, 550);
-    this->setWindowTitle("Dr. Kawashima's Sudoku Solver");
+    this->setWindowTitle("Dr. Kawashima's SudokuSolv Solver");
 
     initGui();
     for(uint16_t i=0; i < 81;i++){
@@ -78,7 +78,7 @@ void MainWindow::on_button_clicked(){
     getGui();
 
     std::string toFile;
-    usv fieldList = Sudoku().getFieldlist( field );
+    usv fieldList = SudokuSolv().getFieldlist( field );
 
     for(auto i: fieldList)
         toFile.append(std::to_string(i));
@@ -98,11 +98,11 @@ void MainWindow::on_button_clicked(){
             it++;
         }
 
-    SudokuThread sudoku;
+    Sudoku sudoku;
 
     sudoku.start(field);
 
-    /*Sudoku sudoku(field);
+    /*SudokuSolv sudoku(field);
 
     sudoku.untilFind_8();
     sudoku.untilOverFly();
@@ -143,7 +143,7 @@ void MainWindow::on_button_clicked(){
         QElapsedTimer myTimer;
         myTimer.start();
 
-        SudokuThread sudoku;
+        Sudoku sudoku;
 
         sudoku.start(ffield);
 

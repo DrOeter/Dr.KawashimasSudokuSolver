@@ -33,7 +33,7 @@ void MainWindow::updatePencilxy(usssv fieldOptions){
     }
 }
 
-void Sudoku::untilFind_8(){
+void SudokuSolv::untilFind_8(){
     ussv state = fieldOptionList;
     fieldOptionList = find_8();
 
@@ -46,7 +46,7 @@ void Sudoku::untilFind_8(){
     rowColElim();
 }
 
-void Sudoku::untilRefresh(){
+void SudokuSolv::untilRefresh(){
     ussv state = fieldOptionList;
     fieldOptionList = find_8();
 
@@ -54,10 +54,9 @@ void Sudoku::untilRefresh(){
         fieldOptionList = state;
         state = find_8();
     }
-
 }
 
-void Sudoku::untilOverFly(){
+void SudokuSolv::untilOverFly(){
     if(hasIntegrity(field)) return;
     ussv state = field;
     overFly();
@@ -65,62 +64,16 @@ void Sudoku::untilOverFly(){
 
     while( state != field && hasIntegrity(state) ){
         state = field;
-        //untilFind_8();
+        untilFind_8();
         overFly();
     }
     ussv last_state = rowColElim();
-
-
 
     if(last_state != field && !last_state.empty() && !state.empty()) goto A;
     untilFind_8();
 }
 
-void Sudoku::untilRowColSearch(){
-    ussv state = field;
-    field = rowColSearch();
-
-    while( state != field ){
-        field = state;
-        state = rowColSearch();
-
-    }
-}
-/*
-void Sudoku::untilNakedDouble(){
-    usssv state = fieldOptions;
-    fieldOptions = nakedDouble();
-
-    while( state != fieldOptions ){
-        fieldOptions = state;
-        state = nakedDouble();
-
-    }
-}
-
-void Sudoku::untilLockedCandidate(){
-    usssv state = fieldOptions;
-    fieldOptions = lockedCandidate();
-
-    while( state != fieldOptions ){
-        fieldOptions = state;
-        state = lockedCandidate();
-
-    }
-}
-
-void Sudoku::untilInBoxLockedCandidate(){
-    usssv state = fieldOptions;
-    fieldOptions = inBoxLockedCandidate();
-
-    while( state != fieldOptions ){
-        fieldOptions = state;
-        state = inBoxLockedCandidate();
-
-    }
-}
-*/
-ussv Sudoku::negative(ussv options){
+ussv SudokuSolv::negative(ussv options){
     ussv positive;
     for(uint32_t i=0; i < options.size();i++){
         positive.push_back( {} );
@@ -133,7 +86,7 @@ ussv Sudoku::negative(ussv options){
     return positive;
 }
 
-void Sudoku::pUssv(ussv vector){
+void SudokuSolv::pUssv(ussv vector){
     for(auto &ii: vector){
         for(auto i: ii){
             std::cout<< i;
@@ -142,7 +95,7 @@ void Sudoku::pUssv(ussv vector){
     }
 }
 
-void Sudoku::pBbv(bbv vector){
+void SudokuSolv::pBbv(bbv vector){
     for(uint32_t i=0; i < vector.size();i++){
         for(uint32_t ii=0; ii < vector[i].size() ;ii++){
             std::cout<< vector[i][ii];
@@ -151,14 +104,14 @@ void Sudoku::pBbv(bbv vector){
     }
 }
 
-void Sudoku::pUsv(usv vector){
+void SudokuSolv::pUsv(usv vector){
     for(auto i: vector){
         std::cout<<i;
     }
     std::cout<<std::endl;
 }
 
-usv Sudoku::getFieldlist(ussv field){
+usv SudokuSolv::getFieldlist(ussv field){
     usv fieldList;
 
     for(auto &i: field){
@@ -169,21 +122,21 @@ usv Sudoku::getFieldlist(ussv field){
     return fieldList;
 }
 
-int16_t Sudoku::find_v(usv v, uint16_t value){
+int16_t SudokuSolv::find_v(usv v, uint16_t value){
     auto it = std::find (v.begin(), v.end(), value);
     if( it != v.end() ) return it - v.begin();
     else if( it == v.end() ) return -1;
     else return ~0L;
 }
 
-int16_t Sudoku::find_bv(bv v, uint16_t value){
+int16_t SudokuSolv::find_bv(bv v, uint16_t value){
     auto it = std::find (v.begin(), v.end(), value);
     if( it != v.end() ) return it - v.begin();
     else if( it == v.end() ) return -1;
     else return ~0L;
 }
 
-void Sudoku::clueElim(){
+void SudokuSolv::clueElim(){
     for (int y=0; y < 9;y++) {
         for (int x=0; x < 9;x++) {
             if(fieldOptions[y][x].size() == 1) {
@@ -194,7 +147,7 @@ void Sudoku::clueElim(){
     }
 }
 
-bool Sudoku::hasFailed(){
+bool SudokuSolv::hasFailed(){
     bool failed = 0;
     if(!field.empty() && !fieldOptions.empty()){
         for (int y=0; y < 9;y++) {
@@ -206,15 +159,15 @@ bool Sudoku::hasFailed(){
     return failed;
 }
 
-void Sudoku::erase(usv &v, uint16_t value){
+void SudokuSolv::erase(usv &v, uint16_t value){
     v.erase(std::remove(v.begin(), v.end(), value), v.end());
 }
 
-void Sudoku::eraseP(usv *v, uint16_t value){
+void SudokuSolv::eraseP(usv *v, uint16_t value){
     v->erase(std::remove(v->begin(), v->end(), value), v->end());
 }
 
-int16_t Sudoku::search_v(usv in, usv array){
+int16_t SudokuSolv::search_v(usv in, usv array){
     auto it = std::search(in.begin(), in.end(), array.begin(), array.end());
     if( it != in.end() ) return it - in.begin();
     else if( it == in.end() ) return -1;

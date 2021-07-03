@@ -4,6 +4,8 @@
 #include "Sudoku.h"
 #include <fstream>
 
+typedef std::vector<QLineEdit*> Qline_v;
+
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
@@ -36,6 +38,4 @@ private:
     ussv field;
     Qline_v pencil, clues;
 };
-
-
 #endif // MAINWINDOW_H

@@ -92,5 +92,5 @@ void SudokuBoxOptions::erase(uint16_t x, uint16_t y, uint16_t value){
     uint16_t xx = this->getPos(0, x);
     uint16_t yy = this->getPos(1, y);
 
-    Sudoku().erase(options[yy][xx], value);
+    SudokuSolv().erase(options[yy][xx], value);
 }

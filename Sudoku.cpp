@@ -1,5 +1,4 @@
 #include "Sudoku.h"
-#include <windows.h>
 
 std::vector<std::string> permute(std::string a, int l, int r){
     static std::vector<std::string> sv;
@@ -23,19 +22,19 @@ for(auto i: list){
     return back;
 }
 
-void SudokuThread::start(ussv field){
+void Sudoku::start(ussv field){
     sfv list;
     std::vector<std::string> combis = permute("01234", 0, 4);
     uint16_t done = 0, c = 0, ci = 0, equals = 0;
     bool first = 0;
-    Sudoku sudoku(field);
+    SudokuSolv sudoku(field);
     sudoku.Solve();
 
     if(hasIntegrity(sudoku.getField())){
         field = sudoku.getField();
         done = 1;
     }
-    Sudoku::SudokuField orig(sudoku.getField(), sudoku.getFieldOptions());
+    SudokuSolv::SudokuField orig(sudoku.getField(), sudoku.getFieldOptions());
 
     A:
     if(done == 0){
@@ -44,13 +43,12 @@ void SudokuThread::start(ussv field){
         first = 0;
         c = 0;
         equals = 0;
-        Sudoku tmp_sudoku;
+        SudokuSolv tmp_sudoku;
         list.clear();
         list.resize(10000);
-    
+
         std::vector<QThread*> t(5);
-        QMutex m;
-    
+
         while(done == 0){
             for(uint16_t i=0; i < 5;i++){
 
@@ -63,16 +61,16 @@ void SudokuThread::start(ussv field){
                 if(tmp_sudoku == sudoku) equals++;
                 tmp_sudoku = sudoku;
 
-                t[i] = QThread::create([&](Sudoku ssudoku, uint16_t ii, uint16_t *done){
+                t[i] = QThread::create([&](SudokuSolv ssudoku, uint16_t ii, uint16_t *done){
                     if( *done == 1 || ssudoku.getField().empty()) return;
-                    Sudoku::SudokuField before, after;
+                    SudokuSolv::SudokuField before, after;
 
                     if(!ssudoku.hasIntegrity(ssudoku.getField()) && *done == 0){
-                        before.setSudoku(ssudoku);
+                        before.setSudokuSolv(ssudoku);
 
                         ssudoku.useAlgo(ii);
 
-                        after.setSudoku(ssudoku);
+                        after.setSudokuSolv(ssudoku);
 
                         if(before != after) list[::back(list)] = after;
                     }
@@ -98,58 +96,53 @@ void SudokuThread::start(ussv field){
         }
     }
 
-    //this->fieldOptions = list[::back(list) - 1].getFieldOptions();
+    if(!list.empty()) this->fieldOptions = list[::back(list) - 1].getFieldOptions();
     this->field = field;
 
 }
 
-void Sudoku::Solve(){
+void SudokuSolv::Solve(){
     untilFind_8();
     untilOverFly();
 }
 
-void Sudoku::AdvancedSolve(usv combi){
-    for(auto i: combi)
-        useAlgo(i);
-}
-
-void SudokuThread::setFieldOptions(usssv o){
+void Sudoku::setFieldOptions(usssv o){
     fieldOptions = o;
-}
-
-usssv SudokuThread::getFieldOptions(){
-    return fieldOptions;
-}
-
-ussv SudokuThread::getField(){
-    return field;
-}
-
-ussv Sudoku::getField(){
-    return field;
 }
 
 usssv Sudoku::getFieldOptions(){
     return fieldOptions;
 }
 
-void Sudoku::setFieldOptions(usssv o){
+ussv Sudoku::getField(){
+    return field;
+}
+
+ussv SudokuSolv::getField(){
+    return field;
+}
+
+usssv SudokuSolv::getFieldOptions(){
+    return fieldOptions;
+}
+
+void SudokuSolv::setFieldOptions(usssv o){
     fieldOptions = o;
 }
-void Sudoku::setField(ussv f){
+void SudokuSolv::setField(ussv f){
     field = f;
 }
 
-void Sudoku::useAlgo(uint16_t algo){
+void SudokuSolv::useAlgo(uint16_t algo){
     if(algo == 0) lockedCandidate();
     if(algo == 1) inBoxLockedCandidate();
     if(algo == 2) nakedDouble();
     if(algo == 3) nakedTriplet();
     if(algo == 4) hiddenSingle();
-    if(algo == 5) rowColElim();
+    //if(algo == 5) rowColElim();
 }
 
-bool SudokuThread::hasIntegrity(ussv field){
+bool Sudoku::hasIntegrity(ussv field){
     bool integrity = 1;
     if(!field.empty()) this->field = field;
 
@@ -182,7 +175,7 @@ bool SudokuThread::hasIntegrity(ussv field){
     return integrity;
 }
 
-void Sudoku::hiddenSingle(){
+void SudokuSolv::hiddenSingle(){
     if(hasIntegrity(field)) return;
 
     for(uint16_t yBoxPos=0; yBoxPos < 3; yBoxPos++){
@@ -229,7 +222,7 @@ void Sudoku::hiddenSingle(){
     }
 }
 
-ussv Sudoku::rowColElim(){
+ussv SudokuSolv::rowColElim(){
     if(hasIntegrity(field)) return ussv();
     usv coords = {404,404,404};
 
@@ -285,7 +278,7 @@ ussv Sudoku::rowColElim(){
     return field;
 }
 
-ussv Sudoku::find_8(){
+ussv SudokuSolv::find_8(){
     if(hasIntegrity(field)) return ussv();
     fieldOptionList.clear();
 
@@ -359,7 +352,7 @@ ussv Sudoku::find_8(){
 }
 
 
-usv Sudoku::collectRow(ussv field, int rc, Axis axis){
+usv SudokuSolv::collectRow(ussv field, int rc, Axis axis){
     usv collect;
     if(axis == Axis::X){
         for(int i=0; i < 9;i++)
@@ -373,7 +366,7 @@ usv Sudoku::collectRow(ussv field, int rc, Axis axis){
     return collect;
 }
 
-void Sudoku::boxElim(bbv &box, sv rows, uint16_t i,uint16_t x, uint16_t y){
+void SudokuSolv::boxElim(bbv &box, sv rows, uint16_t i,uint16_t x, uint16_t y){
     if(i == 0 || i == 1){
         for(int el=0; el < 3;el++)
             box[ el ][ x + rows[i] ] = 1;
@@ -385,7 +378,7 @@ void Sudoku::boxElim(bbv &box, sv rows, uint16_t i,uint16_t x, uint16_t y){
 
 }
 
-void Sudoku::rowColSolve(ussv &field, sv pos_row, uint16_t x, uint16_t y, uint16_t xb, uint16_t yb){
+void SudokuSolv::rowColSolve(ussv &field, sv pos_row, uint16_t x, uint16_t y, uint16_t xb, uint16_t yb){
 
     ussv clues;
     clues.push_back( collectRow( field, x + pos_row[0], Axis::X ) );
@@ -447,7 +440,7 @@ void Sudoku::rowColSolve(ussv &field, sv pos_row, uint16_t x, uint16_t y, uint16
     }
 }
 
-ussv Sudoku::overFly(){
+ussv SudokuSolv::overFly(){
     if(hasIntegrity(field)) return ussv();
     ssv position = {{1,2,1,2},
                     {1,-1,1,2},
@@ -504,71 +497,7 @@ ussv Sudoku::overFly(){
     return newfield;
 }
 
-
-ussv Sudoku::rowColSearch(){
-    if(hasIntegrity(field)) return ussv();
-
-    for(uint16_t y=0; y < 9;y++){
-        for(uint16_t x=0; x < 9;x++){
-            if(field[y][x] == 0){
-                for(uint16_t value=1; value < 10;value++){
-                    bv line = {0,0,0,0,0,0,0,0,0};
-
-                    for(uint16_t x_line=0; x_line < 9; x_line++){
-                        if(field[y][x_line] == 0){
-                            for(uint16_t y_line=0; y_line < 9; y_line++){
-                                if(field[y_line][x_line] == value) line[x_line] = 1;
-                            }
-
-                            ussv box = SudokuBox(field).get2dBox(x_line, y);
-                            for (int yy=0; yy < 3;yy++) {
-                                for (int xx=0; xx < 3;xx++) {
-                                    if( box[yy][xx] == value) line[x_line] = 1;
-                                }
-                            }
-                        }
-                        else line[x_line] = 1;
-                    }
-                    uint16_t complete = 0;
-                    for(auto i: line)
-                        if(i == 0) complete++;
-
-                    if(complete == 1 && line[x] == 0 && find_v(field[y], value) == -1) field[y][x] = value;
-
-                    line = {0,0,0,0,0,0,0,0,0};
-
-                    for(uint16_t y_line=0; y_line < 9; y_line++){
-                        if(field[y_line][x] == 0){
-                            for(uint16_t x_line=0; x_line < 9; x_line++){
-                                if(field[y_line][x_line] == value) line[y_line] = 1;
-                            }
-
-                            ussv box = SudokuBox(field).get2dBox(x, y_line);
-                            for (int yy=0; yy < 3;yy++) {
-                                for (int xx=0; xx < 3;xx++) {
-                                    if(box[yy][xx] == value) line[y_line] = 1;
-                                }
-                            }
-                        }
-                        else line[y_line] = 1;
-                    }
-                    complete = 0;
-                    for(auto i: line)
-                        if(i == 0) complete++;
-
-                    bool found = 0;
-                    for(uint16_t i=0; i < 9; i++)
-                        if(field[i][x] == value) found = 1;
-
-                    if(complete == 1 && line[y] == 0 && found == 0) field[y][x] = value;
-                }
-            }
-        }
-    }
-    return field;
-}
-
-usssv Sudoku::lockedCandidate(){
+usssv SudokuSolv::lockedCandidate(){
     if(hasIntegrity(field)) return usssv();
 
     for(uint16_t y=0; y < 9; y++){
@@ -671,7 +600,7 @@ usssv Sudoku::lockedCandidate(){
 }
 
 
-usssv Sudoku::inBoxLockedCandidate(){
+usssv SudokuSolv::inBoxLockedCandidate(){
     if(hasIntegrity(field)) return usssv();
 
     usv gridxy = {0,0};
@@ -747,7 +676,7 @@ usssv Sudoku::inBoxLockedCandidate(){
     return fieldOptions;
 }
 
-usssv Sudoku::nakedDouble(){
+usssv SudokuSolv::nakedDouble(){
     if(hasIntegrity(field)) return usssv();
 
     for(uint16_t y=0; y < 9; y++){
@@ -853,7 +782,7 @@ usssv Sudoku::nakedDouble(){
     return fieldOptions;
 }
 
-usssv Sudoku::nakedTriplet(){
+usssv SudokuSolv::nakedTriplet(){
     if(hasIntegrity(field)) return usssv();
 
     for(uint16_t y=0; y < 9; y++){
@@ -965,7 +894,7 @@ usssv Sudoku::nakedTriplet(){
 }
 
 
-void Sudoku::advancedHelper(usv &coords, usv &recoverd, usv position, bool &find ){
+void SudokuSolv::advancedHelper(usv &coords, usv &recoverd, usv position, bool &find ){
     coords.clear();
     recoverd = {404,404,404};
     ussv rowColBox;
