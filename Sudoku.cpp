@@ -95,6 +95,7 @@ void SudokuThread::start(ussv field){
             goto A;
         }
     }
+B:
 
     this->fieldOptions = list[::back(list) - 1].getFieldOptions();
     this->field = field;
