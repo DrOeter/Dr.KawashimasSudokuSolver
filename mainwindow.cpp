@@ -56,12 +56,12 @@ MainWindow::~MainWindow(){
     delete ui;
 }
 
-#define MODE_M
+#define MODE_S
 void MainWindow::on_button_clicked(){
     ui->button->setEnabled(false);
 #ifdef MODE_S
-    std::ifstream fi("C:\\Users\\Whoami\\Documents\\PROJEKTE\\QT\\Sudoku\\SudokuOld\\Sudoku\\sudokus");
-    std::ofstream fo("C:\\Users\\Whoami\\Documents\\PROJEKTE\\QT\\Sudoku\\SudokuOld\\Sudoku\\sudokus", std::ios::app);
+    std::ifstream fi("C:\\Users\\Whoami\\Documents\\PROJEKTE\\QT\\Sudoku\\SudokuOld1\\Sudoku\\sudokus");
+    std::ofstream fo("C:\\Users\\Whoami\\Documents\\PROJEKTE\\QT\\Sudoku\\SudokuOld1\\Sudoku\\sudokus", std::ios::app);
     ussv fileField;
     std::string line;
     uint16_t i = 0;
@@ -98,15 +98,26 @@ void MainWindow::on_button_clicked(){
             it++;
         }
 
-    Sudoku sudoku;
+    Sudoku sudoku(field);
 
-    sudoku.start(field);
+    sudoku.start();
 
     /*SudokuSolv sudoku(field);
 
     sudoku.untilFind_8();
     sudoku.untilOverFly();
-    sudoku.nakedTriplet();*/
+    sudoku.nakedDouble();
+    sudoku.inBoxLockedCandidate();
+    sudoku.lockedCandidate();
+    sudoku.lockedCandidate();
+
+    sudoku.lockedCandidate();
+    sudoku.inBoxLockedCandidate();
+    sudoku.nakedDouble();
+    sudoku.inBoxLockedCandidate();
+    sudoku.nakedTriplet();
+    sudoku.inBoxLockedCandidate();
+    */
 
 
     if(sudoku.hasIntegrity(sudoku.getField())){
@@ -118,7 +129,7 @@ void MainWindow::on_button_clicked(){
         ui->label->setStyleSheet("QLabel { color: red } ");
     }
 
-    //updatePencilxy(sudoku.getFieldOptions());
+    updatePencilxy(sudoku.getFieldOptions());
     updateClues(sudoku.getField());
 #endif
 

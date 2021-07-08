@@ -84,6 +84,26 @@ private:
     usssv fieldOptions;
 };
 
+class SudokuLogPack{
+public:
+    std::string message;
+    usv coords;
+    usv recoverd;
+    usv value;
+};
+
+class SudokuLog{
+public:
+    SudokuLog(){}
+
+    void append(SudokuLogPack m_log){
+        log.push_back(m_log);
+    }
+
+private:
+    std::vector<SudokuLogPack> log;
+};
+
 class SudokuSolv: public Sudoku{
 public:
     friend SudokuBoxOptions;
@@ -92,14 +112,22 @@ public:
 
     class SudokuField{
     public:
-        SudokuField(ussv m_field, usssv m_fieldOptions):field(m_field), fieldOptions(m_fieldOptions){ }
+
         SudokuField(){}
+        SudokuField(ussv m_field, usssv m_fieldOptions):field(m_field), fieldOptions(m_fieldOptions){ }
+        SudokuField(ussv m_field):field(m_field){ }
 
         usssv getFieldOptions(){
             return fieldOptions;
         }
         ussv getField(){
             return field;
+        }
+        uint16_t getAlgo(){
+            return algo;
+        }
+        void setAlgo(uint16_t m_algo){
+            algo = m_algo;
         }
         void setFieldOptions(usssv o){
             fieldOptions = o;
@@ -116,8 +144,14 @@ public:
             if(this->getField() != sudoku.getField() || this->getFieldOptions() != sudoku.getFieldOptions())unequal = 1;
             return unequal;
         }
+        bool operator==(SudokuField sudoku){
+            bool equal = 0;
+            if(this->getField() == sudoku.getField() && this->getFieldOptions() == sudoku.getFieldOptions())equal = 1;
+            return equal;
+        }
 
     private:
+        uint16_t algo;
         ussv field;
         usssv fieldOptions;
     };
@@ -148,9 +182,13 @@ public:
 
     usssv getFieldOptions();
 
+    SudokuField *getSudokuField();
+
     void setField(ussv f);
 
     void setFieldOptions(usssv o);
+
+    void setSudokuField(SudokuField *m_sfield);
 
     bool hasFailed();
 
@@ -215,6 +253,7 @@ private:
 
     void rowColSolve(ussv &field, sv pos_row, uint16_t x, uint16_t y, uint16_t xb, uint16_t yb);
 
+    SudokuField *sfield;
     ussv field, fieldOptionList;
     usssv fieldOptions;
 };

@@ -41,9 +41,10 @@ void SudokuSolv::untilFind_8(){
         fieldOptionList = state;
         state = find_8();
     }
-    find_8();
+
 
     rowColElim();
+    find_8();
 }
 
 void SudokuSolv::untilRefresh(){
