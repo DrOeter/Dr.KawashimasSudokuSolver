@@ -151,7 +151,7 @@ public:
         }
 
     private:
-        uint16_t algo;
+        uint16_t algo = 404;
         ussv field;
         usssv fieldOptions;
     };

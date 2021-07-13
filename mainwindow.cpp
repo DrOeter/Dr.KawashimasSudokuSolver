@@ -56,12 +56,12 @@ MainWindow::~MainWindow(){
     delete ui;
 }
 
-#define MODE_S
+#define MODE_M
 void MainWindow::on_button_clicked(){
     ui->button->setEnabled(false);
 #ifdef MODE_S
-    std::ifstream fi("C:\\Users\\Whoami\\Documents\\PROJEKTE\\QT\\Sudoku\\SudokuOld1\\Sudoku\\sudokus");
-    std::ofstream fo("C:\\Users\\Whoami\\Documents\\PROJEKTE\\QT\\Sudoku\\SudokuOld1\\Sudoku\\sudokus", std::ios::app);
+    std::ifstream fi("C:\\Users\\Whoami\\Desktop\\Sudoku\\single.txt");
+    std::ofstream fo("C:\\Users\\Whoami\\Desktop\\Sudoku\\single.txt", std::ios::app);
     ussv fileField;
     std::string line;
     uint16_t i = 0;
@@ -98,6 +98,8 @@ void MainWindow::on_button_clicked(){
             it++;
         }
 
+
+
     Sudoku sudoku(field);
 
     sudoku.start();
@@ -106,7 +108,13 @@ void MainWindow::on_button_clicked(){
 
     sudoku.untilFind_8();
     sudoku.untilOverFly();
-    sudoku.nakedDouble();
+
+    sudoku.useAlgo(2);
+    sudoku.useAlgo(1);*/
+    //sudoku.useAlgo(2);
+    //sudoku.useAlgo(0);
+
+    /*sudoku.nakedDouble();
     sudoku.inBoxLockedCandidate();
     sudoku.lockedCandidate();
     sudoku.lockedCandidate();
