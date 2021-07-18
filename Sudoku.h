@@ -79,6 +79,8 @@ public:
 
     void setFieldOptions(usssv fieldOptions);
 
+    bool isCorrect = 0;
+
 private:
     ussv field;
     usssv fieldOptions;
@@ -116,6 +118,8 @@ public:
         SudokuField(){}
         SudokuField(ussv m_field, usssv m_fieldOptions):field(m_field), fieldOptions(m_fieldOptions){ }
         SudokuField(ussv m_field):field(m_field){ }
+
+        uint16_t ID = 0;
 
         usssv getFieldOptions(){
             return fieldOptions;
@@ -175,6 +179,8 @@ public:
     SudokuSolv(ussv m_field, usssv m_fieldOptions)
         : field(m_field)
         , fieldOptions(m_fieldOptions){}
+
+    uint16_t ID = 0;
 
     void Solve();
 
@@ -258,6 +264,7 @@ private:
     usssv fieldOptions;
 };
 typedef std::vector<SudokuSolv::SudokuField> sfv;
+typedef std::vector<std::vector<SudokuSolv::SudokuField>> sffv;
 
 class SudokuBox{
 public:

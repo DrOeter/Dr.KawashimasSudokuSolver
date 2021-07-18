@@ -109,8 +109,8 @@ void MainWindow::on_button_clicked(){
     sudoku.untilFind_8();
     sudoku.untilOverFly();
 
-    sudoku.useAlgo(2);
-    sudoku.useAlgo(1);*/
+    sudoku.useAlgo(1);
+    sudoku.useAlgo(2);*/
     //sudoku.useAlgo(2);
     //sudoku.useAlgo(0);
 
@@ -137,14 +137,14 @@ void MainWindow::on_button_clicked(){
         ui->label->setStyleSheet("QLabel { color: red } ");
     }
 
-    updatePencilxy(sudoku.getFieldOptions());
+    //updatePencilxy(sudoku.getFieldOptions());
     updateClues(sudoku.getField());
 #endif
 
 #ifdef MODE_M
     std::ifstream list("C:\\Users\\Whoami\\Desktop\\Sudoku\\evilsudoku.txt");
     std::string line;
-    uint64_t correct = 1, count = 1;
+    uint64_t correct = 1, count = 1, combi = 0;
 
     while(!list.eof()){
         ussv ffield;
@@ -170,7 +170,8 @@ void MainWindow::on_button_clicked(){
         std::cout<<"time: "<<mili<<std::endl;
 
         if(sudoku.hasIntegrity()) {
-            std::cout<<correct<<" / "<<count<<" CORRECT!!!!!!!!!!!!!!!!!"<<std::endl;
+            if(sudoku.isCorrect) combi++;
+            std::cout<<correct<<" / "<<count<<" "<<combi<<" CORRECT!!!!!!!!!!!!!!!!!"<<std::endl;
             correct++;
 
         }
