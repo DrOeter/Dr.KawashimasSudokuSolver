@@ -25,7 +25,6 @@ typedef std::vector<std::vector<std::vector<uint16_t>>> usssv;
 typedef std::vector<std::vector<int16_t>> ssv;
 typedef std::vector<std::vector<bool>> bbv;
 typedef std::vector<bool> bv;
-typedef std::vector<void*> vpv;
 
 namespace sus{
     const ussv xbox = {{0,1,2},{3,4,5},{6,7,8}};
@@ -119,8 +118,6 @@ public:
         SudokuField(ussv m_field, usssv m_fieldOptions):field(m_field), fieldOptions(m_fieldOptions){ }
         SudokuField(ussv m_field):field(m_field){ }
 
-        uint16_t ID = 0;
-
         usssv getFieldOptions(){
             return fieldOptions;
         }
@@ -132,6 +129,12 @@ public:
         }
         void setAlgo(uint16_t m_algo){
             algo = m_algo;
+        }
+        uint16_t getID(){
+            return ID;
+        }
+        void setID(uint16_t m_ID){
+            ID = m_ID;
         }
         void setFieldOptions(usssv o){
             fieldOptions = o;
@@ -155,6 +158,7 @@ public:
         }
 
     private:
+        uint16_t ID = 0;
         uint16_t algo = 404;
         ussv field;
         usssv fieldOptions;

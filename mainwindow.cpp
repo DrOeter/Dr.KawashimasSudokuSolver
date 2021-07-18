@@ -109,10 +109,14 @@ void MainWindow::on_button_clicked(){
     sudoku.untilFind_8();
     sudoku.untilOverFly();
 
+
+    sudoku.useAlgo(2);
+    sudoku.useAlgo(3);
+    sudoku.useAlgo(3);
     sudoku.useAlgo(1);
-    sudoku.useAlgo(2);*/
-    //sudoku.useAlgo(2);
+    sudoku.useAlgo(3);*/
     //sudoku.useAlgo(0);
+
 
     /*sudoku.nakedDouble();
     sudoku.inBoxLockedCandidate();
