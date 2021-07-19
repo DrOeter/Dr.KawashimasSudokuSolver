@@ -23,7 +23,7 @@ void Sudoku::start(){
     SudokuSolv sudoku(field);
     sudoku.Solve();
 
-    if(hasIntegrity(sudoku.getField())){
+    if(sudoku.hasIntegrity(sudoku.getField())){
         field = sudoku.getField();
         done = 1;
     }
