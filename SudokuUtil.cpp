@@ -1,37 +1,4 @@
 #include "Sudoku.h"
-#include "mainwindow.h"
-
-void MainWindow::updateClues(ussv field){
-    int i = 0;
-    for(int y=0; y < 9;y++){
-        for(int x=0; x < 9;x++){
-            if( field[y][x] != 0 ){
-                clues[i]->setText( QString( std::to_string( field[y][x]).c_str() ) );
-                pencil[i]->hide();
-            }
-            clues[i]->setReadOnly(true);
-            i++;
-        }
-    }
-}
-
-
-void MainWindow::updatePencilxy(usssv fieldOptions){
-    uint16_t i=0;
-    for (int y=0; y < 9;y++) {
-        for (int x=0; x < 9;x++) {
-
-            QString fill;
-            for(auto i: fieldOptions[y][x])
-                fill += std::to_string(i).c_str();
-            pencil[i]->show();
-            pencil[i]->setText( QString( fill ) );
-            pencil[i]->setStyleSheet( "QLineEdit{ border-width: 1px; border-style: solid; border-color: #BEBEBE #BEBEBE #323232 #BEBEBE; }" );
-            pencil[i]->setReadOnly(true);
-            i++;
-        }
-    }
-}
 
 void SudokuSolv::untilFind_8(){
     ussv state = fieldOptionList;

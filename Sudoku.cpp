@@ -1,31 +1,10 @@
 #include "Sudoku.h"
 #include <windows.h>
 
-std::vector<std::string> permute(std::string a, int l, int r){
-    static std::vector<std::string> sv;
-    if (l == r) sv.push_back(a);
-    else {
-        for (int i = l; i <= r; i++) {
-            std::swap(a[l], a[i]);
-            permute(a, l+1, r);
-            std::swap(a[l], a[i]);
-        }
-    }
-    return sv;
-}
 namespace sus {
     using namespace sus;
 
-    uint64_t back(sfv list){
-        uint64_t back = 0;
-        for(auto i: list){
-            if(!i.getField().empty()) back++;
-            else break;
-        }
-        return back;
-    }
-
-    inline bool Pred(SudokuSolv::SudokuField &a, SudokuSolv::SudokuField &b){
+    inline bool Pred(sf &a, sf &b){
         if (a.getAlgo() == b.getAlgo() && a.getAlgo() == 404)  return 1;
         else return 0;
     }
@@ -40,9 +19,7 @@ void Sudoku::start(){
     sfv list, b_list;
     sffv history;
     ussv unsolved = field;
-
-    std::vector<std::string> combis = permute("01234", 0, 4);
-    uint16_t done = 0, c = 0, ci = 0, tmp_thread = 0;
+    uint16_t done = 0, c = 0, tmp_thread = 0;
     SudokuSolv sudoku(field);
     sudoku.Solve();
 
@@ -50,15 +27,14 @@ void Sudoku::start(){
         field = sudoku.getField();
         done = 1;
     }
-    SudokuSolv::SudokuField orig(sudoku.getField(), sudoku.getFieldOptions());
+    sf orig(sudoku.getField(), sudoku.getFieldOptions());
 
-    while(done == 0){
         c = 0;
         tmp_thread = 0;
         list.clear();
-        list.resize(10000);
+        list.resize(5);
         b_list.clear();
-        b_list.resize(10000);
+        b_list.resize(5);
 
         std::vector<std::thread> t(5);
 
@@ -67,7 +43,7 @@ void Sudoku::start(){
                 t[i] = std::thread([&](SudokuSolv ssudoku, uint16_t ii, uint64_t id, uint16_t *done){
                     if( *done == 1 || ssudoku.getField().empty()) return;
 
-                    SudokuSolv::SudokuField before, after;
+                    sf before, after;
 
                     if(!ssudoku.hasIntegrity(ssudoku.getField()) && *done == 0){
                         before.setSudokuSolv(ssudoku);
@@ -91,12 +67,13 @@ void Sudoku::start(){
                         *done = 1;
                         field = ssudoku.getField();
                     }
-                }, sudoku, (combis[ci][i] - '0'), (tmp_thread + i), &done );
+                }, sudoku, i, (tmp_thread + i), &done );
             }
             for(uint16_t i=0; i < 5;i++)
                 t[i].join();
             tmp_thread+=5;
-
+            list.insert(list.end(), 5, sf());
+            b_list.insert(b_list.end(), 5, sf());
 
             if(!list.empty()){
                 sudoku.setField(list[c].getField());
@@ -105,7 +82,7 @@ void Sudoku::start(){
                 c++;
             }
         }
-    }
+
 
     sus::resize(b_list);
     sus::resize(list);
@@ -152,15 +129,17 @@ void Sudoku::start(){
 
     SudokuSolv finalTest(orig);
 
-    for(auto i=solution.begin(); i != solution.end() - 1;i++)
+    for(auto i=solution.begin(); i != solution.end();i++)
         finalTest.useAlgo((*i)[0].getAlgo());
 
-    for(uint16_t i=0; i < 5;i++){
-        SudokuSolv last(finalTest);
-        last.useAlgo(i);
-        if(last.hasIntegrity(last.getField())){
-            finalTest = last;
-            break;
+    if(!finalTest.hasIntegrity(finalTest.getField())){
+        for(uint16_t i=0; i < 5;i++){
+            SudokuSolv last(finalTest);
+            last.useAlgo(i);
+            if(last.hasIntegrity(last.getField())){
+               finalTest = last;
+               break;
+            }
         }
     }
 
@@ -186,7 +165,7 @@ void Sudoku::start(){
         std::cout<<std::endl;
     }
 
-    if(!list.empty()) this->fieldOptions = list[sus::back(list) - 1].getFieldOptions();
+    if(!list.empty()) this->fieldOptions = list.back().getFieldOptions();
 }
 
 void SudokuSolv::Solve(){

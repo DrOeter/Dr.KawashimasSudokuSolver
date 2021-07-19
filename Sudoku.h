@@ -66,7 +66,7 @@ public:
 
     Sudoku(ussv m_field):field(m_field){}
 
-    Sudoku(uint16_t *m_field){}
+    //Sudoku(uint16_t *m_field){}
 
     void start();
 
@@ -85,8 +85,7 @@ private:
     usssv fieldOptions;
 };
 
-class SudokuLogPack{
-public:
+struct SudokuLogPack{
     std::string message;
     usv coords;
     usv recoverd;
@@ -267,8 +266,9 @@ private:
     ussv field, fieldOptionList;
     usssv fieldOptions;
 };
-typedef std::vector<SudokuSolv::SudokuField> sfv;
-typedef std::vector<std::vector<SudokuSolv::SudokuField>> sffv;
+typedef SudokuSolv::SudokuField sf;
+typedef std::vector<sf> sfv;
+typedef std::vector<std::vector<sf>> sffv;
 
 class SudokuBox{
 public:
