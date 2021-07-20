@@ -1,5 +1,4 @@
 #include "Sudoku.h"
-#include <windows.h>
 
 namespace sus {
     using namespace sus;
@@ -1108,6 +1107,7 @@ void SudokuSolv::advancedHelper(usv &coords, usv &recoverd, usv position, bool &
                 }
             }
         }
+        if(isDouble) continue;
 
         else if((*first).size() == 3){
             for(auto second = first + 1; second != rowColBox.end(); second++){
