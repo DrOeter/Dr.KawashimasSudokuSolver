@@ -146,7 +146,7 @@ void MainWindow::on_button_clicked(){
 #endif
 
 #ifdef MODE_M
-    std::ifstream list("C:\\Users\\Whoami\\Desktop\\Sudoku\\college.txt");
+    std::ifstream list("C:\\Users\\Whoami\\Desktop\\Sudoku\\evilsudoku.txt");
     std::string line;
     uint64_t correct = 1, count = 1, combi = 0;
 

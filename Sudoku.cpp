@@ -16,7 +16,7 @@ namespace sus {
 }
 
 void Sudoku::start(){
-    sfv list, b_list;
+    sfv list(5), b_list(5);
     sffv history;
     ussv unsolved = field;
     uint16_t done = 0, c = 0, tmp_thread = 0;
@@ -27,63 +27,57 @@ void Sudoku::start(){
         field = sudoku.getField();
         done = 1;
     }
-    sf orig(sudoku.getField(), sudoku.getFieldOptions());
+    sf orig(sudoku);
 
-        c = 0;
-        tmp_thread = 0;
-        list.clear();
-        list.resize(5);
-        b_list.clear();
-        b_list.resize(5);
+    c = 0;
+    tmp_thread = 0;
+    std::vector<std::thread> t(5);
 
-        std::vector<std::thread> t(5);
+    while(done == 0){
+        for(uint16_t i=0; i < 5;i++){
+            t[i] = std::thread([&](SudokuSolv ssudoku, uint16_t ii, uint64_t id, uint16_t *done){
+                if( *done == 1 || ssudoku.getField().empty()) return;
 
-        while(done == 0){
-            for(uint16_t i=0; i < 5;i++){
-                t[i] = std::thread([&](SudokuSolv ssudoku, uint16_t ii, uint64_t id, uint16_t *done){
-                    if( *done == 1 || ssudoku.getField().empty()) return;
+                sf before, after;
 
-                    sf before, after;
+                if(!ssudoku.hasIntegrity(ssudoku.getField()) && *done == 0){
+                    before.setSudokuSolv(ssudoku);
+                    before.setAlgo(ii);
+                    before.setID( ssudoku.ID );
 
-                    if(!ssudoku.hasIntegrity(ssudoku.getField()) && *done == 0){
-                        before.setSudokuSolv(ssudoku);
-                        before.setAlgo(ii);
-                        before.setID( ssudoku.ID );
+                    ssudoku.useAlgo(ii);
 
-                        ssudoku.useAlgo(ii);
+                    after.setSudokuSolv(ssudoku);
+                    after.setAlgo(ii);
+                    after.setID( id + 1 );
 
-                        after.setSudokuSolv(ssudoku);
-                        after.setAlgo(ii);
-                        after.setID( id + 1 );
-
-                        if(before != after){
-                            if(*done == 0) {
-                                b_list[id] = before;
-                                list[id] = after;
-                            }
+                    if(before != after){
+                        if(*done == 0) {
+                            b_list[id] = before;
+                            list[id] = after;
                         }
                     }
-                    if(ssudoku.hasIntegrity(ssudoku.getField()) && *done == 0){
-                        *done = 1;
-                        field = ssudoku.getField();
-                    }
-                }, sudoku, i, (tmp_thread + i), &done );
-            }
-            for(uint16_t i=0; i < 5;i++)
-                t[i].join();
-            tmp_thread+=5;
-            list.insert(list.end(), 5, sf());
-            b_list.insert(b_list.end(), 5, sf());
-
-            if(!list.empty()){
-                sudoku.setField(list[c].getField());
-                sudoku.setFieldOptions(list[c].getFieldOptions());
-                sudoku.ID = list[c].getID();
-                c++;
-            }
+                }
+                if(ssudoku.hasIntegrity(ssudoku.getField()) && *done == 0){
+                    *done = 1;
+                    field = ssudoku.getField();
+                }
+            }, sudoku, i, (tmp_thread + i), &done );
         }
+        for(uint16_t i=0; i < 5;i++)
+            t[i].join();
+        tmp_thread+=5;
+        list.insert(list.end(), 5, sf());
+        b_list.insert(b_list.end(), 5, sf());
 
-
+        if(list.size() >= 10000) break;
+        if(!list.empty()){
+            sudoku.setField(list[c].getField());
+            sudoku.setFieldOptions(list[c].getFieldOptions());
+            sudoku.ID = list[c].getID();
+            c++;
+        }
+    }
     sus::resize(b_list);
     sus::resize(list);
 
@@ -99,8 +93,6 @@ void Sudoku::start(){
     for(int16_t i=list.size()-1; i >= 0 ; i--)
         history.push_back({b_list[i], list[i]});
 
-
-
     sffv solution;
     bool start = 0;
     int64_t id = 0;
@@ -113,7 +105,6 @@ void Sudoku::start(){
         }
         else if(!sudoku.hasIntegrity((*i)[1].getField()) && start == 0)  continue;
 
-
         for(uint16_t pos=1; pos < history.size() - (i - history.begin());pos++){
             if( id == (*(i + pos))[1].getID() ){
                 solution.push_back((*(i + pos)));
@@ -124,7 +115,6 @@ void Sudoku::start(){
         if(solution.size() > 100) break;
         if(solution.back()[0].getID() == 0)break;
     }
-
     std::reverse(solution.begin(), solution.end());
 
     SudokuSolv finalTest(orig);
@@ -146,23 +136,6 @@ void Sudoku::start(){
     if(finalTest.hasIntegrity(finalTest.getField())){
         std::cout<<"correct"<<std::endl;
         isCorrect = 1;
-    }
-
-    /*for(uint16_t i = 0; i < list.size(); i++){
-        SudokuSolv().pUssv(b_list[i].getField());
-        std::cout<<std::endl;
-        SudokuSolv().pUssv(list[i].getField());
-        std::cout<<list[i].getAlgo()<<std::endl;
-        std::cout<<std::endl;
-    }*/
-
-
-
-    for(auto i: solution){
-        std::cout<<i[1].getID()<<std::endl;
-        std::cout<<i[0].getID()<<std::endl;
-        std::cout<<i[0].getAlgo()<<std::endl;
-        std::cout<<std::endl;
     }
 
     if(!list.empty()) this->fieldOptions = list.back().getFieldOptions();
@@ -198,12 +171,6 @@ void SudokuSolv::setFieldOptions(usssv o){
 }
 void SudokuSolv::setField(ussv f){
     field = f;
-}
-SudokuSolv::SudokuField *SudokuSolv::getSudokuField(){
-    return sfield;
-}
-void SudokuSolv::setSudokuField(SudokuSolv::SudokuField *m_sfield){
-    sfield = m_sfield;
 }
 
 void SudokuSolv::useAlgo(uint16_t algo){
@@ -749,7 +716,7 @@ usssv SudokuSolv::nakedDouble(){
         usv recoverd = {404,404};
         bool find = 0;
 
-        advancedHelper(coords, recoverd, {0, y}, find);
+        advancedHelper(coords, recoverd, {0, y}, find, 1);
 
         if(find == 1 && coords.size() == 2){
             for(uint16_t x=0; x < 9; x++){
@@ -783,7 +750,7 @@ usssv SudokuSolv::nakedDouble(){
         usv recoverd = {404,404};
         bool find = 0;
 
-        advancedHelper(coords, recoverd, {1, x}, find);
+        advancedHelper(coords, recoverd, {1, x}, find, 1);
 
         if(find == 1 && coords.size() == 2){
             for(uint16_t y=0; y < 9; y++){
@@ -821,7 +788,7 @@ usssv SudokuSolv::nakedDouble(){
             usv recoverd = {404,404,404};
             usv coords;
 
-            advancedHelper(coords, recoverd, {2, x, y}, find);
+            advancedHelper(coords, recoverd, {2, x, y}, find, 1);
 
             if(find == 1 && coords.size() == 2){
                 for(uint16_t yy=0; yy < 3; yy++){
@@ -854,7 +821,7 @@ usssv SudokuSolv::nakedTriplet(){
         usv recoverd = {404,404,404};
         bool find = 0;
 
-        advancedHelper(coords, recoverd, {0, y}, find);
+        advancedHelper(coords, recoverd, {0, y}, find, 0);
 
         if(find == 1 && coords.size() == 3){
             for(uint16_t x=0; x < 9; x++){
@@ -890,7 +857,7 @@ usssv SudokuSolv::nakedTriplet(){
         usv recoverd = {404,404,404};
         bool find = 0;
 
-        advancedHelper(coords, recoverd, {1, x}, find);
+        advancedHelper(coords, recoverd, {1, x}, find, 0);
 
         if(find == 1 && coords.size() == 3){
             for(uint16_t y=0; y < 9; y++){
@@ -931,7 +898,7 @@ usssv SudokuSolv::nakedTriplet(){
             usv recoverd = {404,404,404};
             usv coords;
 
-            advancedHelper(coords, recoverd, {2, x, y}, find);
+            advancedHelper(coords, recoverd, {2, x, y}, find, 0);
 
             if(find == 1 && coords.size() == 3){
                 for(uint16_t yy=0; yy < 3; yy++){
@@ -958,7 +925,7 @@ usssv SudokuSolv::nakedTriplet(){
 }
 
 
-void SudokuSolv::advancedHelper(usv &coords, usv &recoverd, usv position, bool &find ){
+void SudokuSolv::advancedHelper(usv &coords, usv &recoverd, usv position, bool &find, bool isDouble ){
     coords.clear();
     recoverd = {404,404,404};
     ussv rowColBox;
@@ -971,7 +938,7 @@ void SudokuSolv::advancedHelper(usv &coords, usv &recoverd, usv position, bool &
         if((*first).size() == 2){
             for(auto second = first + 1; second != rowColBox.end(); second++){
 
-                if((*second).size() == 2 && (*first) == (*second) ){
+                if((*second).size() == 2 && (*first) == (*second) && isDouble ){
                     find = 1;
                     coords.push_back( (uint16_t)(first - rowColBox.begin()) );
                     coords.push_back( (uint16_t)(second - rowColBox.begin()) );
@@ -979,6 +946,7 @@ void SudokuSolv::advancedHelper(usv &coords, usv &recoverd, usv position, bool &
                     recoverd = (*first);
                     goto A;
                 }
+                if(isDouble) continue;
 
                 if((*second).size() == 2
                     && ( ( ( (*first)[0] == (*second)[0]
@@ -1140,7 +1108,6 @@ void SudokuSolv::advancedHelper(usv &coords, usv &recoverd, usv position, bool &
                 }
             }
         }
-
 
         else if((*first).size() == 3){
             for(auto second = first + 1; second != rowColBox.end(); second++){

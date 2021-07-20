@@ -116,6 +116,7 @@ public:
         SudokuField(){}
         SudokuField(ussv m_field, usssv m_fieldOptions):field(m_field), fieldOptions(m_fieldOptions){ }
         SudokuField(ussv m_field):field(m_field){ }
+        SudokuField(SudokuSolv &m_sudoku){ field = m_sudoku.getField(); fieldOptions = m_sudoku.getFieldOptions(); }
 
         usssv getFieldOptions(){
             return fieldOptions;
@@ -141,16 +142,16 @@ public:
         void setField(ussv f){
             field = f;
         }
-        void setSudokuSolv(SudokuSolv sudoku){
+        void setSudokuSolv(SudokuSolv &sudoku){
             this->setField(sudoku.getField());
             this->setFieldOptions(sudoku.getFieldOptions());
         }
-        bool operator!=(SudokuField sudoku){
+        bool operator!=(SudokuField &sudoku){
             bool unequal = 0;
             if(this->getField() != sudoku.getField() || this->getFieldOptions() != sudoku.getFieldOptions())unequal = 1;
             return unequal;
         }
-        bool operator==(SudokuField sudoku){
+        bool operator==(SudokuField &sudoku){
             bool equal = 0;
             if(this->getField() == sudoku.getField() && this->getFieldOptions() == sudoku.getFieldOptions())equal = 1;
             return equal;
@@ -163,7 +164,7 @@ public:
         usssv fieldOptions;
     };
 
-    bool operator==(SudokuSolv sudoku){
+    bool operator==(SudokuSolv &sudoku){
         bool equal = 0;
         if(this->getField() == sudoku.getField() && this->getFieldOptions() == sudoku.getFieldOptions())equal = 1;
         return equal;
@@ -171,15 +172,15 @@ public:
 
     SudokuSolv(){}
 
-    SudokuSolv(SudokuField m_sf){
+    SudokuSolv(SudokuField &m_sf){
         field = m_sf.getField();
         fieldOptions = m_sf.getFieldOptions();
     }
 
-    SudokuSolv(ussv m_field)
+    SudokuSolv(ussv &m_field)
         : field(m_field){}
 
-    SudokuSolv(ussv m_field, usssv m_fieldOptions)
+    SudokuSolv(ussv &m_field, usssv &m_fieldOptions)
         : field(m_field)
         , fieldOptions(m_fieldOptions){}
 
@@ -191,13 +192,9 @@ public:
 
     usssv getFieldOptions();
 
-    SudokuField *getSudokuField();
-
     void setField(ussv f);
 
     void setFieldOptions(usssv o);
-
-    void setSudokuField(SudokuField *m_sfield);
 
     bool hasFailed();
 
@@ -244,7 +241,7 @@ private:
 
     usssv nakedTriplet();
 
-    void advancedHelper(usv &coords, usv &recoverd, usv position, bool &find );
+    void advancedHelper(usv &coords, usv &recoverd, usv position, bool &find, bool isDouble );
 
     usssv lockedCandidate();
 
@@ -262,7 +259,6 @@ private:
 
     void rowColSolve(ussv &field, sv pos_row, uint16_t x, uint16_t y, uint16_t xb, uint16_t yb);
 
-    SudokuField *sfield;
     ussv field, fieldOptionList;
     usssv fieldOptions;
 };
