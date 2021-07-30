@@ -26,7 +26,6 @@ void Sudoku::start(){
         field = sudoku.getField();
         done = 1;
     }
-    sf orig(sudoku);
 
     c = 0;
     tmp_thread = 0;
