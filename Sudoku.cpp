@@ -116,7 +116,9 @@ void Sudoku::start(){
     }
     std::reverse(solution.begin(), solution.end());
 
-    SudokuSolv finalTest(orig);
+    SudokuSolv finalTest(unsolved);
+    finalTest.untilFind_8();
+    finalTest.untilOverfly();
 
     for(auto i=solution.begin(); i != solution.end();i++)
         finalTest.useAlgo((*i)[0].getAlgo());
