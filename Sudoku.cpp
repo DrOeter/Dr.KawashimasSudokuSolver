@@ -68,7 +68,7 @@ void Sudoku::start(){
         list.insert(list.end(), 5, sf());
         b_list.insert(b_list.end(), 5, sf());
 
-        if(list.size() >= 10000) break;
+        if(list.size() >= 100000) break;
         if(!list.empty()){
             sudoku.setField(list[c].getField());
             sudoku.setFieldOptions(list[c].getFieldOptions());
