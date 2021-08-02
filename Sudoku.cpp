@@ -1,19 +1,34 @@
 #include "Sudoku.h"
+#include <windows.h>
 
+/** @brief Namespace SudokuSolv */
 namespace sus {
     using namespace sus;
 
+    /** @brief Eigenes BinaryPredicate um Objekte bei denen der die variable algo gleich 404 ist
+     *  @param a 1. SudokuField
+     *  @param b 2. SudokuField
+     *  @return 1 wenn sie gleich sind und algo gleich 404 sonst 0
+     */
     inline bool Pred(sf &a, sf &b){
         if (a.getAlgo() == b.getAlgo() && a.getAlgo() == 404)  return 1;
         else return 0;
     }
 
+    /** @brief Entfernt alle sf aus sfv die algo == 404 haben
+     *  @param list vector der durchsucht wird
+     *  @return void
+     */
     void resize(sfv &list){
         auto ip = std::unique(list.begin(), list.end(), Pred);
         list.resize(std::distance(list.begin(), ip));
     }
 }
 
+/** @brief Start der Anwendung der Algorithmen in einem Entscheidungsbaum,
+ *         bei dem dann der richtige Weg zurückgegangen wird
+ *  @return void
+ */
 void Sudoku::start(){
     sfv list(5), b_list(5);
     sffv history;
@@ -36,9 +51,8 @@ void Sudoku::start(){
             t[i] = std::thread([&](SudokuSolv ssudoku, uint16_t ii, uint64_t id, uint16_t *done){
                 if( *done == 1 || ssudoku.getField().empty()) return;
 
-                sf before, after;
-
                 if(!ssudoku.hasIntegrity(ssudoku.getField()) && *done == 0){
+                    sf before, after;
                     before.setSudokuSolv(ssudoku);
                     before.setAlgo(ii);
                     before.setID( ssudoku.ID );
@@ -116,8 +130,9 @@ void Sudoku::start(){
     std::reverse(solution.begin(), solution.end());
 
     SudokuSolv finalTest(unsolved);
+
     finalTest.untilFind_8();
-    finalTest.untilOverfly();
+    finalTest.untilOverFly();
 
     for(auto i=solution.begin(); i != solution.end();i++)
         finalTest.useAlgo((*i)[0].getAlgo());
@@ -141,38 +156,72 @@ void Sudoku::start(){
     if(!list.empty()) this->fieldOptions = list.back().getFieldOptions();
 }
 
+/** @brief Startet den einfachen Lösungsversuch
+ *         Die Algorithmen werden solange nacheinander ausgeführt
+ *         bis sich field nicht mehr ändert
+ *  @return void
+ */
 void SudokuSolv::Solve(){
     untilFind_8();
     untilOverFly();
 }
 
+/** @brief Setzt fieldOptions
+ *  @param m_options 3D vector
+ *  @return void
+ */
 void Sudoku::setFieldOptions(usssv o){
     fieldOptions = o;
 }
 
+/** @brief Gibt fieldOptions aus
+ *  @return fieldOptions 3D vector
+ */
 usssv Sudoku::getFieldOptions(){
     return fieldOptions;
 }
 
+/** @brief Funktion gibt field aus
+ *  @return field 2D vector
+ */
 ussv Sudoku::getField(){
     return field;
 }
 
+/** @brief Gibt field aus
+ *  @return field 2D vector
+ */
 ussv SudokuSolv::getField(){
     return field;
 }
 
+/** @brief Gibt fieldOptions aus
+ *  @return fieldOptions 3D vector
+ */
 usssv SudokuSolv::getFieldOptions(){
     return fieldOptions;
 }
 
+/** @brief Setzt fieldOptions
+ *  @param m_options 3D vector
+ *  @return void
+ */
 void SudokuSolv::setFieldOptions(usssv o){
     fieldOptions = o;
 }
+
+/** @brief Setzt field
+ *  @param m_field 2D vector
+ *  @return void
+ */
 void SudokuSolv::setField(ussv f){
     field = f;
 }
 
+/** @brief Benutzt ausgewählten Algorithmus
+ *  @param algo sagt welcher Algorithmus benutzt wird
+ *  @return void
+ */
 void SudokuSolv::useAlgo(uint16_t algo){
     if(algo == 0) hiddenSingle();
     if(algo == 1) nakedDouble();
@@ -181,6 +230,10 @@ void SudokuSolv::useAlgo(uint16_t algo){
     if(algo == 4) inBoxLockedCandidate();
 }
 
+/** @brief Prüft ob das Sudoku korrekt gelöst wurde
+ *  @param field
+ *  @return true bei korrekter Lösung
+ */
 bool Sudoku::hasIntegrity(ussv field){
     bool integrity = 1;
     if(!field.empty()) this->field = field;
@@ -214,6 +267,10 @@ bool Sudoku::hasIntegrity(ussv field){
     return integrity;
 }
 
+/** @brief Sucht in jeder Box nach einem
+ *         Kästchen wo eine Options einmalig ist
+ *  @return field 2D vector
+ */
 void SudokuSolv::hiddenSingle(){
     if(hasIntegrity(field)) return;
 
@@ -261,6 +318,10 @@ void SudokuSolv::hiddenSingle(){
     }
 }
 
+/** @brief Sucht in jeder Reihe und Spalte nach einem
+ *         Kästchen wo eine Options einmalig ist
+ *  @return field 2D vector
+ */
 ussv SudokuSolv::rowColElim(){
     if(hasIntegrity(field)) return ussv();
     usv coords = {404,404,404};
@@ -317,6 +378,12 @@ ussv SudokuSolv::rowColElim(){
     return field;
 }
 
+/** @brief Sucht nach 8 unterschiedlichen
+ *         werten in einer Reihe, Spalte und Box, um einen
+ *         eindutigen Wert für ein Kästchen zu finden.
+ *         Zudem Updatet sie die fieldOptions variable
+ *  @return fieldOptionsList 2D vector
+ */
 ussv SudokuSolv::find_8(){
     if(hasIntegrity(field)) return ussv();
     fieldOptionList.clear();
@@ -479,6 +546,12 @@ void SudokuSolv::rowColSolve(ussv &field, sv pos_row, uint16_t x, uint16_t y, ui
     }
 }
 
+/** @brief Ähnlich wie hiddenSingle nur das in
+ *         Reihen oder Spalten innerhalb der Box
+ *         nach einer einmailgen Options gesucht
+ *         wird, die sonst nicht in der Box vorkommt
+ *  @return field 2D vector
+ */
 ussv SudokuSolv::overFly(){
     if(hasIntegrity(field)) return ussv();
 
@@ -528,6 +601,11 @@ ussv SudokuSolv::overFly(){
     return newfield;
 }
 
+/** @brief Wenn in einer Reihe oder Spalte einer Box eine Option vorkommt,
+ *         die nicht im Rest der Reihe oder Spalte vorkommt muss überall
+ *         in der Box außer der ausgewälten Reihe oder Spalte diese Option entfernt werden
+ *  @return fieldOptions 3D vector
+ */
 usssv SudokuSolv::lockedCandidate(){
     if(hasIntegrity(field)) return usssv();
 
@@ -630,7 +708,12 @@ usssv SudokuSolv::lockedCandidate(){
     return fieldOptions;
 }
 
-
+/** @brief Wenn in einer Reihe oder Spalte einer Box eine Option vorkommt,
+ *         die nicht im Rest der Box vorkommt muss
+ *         in dem Teil der Reihe oder Spalte, der nicht in der
+ *         ausgewählten Box ist diese Option entfernt werden
+ *  @return fieldOptions 3D vector
+ */
 usssv SudokuSolv::inBoxLockedCandidate(){
     if(hasIntegrity(field)) return usssv();
 
@@ -707,6 +790,10 @@ usssv SudokuSolv::inBoxLockedCandidate(){
     return fieldOptions;
 }
 
+/** @brief Wenn in einer Reihe, Spalte oder Box zwei Kästchen sind,
+ *         die zwei gleiche Optionen haben, werden diese aus allen anderen Kästchen entfernt
+ *  @return fieldOptions 3D vector
+ */
 usssv SudokuSolv::nakedDouble(){
     if(hasIntegrity(field)) return usssv();
 
@@ -813,6 +900,11 @@ usssv SudokuSolv::nakedDouble(){
     return fieldOptions;
 }
 
+/** @brief Wenn in einer Reihe, Spalte oder Box zwei oder drei Kästchen sind,
+ *         die entweder gleiche Optionen oder eine bestimmte kombination an gleichen
+ *         und ungleichen Optionen haben, werden diese aus allen anderen Kästchen entfernt
+ *  @return fieldOptions 3D vector
+ */
 usssv SudokuSolv::nakedTriplet(){
     if(hasIntegrity(field)) return usssv();
 
@@ -924,7 +1016,12 @@ usssv SudokuSolv::nakedTriplet(){
     return fieldOptions;
 }
 
-
+/** @brief Helferfunktion für nakedDouble und nakedTriplet
+ *         In verschachtelten for-Schleifen geht man über die Reihe,
+ *         Spalte oder Box und sucht nach zwei oder drei Kästchen die
+ *         in der Richtigen Beziehung zueinander stehen
+ *  @return void
+ */
 void SudokuSolv::advancedHelper(usv &coords, usv &recoverd, usv position, bool &find, bool isDouble ){
     coords.clear();
     recoverd = {404,404,404};
@@ -1108,8 +1205,7 @@ void SudokuSolv::advancedHelper(usv &coords, usv &recoverd, usv position, bool &
                 }
             }
         }
-        if(isDouble) continue;
-
+        else if(isDouble) continue;
         else if((*first).size() == 3){
             for(auto second = first + 1; second != rowColBox.end(); second++){
 

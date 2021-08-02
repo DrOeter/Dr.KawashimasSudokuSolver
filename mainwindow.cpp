@@ -60,8 +60,8 @@ MainWindow::~MainWindow(){
 void MainWindow::on_button_clicked(){
     ui->button->setEnabled(false);
 #ifdef MODE_S
-    std::ifstream fi("C:\\Users\\Whoami\\Desktop\\Sudoku\\single.txt");
-    std::ofstream fo("C:\\Users\\Whoami\\Desktop\\Sudoku\\single.txt", std::ios::app);
+    std::ifstream fi("C:\\Users\\Whoami\\Documents\\PROJEKTE\\QT\\Sudoku\\SudokuFiles\\single.txt");
+    std::ofstream fo("C:\\Users\\Whoami\\Documents\\PROJEKTE\\QT\\Sudoku\\SudokuFiles\\single.txt", std::ios::app);
     ussv fileField;
     std::string line;
     uint16_t i = 0;
@@ -104,32 +104,18 @@ void MainWindow::on_button_clicked(){
 
     sudoku.start();
 
-/*    SudokuSolv sudoku(field);
+    /*SudokuSolv sudoku(field);
 
     sudoku.untilFind_8();
     sudoku.untilOverFly();
 
 
-    sudoku.useAlgo(2);
-    sudoku.useAlgo(3);
-    sudoku.useAlgo(2);
+    sudoku.useAlgo(1);
+    sudoku.useAlgo(0);
+    sudoku.useAlgo(1);
     sudoku.useAlgo(4);
-    sudoku.useAlgo(4);*/
+    sudoku.useAlgo(3);*/
     //sudoku.useAlgo(0);
-
-
-    /*sudoku.nakedDouble();
-    sudoku.inBoxLockedCandidate();
-    sudoku.lockedCandidate();
-    sudoku.lockedCandidate();
-
-    sudoku.lockedCandidate();
-    sudoku.inBoxLockedCandidate();
-    sudoku.nakedDouble();
-    sudoku.inBoxLockedCandidate();
-    sudoku.nakedTriplet();
-    sudoku.inBoxLockedCandidate();
-    */
 
 
     if(sudoku.hasIntegrity(sudoku.getField())){
@@ -146,7 +132,7 @@ void MainWindow::on_button_clicked(){
 #endif
 
 #ifdef MODE_M
-    std::ifstream list("C:\\Users\\Whoami\\Desktop\\Sudoku\\evilsudoku.txt");
+    std::ifstream list("C:\\Users\\Whoami\\Documents\\PROJEKTE\\QT\\Sudoku\\SudokuFiles\\evilsudoku3.txt");
     std::string line;
     uint64_t correct = 1, count = 1, combi = 0;
 

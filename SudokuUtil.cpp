@@ -1,5 +1,8 @@
 #include "Sudoku.h"
 
+/** @brief Führt find_8() solange aus bis sich fieldOptionList nicht mehr verändert
+ *  @return void
+ */
 void SudokuSolv::untilFind_8(){
     ussv state = fieldOptionList;
     fieldOptionList = find_8();
@@ -14,6 +17,9 @@ void SudokuSolv::untilFind_8(){
     find_8();
 }
 
+/** @brief Führt find_8() solange aus bis sich fieldOptionList nicht mehr verändert
+ *  @return void
+ */
 void SudokuSolv::untilRefresh(){
     ussv state = fieldOptionList;
     fieldOptionList = find_8();
@@ -24,6 +30,9 @@ void SudokuSolv::untilRefresh(){
     }
 }
 
+/** @brief Führt overfly() solange aus bis sich field nicht mehr verändert
+ *  @return void
+ */
 void SudokuSolv::untilOverFly(){
     if(hasIntegrity(field)) return;
     ussv state = field;
@@ -41,6 +50,12 @@ void SudokuSolv::untilOverFly(){
     untilFind_8();
 }
 
+/** @brief Invertiert die Werte, die in Reihen, Spalten oder Boxen
+ *         gefunden wurden, die nicht in einem Spezifischen Kästchen vorkommen
+ *         dürfen. Dadurch hat man am Ende einen 2D vector mit allen Optionen.
+ *  @param options Optionen die nicht vorkommen können
+ *  @return Gültige Optionen
+ */
 ussv SudokuSolv::negative(ussv options){
     ussv positive;
     for(uint32_t i=0; i < options.size();i++){
@@ -54,6 +69,10 @@ ussv SudokuSolv::negative(ussv options){
     return positive;
 }
 
+/** @brief Druckt 2D vector
+ *  @param 2D vector
+ *  @return void
+ */
 void SudokuSolv::pUssv(ussv vector){
     for(auto &ii: vector){
         for(auto i: ii){
@@ -63,15 +82,10 @@ void SudokuSolv::pUssv(ussv vector){
     }
 }
 
-void SudokuSolv::pBbv(bbv vector){
-    for(uint32_t i=0; i < vector.size();i++){
-        for(uint32_t ii=0; ii < vector[i].size() ;ii++){
-            std::cout<< vector[i][ii];
-            if(ii == vector[i].size() - 1) std::cout<<std::endl;
-        }
-    }
-}
-
+/** @brief Druckt 1D vector
+ *  @param 1D vector
+ *  @return void
+ */
 void SudokuSolv::pUsv(usv vector){
     for(auto i: vector){
         std::cout<<i;
@@ -79,6 +93,10 @@ void SudokuSolv::pUsv(usv vector){
     std::cout<<std::endl;
 }
 
+/** @brief Gibt field als 1D vector
+ *  @param field 2D vector
+ *  @return fieldList 1D vector
+ */
 usv SudokuSolv::getFieldlist(ussv field){
     usv fieldList;
 
@@ -90,6 +108,11 @@ usv SudokuSolv::getFieldlist(ussv field){
     return fieldList;
 }
 
+/** @brief Sucht nach Wert in vector
+ *  @param v vector in dem gesucht wird
+ *  @param value Wert mit dem gesucht wird
+ *  @return -1 wenn nicht gefunden sonst Position
+ */
 int16_t SudokuSolv::find_v(usv v, uint16_t value){
     auto it = std::find (v.begin(), v.end(), value);
     if( it != v.end() ) return it - v.begin();
@@ -97,13 +120,10 @@ int16_t SudokuSolv::find_v(usv v, uint16_t value){
     else return ~0L;
 }
 
-int16_t SudokuSolv::find_bv(bv v, uint16_t value){
-    auto it = std::find (v.begin(), v.end(), value);
-    if( it != v.end() ) return it - v.begin();
-    else if( it == v.end() ) return -1;
-    else return ~0L;
-}
-
+/** @brief Wenn ein Kästchen nur eine Option hat wird
+ *         diese als Wert für das Kästchen übernommen
+ *  @return void
+ */
 void SudokuSolv::clueElim(){
     for (int y=0; y < 9;y++) {
         for (int x=0; x < 9;x++) {
@@ -127,12 +147,13 @@ bool SudokuSolv::hasFailed(){
     return failed;
 }
 
+/** @brief Löscht Element aus vector nach Wertübereinstimmung
+ *  @param v vector aus dem gelöscht wird
+ *  @param value Wert nach dem gesucht wird
+ *  @return void
+ */
 void SudokuSolv::erase(usv &v, uint16_t value){
     v.erase(std::remove(v.begin(), v.end(), value), v.end());
-}
-
-void SudokuSolv::eraseP(usv *v, uint16_t value){
-    v->erase(std::remove(v->begin(), v->end(), value), v->end());
 }
 
 int16_t SudokuSolv::search_v(usv in, usv array){

@@ -11,6 +11,9 @@
 #include <cassert>
 #include <chrono>
 
+/** @file */
+
+/** @brief  define dient zum durchiterieren durch bestimmte boxen als ob eine Box ein 2D Vector ist */
 #define ARRAY_POS [sus::ybox[gridxy[1]][yy]][sus::xbox[gridxy[0]][xx]]
 
 class SudokuBoxOptions;
@@ -18,14 +21,24 @@ class MainWindow;
 class SudokuField;
 class SudokuSolv;
 
-typedef std::vector<uint16_t> usv;
+/** @brief  short vector */
 typedef std::vector<int16_t> sv;
-typedef std::vector<std::vector<uint16_t>> ussv;
-typedef std::vector<std::vector<std::vector<uint16_t>>> usssv;
+/** @brief  2D short vector */
 typedef std::vector<std::vector<int16_t>> ssv;
-typedef std::vector<std::vector<bool>> bbv;
+/** @brief  usigned short vector */
+typedef std::vector<uint16_t> usv;
+/** @brief  2D unsigned short vector */
+typedef std::vector<std::vector<uint16_t>> ussv;
+/** @brief  3D unsigned short vector */
+typedef std::vector<std::vector<std::vector<uint16_t>>> usssv;
+/** @brief  bool vector */
 typedef std::vector<bool> bv;
+/** @brief  2D bool vector */
+typedef std::vector<std::vector<bool>> bbv;
 
+/** @brief Namespace SudokuSolv für Konstante variablen und
+ *         da die Typen SudokuField und SudokuFieldVector
+ *         vorher noch nicht vollständig sind */
 namespace sus{
     const ussv xbox = {{0,1,2},{3,4,5},{6,7,8}};
     const ussv ybox = {{0,1,2},{3,4,5},{6,7,8}};
@@ -49,10 +62,17 @@ namespace sus{
                           {-1,-2,-1,-2}};
 }
 
+/** @brief Wird in der Implementierung benutzt
+ */
 class Sudoku{
 public:
+    /** @brief Default Constructor
+     */
     Sudoku(){}
 
+    /** @brief Constructor um einen 81-stelligen String in field zu schreiben
+     *  @param m_field Bsp.: "103400005602000030...(bis 81 Stellen)"
+     */
     Sudoku(std::string m_field){
         uint16_t i = 0;
         for(uint16_t y=0; y < 9;y++){
@@ -64,9 +84,10 @@ public:
         }
     }
 
+    /** @brief Constructor der field initialisiert
+     *  @param m_field 2D vector
+     */
     Sudoku(ussv m_field):field(m_field){}
-
-    //Sudoku(uint16_t *m_field){}
 
     void start();
 
@@ -81,7 +102,10 @@ public:
     bool isCorrect = 0;
 
 private:
+    /** @brief 2D vector der die eigentlichen Werte des zu lösenden Sudoku enthält */
     ussv field;
+    /** @brief 3D vector der für jedes Kästchen innerhalb des Gitters die Optionen
+     *         für dieses Kästchen des zu lösenden Sudoku enthält */
     usssv fieldOptions;
 };
 
@@ -94,6 +118,8 @@ struct SudokuLogPack{
 
 class SudokuLog{
 public:
+    /** @brief Default Constructor
+     */
     SudokuLog(){}
 
     void append(SudokuLogPack m_log){
@@ -104,23 +130,46 @@ private:
     std::vector<SudokuLogPack> log;
 };
 
+/** @brief Enthält alle benötigten Algorithmen */
 class SudokuSolv: public Sudoku{
 public:
     friend SudokuBoxOptions;
     friend MainWindow;
     friend Sudoku;
 
+    /** @brief Fungiert als Knotenpunkt im Entscheidungsbaum */
     class SudokuField{
     public:
-
+        /** @brief Default Constructor
+         */
         SudokuField(){}
+
+        /** @brief Constructor der field und fieldOptions initialisiert
+         *  @param m_field 2D vector
+         *  @param m_fieldOptions 3D vector
+         */
         SudokuField(ussv m_field, usssv m_fieldOptions):field(m_field), fieldOptions(m_fieldOptions){ }
+
+        /** @brief Constructor der field initialisiert
+         *  @param m_field 2D vector
+         */
         SudokuField(ussv m_field):field(m_field){ }
+
+        /** @brief Constructor der field und fieldOptions über SudokuSolv initialisiert
+         *  @param m_sudoku SudokuSolv Objekt
+         */
         SudokuField(SudokuSolv &m_sudoku){ field = m_sudoku.getField(); fieldOptions = m_sudoku.getFieldOptions(); }
 
+        /** @brief Gibt fieldOptions aus
+         *  @return fieldOptions 3D vector
+         */
         usssv getFieldOptions(){
             return fieldOptions;
         }
+
+        /** @brief Gibt field aus
+         *  @return field 2D vector
+         */
         ussv getField(){
             return field;
         }
@@ -146,11 +195,21 @@ public:
             this->setField(sudoku.getField());
             this->setFieldOptions(sudoku.getFieldOptions());
         }
+
+        /** @brief operator um zu prüfen ob field oder fieldOptions ungleich sind
+         *  @param sudoku Das zu vergleichende SudokuField-Objekt
+         *  @return 1 wenn ungleich 0 wenn gleich
+         */
         bool operator!=(SudokuField &sudoku){
             bool unequal = 0;
             if(this->getField() != sudoku.getField() || this->getFieldOptions() != sudoku.getFieldOptions())unequal = 1;
             return unequal;
         }
+
+        /** @brief operator um zu prüfen ob field und fieldOptions gleich sind
+         *  @param sudoku Das zu vergleichende SudokuField-Objekt
+         *  @return 1 wenn gleich 0 wenn ungleich
+         */
         bool operator==(SudokuField &sudoku){
             bool equal = 0;
             if(this->getField() == sudoku.getField() && this->getFieldOptions() == sudoku.getFieldOptions())equal = 1;
@@ -160,26 +219,47 @@ public:
     private:
         uint16_t ID = 0;
         uint16_t algo = 404;
+
+        /** @brief 2D vector der die eigentlichen Werte des zu lösenden Sudoku enthält */
         ussv field;
+
+        /** @brief 3D vector der für jedes Kästchen innerhalb des Gitters die Optionen
+         *         für dieses Kästchen des zu lösenden Sudoku enthält */
         usssv fieldOptions;
     };
 
+    /** @brief operator um zu prüfen ob field und fieldOptions gleich sind
+     *  @param sudoku Das zu vergleichende SudokuSolv-Objekt
+     *  @return 1 wenn gleich 0 wenn ungleich
+     */
     bool operator==(SudokuSolv &sudoku){
         bool equal = 0;
         if(this->getField() == sudoku.getField() && this->getFieldOptions() == sudoku.getFieldOptions())equal = 1;
         return equal;
     }
 
+    /** @brief Default Constructor
+     */
     SudokuSolv(){}
 
+    /** @brief Constructor der field und fieldOptions über SudokuField initialisiert
+     *  @param m_sudoku SudokuSolv Objekt
+     */
     SudokuSolv(SudokuField &m_sf){
         field = m_sf.getField();
         fieldOptions = m_sf.getFieldOptions();
     }
 
+    /** @brief Constructor der field initialisiert
+     *  @param m_field 2D vector
+     */
     SudokuSolv(ussv &m_field)
         : field(m_field){}
 
+    /** @brief Constructor der field und fieldOptions initialisiert
+     *  @param m_field 2D vector
+     *  @param m_fieldOptions 3D vector
+     */
     SudokuSolv(ussv &m_field, usssv &m_fieldOptions)
         : field(m_field)
         , fieldOptions(m_fieldOptions){}
@@ -199,8 +279,6 @@ public:
     bool hasFailed();
 
     void pUssv(ussv vector);
-
-    void pBbv(bbv vector);
 
     void pUsv(usv vector);
 
@@ -223,11 +301,7 @@ private:
 
     int16_t search_v(usv in, usv array);
 
-    int16_t find_bv(bv v, uint16_t value);
-
     void erase(usv &v, uint16_t value);
-
-    void eraseP(usv *v, uint16_t value);
 
     void clueElim();
 
@@ -259,13 +333,23 @@ private:
 
     void rowColSolve(ussv &field, sv pos_row, uint16_t x, uint16_t y, uint16_t xb, uint16_t yb);
 
-    ussv field, fieldOptionList;
+    /** @brief 2D vector der die eigentlichen Werte des zu lösenden Sudoku enthält */
+    ussv field;
+    /** @brief 2D vector der für jedes Kästchen in einer liste die Optionen
+     *         für dieses Kästchen des zu lösenden Sudoku enthält */
+    ussv fieldOptionList;
+    /** @brief 3D vector der für jedes Kästchen innerhalb des Gitters die Optionen
+     *         für dieses Kästchen des zu lösenden Sudoku enthält */
     usssv fieldOptions;
 };
+/** @brief SudokuField als sf */
 typedef SudokuSolv::SudokuField sf;
+/** @brief Sudokufield vector */
 typedef std::vector<sf> sfv;
-typedef std::vector<std::vector<sf>> sffv;
+/** @brief 2D SudokuField vector */
+typedef std::vector<sfv> sffv;
 
+/** @brief Selektiert eine bestimmte der 9 Boxen */
 class SudokuBox{
 public:
     SudokuBox(ussv m_field):field(m_field){ }
@@ -276,9 +360,11 @@ public:
 
     static usv findBox(uint16_t x ,uint16_t y);
 
+    /** @brief 2D vector der die eigentlichen Werte des zu lösenden Sudoku enthält */
     ussv field;
 };
 
+/** @brief Selektiert die Optionen einer der 9 Boxen */
 class SudokuBoxOptions{
 public:
 
@@ -294,10 +380,13 @@ public:
 
     void erase(uint16_t x, uint16_t y, uint16_t value);
 
+    /** @brief 3D vector der für jedes Kästchen innerhalb des Gitters die Optionen
+     *         für dieses Kästchen des zu lösenden Sudoku enthält */
     usssv &options;
     uint16_t x, y;
 };
 
+/** @brief Selektiert eine bestimmte der 9 Reihen oder Spalten */
 class SudokuRowCol{
 public:
     SudokuRowCol(ussv m_field):field(m_field){ }
@@ -306,9 +395,11 @@ public:
 
     usv getCol(uint16_t x);
 
+    /** @brief 2D vector der die eigentlichen Werte des zu lösenden Sudoku */
     ussv field;
 };
 
+/** @brief Selektiert Optionen aus einer der 9 Spalten oder Reihen */
 class SudokuRowColOptions{
 public:
     SudokuRowColOptions(usssv &m_options):options(m_options){ }
@@ -317,6 +408,8 @@ public:
 
     ussv getCol(uint16_t x);
 
+    /** @brief 3D vector der für jedes Kästchen innerhalb des Gitters die Optionen
+     *         für dieses Kästchen des zu lösenden Sudoku enthält */
     usssv &options;
 };
 
