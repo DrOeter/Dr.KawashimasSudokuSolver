@@ -1,5 +1,4 @@
 #include "Sudoku.h"
-#include <windows.h>
 
 /** @brief Namespace SudokuSolv */
 namespace sus {
@@ -10,7 +9,7 @@ namespace sus {
      *  @param b 2. SudokuField
      *  @return 1 wenn sie gleich sind und algo gleich 404 sonst 0
      */
-    inline bool Pred(sf &a, sf &b){
+    inline bool Pred(sf &a, sf &b){                                         //Es werden nich Werte sondern Eigenschaften von Objekten verglichen
         if (a.getAlgo() == b.getAlgo() && a.getAlgo() == 404)  return 1;
         else return 0;
     }
@@ -20,8 +19,8 @@ namespace sus {
      *  @return void
      */
     void resize(sfv &list){
-        auto ip = std::unique(list.begin(), list.end(), Pred);
-        list.resize(std::distance(list.begin(), ip));
+        auto ip = std::unique(list.begin(), list.end(), Pred);              //Entfernt Duplikate
+        list.resize(std::distance(list.begin(), ip));                       //Enfernt überschüssigen Speicher
     }
 }
 
@@ -30,14 +29,14 @@ namespace sus {
  *  @return void
  */
 void Sudoku::start(){
-    sfv list(5), b_list(5);
-    sffv history;
-    ussv unsolved = field;
-    uint16_t done = 0, c = 0, tmp_thread = 0;
+    sfv list(5), b_list(5);                         //Listen der einzelnen Knotenpunkte vor und nach der Anwendung des Algorithmus
+    sffv history;                                   //2D vector der dann die Listen aufnimmt
+    ussv unsolved = field;                          //Speichert ursprüngliches Sudoku
+    uint16_t done = 0, c = 0, tmp_thread = 0;       //done gleich 1 wenn korrekt gelöst, c ist der iterator für die liste list, tmp_thread
     SudokuSolv sudoku(field);
-    sudoku.Solve();
+    sudoku.Solve();                                 //Anwendung eines Linearen Lösungsversuchs
 
-    if(sudoku.hasIntegrity(sudoku.getField())){
+    if(sudoku.hasIntegrity(sudoku.getField())){     // wenn erfolgreich überspringe den Rest
         field = sudoku.getField();
         done = 1;
     }
@@ -47,23 +46,23 @@ void Sudoku::start(){
     std::vector<std::thread> t(5);
 
     while(done == 0){
-        for(uint16_t i=0; i < 5;i++){
-            t[i] = std::thread([&](SudokuSolv ssudoku, uint16_t ii, uint64_t id, uint16_t *done){
-                if( *done == 1 || ssudoku.getField().empty()) return;
+        for(uint16_t i=0; i < 5;i++){                                                               //Anwendung der 5 Algorithmen
+            t[i] = std::thread([&](SudokuSolv ssudoku, uint16_t ii, uint64_t id, uint16_t *done){   //Thread wird mit einer Lambda-Funktion mit seperatem Speicher gestartet
+                if( *done == 1 || ssudoku.getField().empty()) return;                               //geh raus er schon fertig ist oder field leer ist
 
                 if(!ssudoku.hasIntegrity(ssudoku.getField()) && *done == 0){
-                    sf before, after;
-                    before.setSudokuSolv(ssudoku);
-                    before.setAlgo(ii);
-                    before.setID( ssudoku.ID );
+                    sf before, after;                                                               //SudokuField für vor und nach der Anwendung des Algorithmus
+                    before.setSudokuSolv(ssudoku);                                                  //Speichert Daten
+                    before.setAlgo(ii);                                                             //Algorithmus der angewendet wurde
+                    before.setID( ssudoku.ID );                                                     //Nimmt ID dieses Knotenpunktes auf
 
-                    ssudoku.useAlgo(ii);
+                    ssudoku.useAlgo(ii);                                                            //Anwendung des Algorithmus
 
-                    after.setSudokuSolv(ssudoku);
-                    after.setAlgo(ii);
-                    after.setID( id + 1 );
+                    after.setSudokuSolv(ssudoku);                                                   //Speichert Daten
+                    after.setAlgo(ii);                                                              //Algorithmus der angewendet wurde
+                    after.setID( id + 1 );                                                          //Nimmt ID eines neuen Knotenpunktes auf
 
-                    if(before != after){
+                    if(before != after){                                                            //Wenn der Algoithmus etwas gefunden hat
                         if(*done == 0) {
                             b_list[id] = before;
                             list[id] = after;
@@ -71,26 +70,26 @@ void Sudoku::start(){
                     }
                 }
                 if(ssudoku.hasIntegrity(ssudoku.getField()) && *done == 0){
-                    *done = 1;
-                    field = ssudoku.getField();
+                    *done = 1;                                                                      //Wenn korrekt gelöst wurde erkennen alle anderen Threads mit diesem
+                    field = ssudoku.getField();                                                     //Pointer, dass sie nichts mehr machen müssen
                 }
             }, sudoku, i, (tmp_thread + i), &done );
         }
-        for(uint16_t i=0; i < 5;i++)
+        for(uint16_t i=0; i < 5;i++)                                                                //Warte bis die Threads fertig sind
             t[i].join();
         tmp_thread+=5;
-        list.insert(list.end(), 5, sf());
+        list.insert(list.end(), 5, sf());                                                           //Allocate neuen Speicher für die Threads
         b_list.insert(b_list.end(), 5, sf());
 
-        if(list.size() >= 100000) break;
+        if(list.size() >= 100000) break;                                                            //nach 100000 / 5 Knotenpunkten gibt er auf
         if(!list.empty()){
-            sudoku.setField(list[c].getField());
+            sudoku.setField(list[c].getField());                                                    //ein weiterer Punkt in der liste wird übergeben
             sudoku.setFieldOptions(list[c].getFieldOptions());
             sudoku.ID = list[c].getID();
             c++;
         }
     }
-    sus::resize(b_list);
+    sus::resize(b_list);                                                                            //Entfernt alle SudokuField wo nichts gefunden wurde also wo algo == 404
     sus::resize(list);
 
     for(auto i=b_list.begin(); i != b_list.end() - 1; i++)
@@ -102,42 +101,42 @@ void Sudoku::start(){
     b_list.erase(b_list.end() - 1);
     list.erase(list.end() - 1);
 
-    for(int16_t i=list.size()-1; i >= 0 ; i--)
+    for(int16_t i=list.size()-1; i >= 0 ; i--)                                                      //Listen werden in 2D vector übertragen
         history.push_back({b_list[i], list[i]});
 
     sffv solution;
     bool start = 0;
     int64_t id = 0;
 
-    for(auto i=history.begin(); i != history.end();i++){
-        if(sudoku.hasIntegrity((*i)[1].getField()) && start == 0) {
+    for(auto i=history.begin(); i != history.end();i++){                                            //Schleife fängt an mit dem letzten Element aus list und b_list
+        if(sudoku.hasIntegrity((*i)[1].getField()) && start == 0) {                                 //Sobald er in der history das gelöste Sudoku findet beginnt die Rückverfolgung
             start = 1;
-            id = (*i)[0].getID();
-            solution.push_back(*i);
+            id = (*i)[0].getID();                                                                   //Die ID vor der Berechnung wird an id übergeben womit gesucht wird
+            solution.push_back(*i);                                                                 //Das erste Element der Lösung wird hinzugefügt
         }
         else if(!sudoku.hasIntegrity((*i)[1].getField()) && start == 0)  continue;
 
-        for(uint16_t pos=1; pos < history.size() - (i - history.begin());pos++){
-            if( id == (*(i + pos))[1].getID() ){
+        for(uint16_t pos=1; pos < history.size() - (i - history.begin());pos++){                    //id wird im Rest der History gesucht
+            if( id == (*(i + pos))[1].getID() ){                                                    //Wenn die id in history[1] gefunden wird bedeutet das, dass er ein weiteres Teil des Zurückweg gefunden hat
                 solution.push_back((*(i + pos)));
-                id = (*(i + pos))[0].getID();
+                id = (*(i + pos))[0].getID();                                                       //ID von History[0] also vor der Anwendung des Algorithmus wird an id übergeben
                 break;
             }
         }
         if(solution.size() > 100) break;
-        if(solution.back()[0].getID() == 0)break;
+        if(solution.back()[0].getID() == 0)break;                                                   //springt raus wenn er Oben angekommen ist
     }
-    std::reverse(solution.begin(), solution.end());
+    std::reverse(solution.begin(), solution.end());                                                 //Spiegelung des vectors
 
-    SudokuSolv finalTest(unsolved);
+    SudokuSolv finalTest(unsolved);                                                                 //Ab hier wird geprüft ob der Lösungsweg Korrekt ist
 
     finalTest.untilFind_8();
     finalTest.untilOverFly();
 
-    for(auto i=solution.begin(); i != solution.end();i++)
+    for(auto i=solution.begin(); i != solution.end();i++)                                           //Anwendung des Lösungsweges
         finalTest.useAlgo((*i)[0].getAlgo());
 
-    if(!finalTest.hasIntegrity(finalTest.getField())){
+    if(!finalTest.hasIntegrity(finalTest.getField())){                                              //Auffangmechanismus Wahrscheinlich Mittlerweile überflüssig
         for(uint16_t i=0; i < 5;i++){
             SudokuSolv last(finalTest);
             last.useAlgo(i);
